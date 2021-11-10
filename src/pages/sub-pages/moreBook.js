@@ -56,7 +56,7 @@ export default function moreBook() {
                 }
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         return () => { isFlag = false };
     }, []);

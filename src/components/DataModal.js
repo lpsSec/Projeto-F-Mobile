@@ -148,7 +148,7 @@ export default ({show, setShow, value})  =>  {
                 if(!json.error) {
                     setShow(false);
                 } else {
-                    alert('Erro inesperado, contate o administrador');
+                    // alert('Erro inesperado, contate o administrador');
                 }
             } else {
                 setResultEmpty('flex');

@@ -25,7 +25,7 @@ export default function forInfo() {
                 setMessageEmpty('flex');
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
     }, []);
@@ -45,7 +45,7 @@ export default function forInfo() {
                 }
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         return () => { isFlag = false };
     }, []);

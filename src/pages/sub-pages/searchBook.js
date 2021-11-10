@@ -33,7 +33,7 @@ export default function searchBook() {
                 wait(2000).then(()=>{ setMessageEmpty('none') })
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
     }, []);
@@ -84,7 +84,7 @@ export default function searchBook() {
                 }
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         return () => { isFlag = false };
     }, []);
@@ -92,11 +92,11 @@ export default function searchBook() {
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#FFFFFF' }} horizontal={true}>
             <View style={styles.pageBody}>
                 <Text style={{display: searchEmpty, color: '#000000', fontWeight: 'bold', marginBottom: 5}}>
-                Digite o nome do livro que deseja...
+                Digite o nome do software que deseja...
                 </Text>
-                <Text style={{display: userEmpty, color: '#000000', fontWeight: 'bold', marginBottom: 5}}>
+                {/* <Text style={{display: userEmpty, color: '#000000', fontWeight: 'bold', marginBottom: 5}}>
                 Digite o nome do usuário que deseja...
-                </Text>
+                </Text> */}
                 <View style={styles.inputArea}>
                     <TextInput 
                         style={styles.input} 
