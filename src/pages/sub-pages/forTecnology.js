@@ -34,7 +34,7 @@ export default function forTecnology() {
                 setMessageEmpty('flex');
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
     }, []);
@@ -78,7 +78,7 @@ export default function forTecnology() {
                     setMessageEmpty('flex');
                 }
             }).catch((error) => {
-                alert('Erro inesperado, contate o adminstrador');
+                // alert('Erro inesperado, contate o adminstrador');
             });
         });
         Api.getBookByGen('Tecnologia').then((response) => {
@@ -93,7 +93,7 @@ export default function forTecnology() {
                 }
             }
         }).catch((error) => {
-            alert('Erro inesperado, contate o adminstrador');
+            // alert('Erro inesperado, contate o adminstrador');
         });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
@@ -102,12 +102,12 @@ export default function forTecnology() {
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#FFFFFF' }} horizontal={true}>
             <View style={styles.pageBody}>
                 <Text style={{display: searchEmpty, color: '#000000', fontWeight: 'bold', marginBottom: 5}}>
-                Digite o nome do livro que deseja...
+                Digite o nome do software que deseja...
                 </Text>
                 <View style={[styles.inputArea, { display: textEmpty }]}>
                     <TextInput 
                         style={styles.input} 
-                        placeholder="Pesquise algum livro"
+                        placeholder="Pesquise algum software"
                         placeholderTextColor="#000000"
                         value={searchFiled}
                         onChangeText={t=>setSearchField(t)}

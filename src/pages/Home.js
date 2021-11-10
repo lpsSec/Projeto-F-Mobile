@@ -7,7 +7,7 @@ import appHome from './sub-pages/appHome';
 import appPerfil from '../pages/sub-pages/appPerfil';
 import appCarrinho from '../pages/sub-pages/appCarrinho';
 
-import MyBook from '../assets/Logo.svg';
+import Softbear from '../assets/logo_softbear.svg';
 import Account from '../assets/account.svg';
 
 const Tab = createMaterialTopTabNavigator();
@@ -18,7 +18,7 @@ export default function Home({state}) {
     return (
         <View style={styles.background}>
             <View style={styles.header}>
-                <MyBook width="36" height="36" style={styles.icon}/>
+                <Softbear width="36" height="36" style={styles.icon}/>
                 <Text style={styles.title}>Softbear</Text>
                 <TouchableOpacity style={styles.profile} onPress={() => { navigation.navigate('Profile') }}>
                 <Account width="36" height="36" fill="#000000"/>
