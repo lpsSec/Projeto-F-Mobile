@@ -28,14 +28,14 @@ export default {
 
         return json;
     },
-    signUp: async (USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD, USR_PHOTO) => {
+    signUp: async (USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD) => {
         const req = await fetch(`${BASE_API}/auth/register`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD, USR_PHOTO})
+            body: JSON.stringify({USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD})
         });
         const json = await req.json();
         return json;
