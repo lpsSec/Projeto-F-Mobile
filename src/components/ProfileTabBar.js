@@ -12,8 +12,8 @@ export default ({ state, navigation }) => {
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forInfo')}>
                     <Text style={[styles.textPage, {opacity: state.index===0 ? 1 : 0.5}]}>Info</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forLeased')}>
-                    <Text style={[styles.textPage, {opacity: state.index===1 ? 1 : 0.5}]}>Locados</Text>
+                <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forRegistrationProduct')}>
+                    <Text style={[styles.textPage, {opacity: state.index===1 ? 1 : 0.5}]}>Cadastrar Produto</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forFavorites')}>
                     <Text style={[styles.textPage, {opacity: state.index===2 ? 1 : 0.5}]}>Favoritos</Text>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3,
         borderColor: '#000000',
         borderRadius: 10,
-        width: 120,
+        width: 150,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 5
