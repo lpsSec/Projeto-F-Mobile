@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl, TextInput, Picker } from 'react-native';
 import Api from '../../Api';
 
 const wait = (timeout) => {
@@ -10,6 +10,7 @@ export default function forInfo() {
     const [listLocate, setListLocate] = useState([]);
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedValue, setSelectedValue] = useState("java");
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -75,23 +76,59 @@ export default function forInfo() {
                     <View style={styles.container}>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Nome:</Text>
-                            {/* <Text style={styles.title}>{name}</Text> */}
+                            <TextInput
+                                style={styles.input} 
+                                placeholder="Digite o nome aqui"
+                                placeholderTextColor="#000000"
+                                autoCapitalize='none'
+                            />
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Descrição:</Text>
-                            {/* <Text style={styles.title}>{phone}</Text> */}
+                            <TextInput
+                                style={styles.input} 
+                                placeholder="Digite a descrição aqui"
+                                placeholderTextColor="#000000"
+                                autoCapitalize='none'
+                            />
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Categoria:</Text>
-                            {/* <Text style={styles.title}>{birthday}</Text> */}
+                            <Picker
+                                style={{ height: 50, width: 150 }}
+                                selectedValue={selectedValue}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                            >
+                                <Picker.Item value="mobile" label="Mobile" />
+                                <Picker.Item value="web" label="Web" />
+                                <Picker.Item value="hibrido" label="Híbrido" />
+                            </Picker>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Licença:</Text>
-                            {/* <Text style={styles.title}>{email}</Text> */}
+                            <Picker
+                                style={{ height: 50, width: 150 }}
+                                selectedValue={selectedValue}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                            >
+                                <Picker.Item value="eula" label="EULA" />
+                                <Picker.Item value="sp" label="Software Proprietário" />
+                                <Picker.Item value="sl" label="Software Livre" />
+                                <Picker.Item value="sc" label="Software Comercial" />
+                                <Picker.Item value="op" label="Open Source" />
+                                <Picker.Item value="gnu" label="GNU GPL" />
+                                <Picker.Item value="sg" label="Software Gratuito" />
+                            </Picker>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Preço:</Text>
-                            {/* <Text style={styles.title}>{email}</Text> */}
+                            <TextInput
+                                style={styles.input} 
+                                placeholder="Digite o preço aqui"
+                                placeholderTextColor="#000000"
+                                autoCapitalize='none'
+                                keyboardType="numeric"
+                            />
                         </View>
                         {/* <TouchableOpacity style={styles.passwordButton} onPress={()=>{  }}>
                             <Text style={styles.passwordText}>Alterar senha</Text>
@@ -101,7 +138,6 @@ export default function forInfo() {
                         <View style={styles.signOutArea}>
                             <Text style={styles.signOutText}>Cadastrar</Text>
                             <TouchableOpacity style={{width: 36, height: 36}} onPress={registerProduct}>
-                                {/* <LogOut width="36" height="36"/> */}
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -204,5 +240,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         marginLeft: 30
+    },
+    input: {
+        flex: 1,
+        fontSize: 16,
+        color: '#000000',
+        marginLeft: 5
     }
 });
