@@ -8,7 +8,6 @@ import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import Read from '../pages/Read';
 import LocateBook from '../pages/LocateBook';
-import Admin from '../pages/Admin';
 import LostPassword from '../pages/LostPassword';
 
 const Stack = createStackNavigator();
@@ -29,7 +28,6 @@ function Routes(){
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="Read" component={Read} />
             <Stack.Screen name="LocateBook" component={LocateBook} />
-            <Stack.Screen name="Admin" component={Admin} />
         </Stack.Navigator>
     );
 };

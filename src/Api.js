@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
+// const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
+const BASE_API = 'https://project-e-api.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
