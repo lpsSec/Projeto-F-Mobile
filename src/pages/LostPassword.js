@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, KeyboardAvoidingView, Animated } from 'react-native';
@@ -7,31 +7,21 @@ import Api from '../Api';
 import Email from '../assets/email.svg';
 import Lock from '../assets/lock.svg';
 
-export default function SignIn() {
+export default function LostPassword() {
     const navigation = useNavigation();
 
     const [emailField, setEmailField] = useState('');
-    const [passwordField, setpasswordField] = useState('');
-    const [messagePassword, setMessagePassword] = useState('none');
     const [messageEmpty, setMessageEmpty] = useState('none');
+    const [messageSuccess, setMessageSuccess] = useState('none');
 
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 150 }));
 
-    const handleSignClick = async () => {
-        
-        // DEBUG: redirect to HOME screen
-        // navigation.reset({routes: [{name: 'Home'}]});
-        // return;
-        if(emailField != '' && passwordField != '') {
-            let json = await Api.signIn(emailField, passwordField); 
-            if(json.token) {
-                await AsyncStorage.setItem('token', json.token);
-                await AsyncStorage.setItem('user', json.data.USR_ID.toString());
-
-                navigation.reset({
-                    routes: [{name: 'Home'}]
-                });
-
+    const handleSendClick = async () => {
+        if(emailField != '' ) {
+            let json = await Api.LostPassword(emailField);
+            if(json) {
+                //TODO: Set Success msg
+                setMessageSuccess('flex');
             } else {
                 setMessagePassword('flex');
             }
@@ -42,8 +32,8 @@ export default function SignIn() {
     }
 
     function clearMsg(){
-    	setMessagePassword('none');
     	setMessageEmpty('none');
+        setMessageSuccess('none');
     }
 
     useEffect(() => {
@@ -58,8 +48,9 @@ export default function SignIn() {
         <KeyboardAvoidingView contentContainerStyle={styles.fixKeyboard} behavior="position" enabled>
         <View style={styles.background}>
             <View style={styles.headerBody}>
-                <Text style={styles.title}>Login</Text>
-                <Image style={styles.icon} source={require('../assets/user.png')}/>
+            {/*TODO: fix icon size */}
+                <Lock style={styles.iconBig}/>
+                <Text style={styles.title}>Esqueceu sua senha?</Text>
             </View>
             <Animated.View style={[ styles.pageBody, { transform: [ { translateY: offset.y } ] }]}>
                 <View style={styles.inputArea}>
@@ -74,32 +65,21 @@ export default function SignIn() {
                         onFocus={t=>clearMsg()}
                     />
                 </View>
-                <View style={styles.inputArea}>
-                    <Lock width="24" height="24" fill="#000000" />
-                    <TextInput
-                        style={styles.input} 
-                        placeholder="Senha"
-                        placeholderTextColor="#000000"
-                        value={passwordField}
-                        autoCapitalize='none'
-                        onChangeText={t=>setpasswordField(t)}
-                        onFocus={t=>clearMsg()}
-                        secureTextEntry={true}
-                    />
+                <View style={styles.titleArea}>
+                    <Text style={styles.subtitle}>Confirme seu email para enviarmos as instruções.</Text>
                 </View>
-                {/* <TouchableOpacity onPress={navigation.navigate('LostPassword')}> */}
-                    <Text style={styles.subtitle}>Esqueceu sua senha?</Text>
-                {/* </TouchableOpacity> */}
-                <View style={styles.wrongPassword}>
-                    <Text style={{display: messagePassword, color: '#FF0000'}}>
-                    Sua senha/email está incorreta. Por favor tente novamente.
-                    </Text>
+                <View style={styles.emptyEmail}>
                     <Text style={{display: messageEmpty, color: '#FF0000', }}>
-                    Preencha os campos!
+                    Preencha o email!
                     </Text>
                 </View>
-                <TouchableOpacity onPress={handleSignClick} style={styles.loginButton}>
-                    <Text style={styles.loginText}>Login</Text>
+                <View style={styles.msgSuccess}>
+                    <Text style={{display: messageSuccess, color: '#09FA09', }}>
+                    Email enviado com instruções!
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={handleSendClick} style={styles.loginButton}>
+                    <Text style={styles.loginText}>Enviar email</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>{ navigation.navigate('SignUp') }} style={styles.registerButton}>
                     <Text style={styles.registerText}>Ainda não possui uma conta?</Text>
@@ -142,6 +122,10 @@ const styles = StyleSheet.create({
         width: '35%',
         height: 140,
     },
+    iconBig: {
+        width: '60%',
+        height: 140,
+    },
     pageBody: {
         height: 400,
         width: 400,
@@ -155,9 +139,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     subtitle: {
-        fontSize: 18,
+        fontSize: 15,
         color: '#FFF',
-        fontWeight: 'bold'
     },
     inputArea: {
         width: 350,
@@ -176,7 +159,13 @@ const styles = StyleSheet.create({
         color: '#000000',
         marginLeft: 5
     },
-    wrongPassword: {
+    emptyEmail: {
+        width: 350,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    msgSuccess: {
         width: 350,
         height: 40,
         justifyContent: 'center',

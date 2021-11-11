@@ -7,7 +7,6 @@ import PasswordModal from '../../components/PasswordModal';
 import DataModal from '../../components/DataModal';
 import Account from '../../assets/account.svg';
 import LogOut from '../../assets/logout.svg';
-import Admin from '../../assets/configuracao.svg';
 import Edit from '../../assets/edit.svg';
 
 const wait = (timeout) => {

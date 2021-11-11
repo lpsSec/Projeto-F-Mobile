@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'rea
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import Back from '../assets/back.svg';
-import MyBook from '../assets/Logo.svg';
+import Logo from '../assets/Logo.svg';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -33,8 +33,8 @@ export default function Read() {
                 <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Profile') }}>
                     <Back width="36" height="36" style={styles.icon}/>
                 </TouchableOpacity>
-                <Text style={styles.title}>MyBook</Text>
-                <MyBook width="36" height="36" style={styles.icon}/>
+                <Text style={styles.title}>Softbear</Text>
+                <Logo width="36" height="36" style={styles.icon}/>
             </View>
             {refreshing && 
                 <ActivityIndicator size="large" color="#000000"/>
