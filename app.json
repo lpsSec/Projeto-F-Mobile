@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyBook",
-    "slug": "Project-MyBook",
+    "name": "Softbear",
+    "slug": "Projeto-F-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.benderdesenv.mybook",
+      "bundleIdentifier": "com.benderdesenv.softbear",
       "buildNumber": "1.0.1"
     },
     "android": {
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.benderdesenv.mybook",
+      "package": "com.benderdesenv.softbear",
       "versionCode": 2
     },
     "web": {

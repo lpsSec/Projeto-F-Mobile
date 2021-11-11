@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Routes from './src/stacks/router';
 
-export default function MyBook() {
+export default function App() {
   return (
       <NavigationContainer>
         <Routes/>

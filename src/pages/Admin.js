@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AdminTabBar from '../components/AdminTabBar';
 import Back from '../assets/back.svg';
-import MyBook from '../assets/Logo.svg';
+import Logo from '../assets/Logo.svg';
 
 import moreBook from '../pages/sub-pages/moreBook';
 import searchBook from '../pages/sub-pages/searchBook';
@@ -20,8 +20,8 @@ export default function Admin() {
                 <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Profile') }}>
                     <Back width="36" height="36" style={styles.icon}/>
                 </TouchableOpacity>
-                <Text style={styles.title}>MyBook</Text>
-                <MyBook width="36" height="36" style={styles.icon}/>
+                <Text style={styles.title}>Softbear</Text>
+                <Logo width="36" height="36" style={styles.icon}/>
             </View>
             <Tab.Navigator tabBar={props=><AdminTabBar {...props} />}>
                 <Tab.Screen name="moreBook" component={moreBook}/>

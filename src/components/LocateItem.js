@@ -14,7 +14,7 @@ export default ({data}) => {
         } else {
             Alert.alert(
                 'Aviso',
-                'Não foi possível abrir o livro, tente novamente mais tarde ou contate o administrador: contato-mybook@mybook.com.br',
+                'Não foi possível abrir o livro, tente novamente mais tarde ou contate o administrador: contato-softbear@softbear.com.br',
                 [
                     { text: "OK" }
                 ]
@@ -27,7 +27,7 @@ export default ({data}) => {
         if(json.error) {
             Alert.alert(
                 'Aviso',
-                'Não foi possível abrir o livro, tente novamente mais tarde ou contate o administrador: contato-mybook@mybook.com.br',
+                'Não foi possível abrir o livro, tente novamente mais tarde ou contate o administrador: contato-softbear@softbear.com.br',
                 [
                     { text: "OK" }
                 ]

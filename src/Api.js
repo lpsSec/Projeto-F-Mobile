@@ -55,6 +55,18 @@ export default {
 
         return json;
     },
+    LostPassword: async (USR_EMAIL) => {
+        const req = await fetch(`${BASE_API}/user/lostpassword`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({USR_EMAIL})
+        });
+        const json = await req.json();
+        return json;
+    },
     getBooks: async () => {
         const user = await AsyncStorage.getItem('user');
         const token = await AsyncStorage.getItem('token');
