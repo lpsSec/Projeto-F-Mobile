@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl, TextInput, Picker } from 'react-native';
+import RegistrationProductModal from '../../components/RegistrationProductModal';
 import Api from '../../Api';
 
 const wait = (timeout) => {
@@ -7,6 +8,8 @@ const wait = (timeout) => {
 }
 
 export default function forInfo() {
+    const [idUser, setIdUser] = useState(0);
+    const [RegistrationProductModal, setRegistrationProductModal] = useState(false);
     const [listLocate, setListLocate] = useState([]);
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
@@ -97,7 +100,7 @@ export default function forInfo() {
                             <Picker
                                 style={{ height: 50, width: 150 }}
                                 selectedValue={selectedValue}
-                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                onValueChange={(value) => console.log(value)}
                             >
                                 <Picker.Item value="mobile" label="Mobile" />
                                 <Picker.Item value="web" label="Web" />
@@ -134,15 +137,19 @@ export default function forInfo() {
                             <Text style={styles.passwordText}>Alterar senha</Text>
                         </TouchableOpacity> */}
                     </View>
-                    <View style={styles.containerArea}>
+                    {/* <View style={styles.containerArea}>
                         <View style={styles.signOutArea}>
-                            <Text style={styles.signOutText}>Cadastrar</Text>
-                            <TouchableOpacity style={{width: 36, height: 36}} onPress={registerProduct}>
+                            <Text style={styles.signOutText}>Cadastrar novo</Text>
+                            <TouchableOpacity style={{width: 36, height: 36}} onPress={()=>{ setRegistrationProductModal(true) }}>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </View> */}
                 </ScrollView>
             </View>
+            {/* <RegistrationProductModal 
+                setShow={setRegistrationProductModal}
+                idUser={idUser}
+            /> */}
         </ScrollView>
     );
 }
