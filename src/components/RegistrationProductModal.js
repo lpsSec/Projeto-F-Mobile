@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet } from 'react-native';
+import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet, Picker } from 'react-native';
 import Api from '../Api';
 import ExpandIcon from '../assets/expand.svg';
 import Lock from '../assets/lock.svg';
@@ -8,31 +8,32 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({setShow, idUSer})  =>  {
+export default ({show, setShow, idUSer})  =>  {
     const [passwordField, setPasswordField] = useState('');
     const [passwordField2, setPasswordField2] = useState('');
     const [message, setMessage] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageEmpty2, setMessageEmpty2] = useState('none');
     const [messageEmpty3, setMessageEmpty3] = useState('none');
+    const [selectedValue, setSelectedValue] = useState("java");
 
-    const AlterPassword = async () => {
-        if(passwordField != passwordField2) {
-            setMessageEmpty('flex');
-            wait(3000).then(() => { setMessageEmpty('none') });
-        } else if (passwordField.length < 6 || passwordField.length > 10) {
-            setMessageEmpty2('flex');
-            wait(3000).then(() => { setMessageEmpty2('none') });
-        } else {
-            let json = await Api.alterPassword(value, passwordField);
-            if(!json.error)
-                setShow(false);
-            else {
-                setMessage(json.mensagem);
-                setMessageEmpty3('flex');
-                wait(3000).then(() => { setMessageEmpty3('none') });
-            }
-        }
+    const RegisterProduct = async () => {
+        // if(passwordField != passwordField2) {
+        //     setMessageEmpty('flex');
+        //     wait(3000).then(() => { setMessageEmpty('none') });
+        // } else if (passwordField.length < 6 || passwordField.length > 10) {
+        //     setMessageEmpty2('flex');
+        //     wait(3000).then(() => { setMessageEmpty2('none') });
+        // } else {
+        //     let json = await Api.registerProduct(value, passwordField);
+        //     if(!json.error)
+        //         setShow(false);
+        //     else {
+        //         setMessage(json.mensagem);
+        //         setMessageEmpty3('flex');
+        //         wait(3000).then(() => { setMessageEmpty3('none') });
+        //     }
+        // }
     };
 
     return (
@@ -70,7 +71,7 @@ export default ({setShow, idUSer})  =>  {
                             <Picker
                                 style={{ height: 50, width: 150 }}
                                 selectedValue={selectedValue}
-                                onValueChange={(value) => console.log(value)}
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                             >
                                 <Picker.Item value="mobile" label="Mobile" />
                                 <Picker.Item value="web" label="Web" />
@@ -80,7 +81,7 @@ export default ({setShow, idUSer})  =>  {
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Licença:</Text>
                             <Picker
-                                style={{ height: 50, width: 150 }}
+                                style={{ height: 50, width: 220 }}
                                 selectedValue={selectedValue}
                                 onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                             >
@@ -116,7 +117,7 @@ export default ({setShow, idUSer})  =>  {
                         </Text>
                     </View>
                     <View style={styles.confirmArea}>
-                        <TouchableOpacity style={styles.passwordButton} onPress={AlterPassword}>
+                        <TouchableOpacity style={styles.passwordButton} onPress={RegisterProduct}>
                             <Text style={styles.textPassword}>Cadastrar</Text>
                         </TouchableOpacity>
                     </View>

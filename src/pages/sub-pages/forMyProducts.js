@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl, TextInput, Picker } from 'react-native';
 import RegistrationProductModal from '../../components/RegistrationProductModal';
+import NotFound from '../../assets/nao-encontrado.svg';
 import Api from '../../Api';
 
 const wait = (timeout) => {
@@ -9,7 +10,7 @@ const wait = (timeout) => {
 
 export default function forInfo() {
     const [idUser, setIdUser] = useState(0);
-    const [RegistrationProductModal, setRegistrationProductModal] = useState(false);
+    const [registrationProductModal, setRegistrationProductModal] = useState(false);
     const [listLocate, setListLocate] = useState([]);
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
@@ -77,79 +78,25 @@ export default function forInfo() {
                     }
                 >
                     <View style={styles.container}>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Nome:</Text>
-                            <TextInput
-                                style={styles.input} 
-                                placeholder="Digite o nome aqui"
-                                placeholderTextColor="#000000"
-                                autoCapitalize='none'
-                            />
+                        <View style={[styles.messageNotFound, {display: messageEmpty}]}>
+                            <NotFound width="60" height="60" fill="#FFFFFF" />
+                            <Text style={{color: '#000000', fontWeight: 'bold', fontSize: 16, marginTop: 10}}>
+                            Você não possui produtos cadastrados!
+                            </Text>
                         </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Descrição:</Text>
-                            <TextInput
-                                style={styles.input} 
-                                placeholder="Digite a descrição aqui"
-                                placeholderTextColor="#000000"
-                                autoCapitalize='none'
-                            />
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Categoria:</Text>
-                            <Picker
-                                style={{ height: 50, width: 150 }}
-                                selectedValue={selectedValue}
-                                onValueChange={(value) => console.log(value)}
-                            >
-                                <Picker.Item value="mobile" label="Mobile" />
-                                <Picker.Item value="web" label="Web" />
-                                <Picker.Item value="hibrido" label="Híbrido" />
-                            </Picker>
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Licença:</Text>
-                            <Picker
-                                style={{ height: 50, width: 150 }}
-                                selectedValue={selectedValue}
-                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                            >
-                                <Picker.Item value="eula" label="EULA" />
-                                <Picker.Item value="sp" label="Software Proprietário" />
-                                <Picker.Item value="sl" label="Software Livre" />
-                                <Picker.Item value="sc" label="Software Comercial" />
-                                <Picker.Item value="op" label="Open Source" />
-                                <Picker.Item value="gnu" label="GNU GPL" />
-                                <Picker.Item value="sg" label="Software Gratuito" />
-                            </Picker>
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Preço:</Text>
-                            <TextInput
-                                style={styles.input} 
-                                placeholder="Digite o preço aqui"
-                                placeholderTextColor="#000000"
-                                autoCapitalize='none'
-                                keyboardType="numeric"
-                            />
-                        </View>
-                        {/* <TouchableOpacity style={styles.passwordButton} onPress={()=>{  }}>
-                            <Text style={styles.passwordText}>Alterar senha</Text>
-                        </TouchableOpacity> */}
                     </View>
-                    {/* <View style={styles.containerArea}>
-                        <View style={styles.signOutArea}>
-                            <Text style={styles.signOutText}>Cadastrar novo</Text>
-                            <TouchableOpacity style={{width: 36, height: 36}} onPress={()=>{ setRegistrationProductModal(true) }}>
-                            </TouchableOpacity>
-                        </View>
-                    </View> */}
+                    
+                    <TouchableOpacity style={styles.registrationButton} onPress={()=>{ setRegistrationProductModal(true) }}>
+                        <Text style={styles.registrationText}>Cadastrar novo</Text>
+                    </TouchableOpacity>
+                        
                 </ScrollView>
             </View>
-            {/* <RegistrationProductModal 
+            <RegistrationProductModal 
+                show={registrationProductModal}
                 setShow={setRegistrationProductModal}
                 idUser={idUser}
-            /> */}
+            />
         </ScrollView>
     );
 }
@@ -212,8 +159,8 @@ const styles = StyleSheet.create({
         height: 30,
         marginLeft: 10
     },
-    passwordButton: {
-        width: 150,
+    registrationButton: {
+        width: 180,
         height: 40,
         borderRadius: 10,
         marginTop: 20,
@@ -242,16 +189,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
     },
-    signOutText: {
-        color: '#557EF2',
+    registrationText: {
+        color: '#000000',
         fontWeight: 'bold',
         fontSize: 18,
-        marginLeft: 30
+        textAlign: 'center'
     },
     input: {
         flex: 1,
         fontSize: 16,
         color: '#000000',
         marginLeft: 5
+    },
+    messageNotFound: {
+        width: 300,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
