@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
-const BASE_API = 'https://project-e-api.herokuapp.com';
+const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
+// const BASE_API = 'https://project-e-api.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
@@ -16,27 +16,41 @@ export default {
         const json = await req.json();
         return json;
     },
-    signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
-        const req = await fetch(`${BASE_API}/auth/login`, {
+    signIn: async (email, password) => {
+        alert(JSON.stringify({email, password}));
+        const req = await fetch(`${BASE_API}/session/create`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({USR_LOGINNAME, USR_PASSWORD})
+            body: JSON.stringify({email, password})
         });
         const json = await req.json();
 
         return json;
     },
-    signUp: async (USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD) => {
-        const req = await fetch(`${BASE_API}/auth/register`, {
+    // signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
+    //     const req = await fetch(`${BASE_API}/auth/login`, {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({USR_LOGINNAME, USR_PASSWORD})
+    //     });
+    //     const json = await req.json();
+
+    //     return json;
+    // },
+    signUp: async (name, last_name, cpf, email, passoword, birth_date, phone) => {
+        const req = await fetch(`${BASE_API}/user/create`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD})
+            body: JSON.stringify({name, last_name, cpf, email, passoword, birth_date, phone})
         });
         const json = await req.json();
         return json;

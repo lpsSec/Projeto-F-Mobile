@@ -23,7 +23,9 @@ export default function SignIn() {
         // navigation.reset({routes: [{name: 'Home'}]});
         // return;
         if(emailField != '' && passwordField != '') {
-            let json = await Api.signIn(emailField, passwordField); 
+            let json = await Api.signIn(emailField, passwordField);
+            // alert("Token: " + json.token);
+            alert('tokeeeen');
             if(json.token) {
                 await AsyncStorage.setItem('token', json.token);
                 await AsyncStorage.setItem('user', json.data.USR_ID.toString());

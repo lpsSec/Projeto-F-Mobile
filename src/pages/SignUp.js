@@ -162,7 +162,11 @@ export default function SignUp() {
         if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfField != '') {
             let result = fieldValidate();
             if(result.success) {
-                let json = await Api.signUp(nameField, ageField, telField, cpfField,  emailField, passwordField);
+                const name = nameField.split(' ').slice(0,1).join(' ');
+                const last = nameField.split(' ').slice(-1).join(' ');
+                alert("name: " + name);
+                alert("last: " + last);
+                let json = await Api.signUp(name, last, cpfField, emailField, passwordField, ageField, telField);
                 if(json.token) {
                     let signIn = await Api.signIn(emailField, passwordField); 
                     if(signIn.token)  {
@@ -178,7 +182,7 @@ export default function SignUp() {
                     alert("Erro: " + json.mensagem);
                 }
             } else {
-                setValidateEmpty('flex'); 
+                setValidateEmpty('flex');
                 wait(3000).then(setMessage);
             }
         } else {
