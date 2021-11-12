@@ -81,13 +81,12 @@ export default {
         return json;
     },
     getProducts: async () => {
-        // const token = await AsyncStorage.getItem('token');
+        const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/product/`, {
-            // headers: {
-            //     "Authorization": 'Baerer ' + token
-            // }
+            headers: {
+                "Authorization": 'Baerer ' + token
+            }
         });
-        alert(req.text());
         const json = await req.json();
         return json;
     },

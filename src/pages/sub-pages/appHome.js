@@ -43,18 +43,19 @@ export default function appHome() {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         Api.getProducts().then((response) => {
-            alert(response.data);
             if(response.data[0] != null) {
+                alert("PRODUCTS NÃO É NULL");
                 setList(response.data);
                 setTextEmpty('none');
                 setMessageEmpty('none');
             }
             else {
+                alert("PRODUCTS É NULL");
                 setList([]);
                 setMessageEmpty('flex');
             }
         }).catch((err) => {
-            console.log(err);
+            console.log("Erro onRefresh: " + err);
             // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
@@ -117,7 +118,7 @@ export default function appHome() {
             }
         }).catch((err) => {
             console.log(err);
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro inesperado, contate o adminstrador');
         });
         // Api.getBooks().then((response) => {
         //     if(isFlag){
