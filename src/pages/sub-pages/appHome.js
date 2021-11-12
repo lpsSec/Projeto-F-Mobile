@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
-import BookItem from '../../components/BookItem';
+import Produto from '../../components/ProductItem';
 import FabButton from '../../components/FabButton';
 import Search from '../../assets/search.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
@@ -22,9 +22,28 @@ export default function appHome() {
     const [textEmpty, setTextEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
 
+    // const onRefresh = React.useCallback(() => {
+    //     setRefreshing(true);
+    //     Api.getBooks().then((response) => {
+    //         if(response.data[0] != null) {
+    //             setList(response.data);
+    //             setTextEmpty('none');
+    //             setMessageEmpty('none');
+    //         }
+    //         else {
+    //             setList([]);
+    //             setMessageEmpty('flex');
+    //         }
+    //     }).catch((error) => {
+    //         // alert('Erro inesperado, contate o adminstrador');
+    //     });
+    //     wait(2000).then(() => setRefreshing(false));
+    // }, []);
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getBooks().then((response) => {
+        Api.getProducts().then((response) => {
+            alert(response.data);
             if(response.data[0] != null) {
                 setList(response.data);
                 setTextEmpty('none');
@@ -83,7 +102,7 @@ export default function appHome() {
                 // alert('Erro inesperado, contate o adminstrador');
             });
         });
-        Api.getBooks().then((response) => {
+        Api.getProducts().then((response) => {
             if(isFlag){
                 if(response.data[0] != null) {
                     setList(response.data);
@@ -98,6 +117,21 @@ export default function appHome() {
         }).catch((error) => {
             // alert('Erro inesperado, contate o adminstrador');
         });
+        // Api.getBooks().then((response) => {
+        //     if(isFlag){
+        //         if(response.data[0] != null) {
+        //             setList(response.data);
+        //             setTextEmpty('none');
+        //             setMessageEmpty('none');
+        //         }
+        //         else {
+        //             setList([]);
+        //             setMessageEmpty('flex');
+        //         }
+        //     }
+        // }).catch((error) => {
+        //     // alert('Erro inesperado, contate o adminstrador');
+        // });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
 
@@ -135,7 +169,7 @@ export default function appHome() {
                     }
                     <View style={styles.listArea}>
                         {list.map((item, k) => (
-                            <BookItem key={k} data={item} />
+                            <Produto key={k} data={item} />
                         ))}
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>

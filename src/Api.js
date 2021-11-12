@@ -27,6 +27,7 @@ export default {
             body: JSON.stringify({email, password})
         });
         const json = await req.json();
+        alert(json);
 
         return json;
     },
@@ -52,7 +53,7 @@ export default {
             },
             body: JSON.stringify({name, last_name, cpf, email, passoword, birth_date, phone})
         });
-        const json = await req.json();
+        const json = await req.text();
         return json;
     },
     signOut: async () => {
@@ -79,6 +80,17 @@ export default {
             },
             body: JSON.stringify({USR_EMAIL})
         });
+        const json = await req.json();
+        return json;
+    },
+    getProducts: async () => {
+        // const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/product/`, {
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
+        });
+        alert(req.text());
         const json = await req.json();
         return json;
     },

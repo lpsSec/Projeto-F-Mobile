@@ -5,7 +5,7 @@ import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
 export default ({data}) => {
     const navigation = useNavigation();
 
-    const handleLocateBook = async () => {
+    const handleProduct = async () => {
         navigation.navigate('LocateBook', {
             BOOK_ID: data.BOOK_ID,
             BOOK_NAME: data.BOOK_NAME,
@@ -18,12 +18,12 @@ export default ({data}) => {
     };
 
     return (
-        <TouchableOpacity style={styles.bookItem} onPress={handleLocateBook}>
-            <Image style={styles.bookPhoto} source={{ uri: data.IMG_PATH == null ? 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' : data.IMG_PATH }} />
+        <TouchableOpacity style={styles.bookItem} onPress={handleProduct}>
+            <Image style={styles.bookPhoto} source={{ uri: data.IMG_PATH == null ? 'https://png1.12png.com/14/7/21/8ZV1p6UP7y/icon-design-android-electric-blue-azure.jpg' : data.IMG_PATH }} />
             <View style={styles.bookInfo}>
-                <Text style={styles.title}>Título: {data.BOOK_NAME}</Text>
-                <Text style={styles.title}>Status: {data.BOOK_STATUS == 'd' ? 'Disponível' : 'Indisponível'}</Text>
-                <Text style={styles.title}>Genêro: {data.GEN_NOME}</Text>
+                <Text style={styles.title}>Título: {data.name}</Text>
+                <Text style={styles.title}>Preço: {data.price}</Text>
+                <Text style={styles.title}>Vendor: {data.advertiser}</Text>
             </View>
         </TouchableOpacity>
     );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
-import BookItem from '../../components/BookItem';
+import ProductItem from '../../components/ProductItem';
 import FabButton from '../../components/FabButton';
 import Search from '../../assets/search.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
@@ -134,7 +134,7 @@ export default function appPerfil() {
                     }
                     <View style={styles.listArea}>
                         {list.map((item, k) => (
-                            <BookItem key={k} data={item} />
+                            <ProductItem key={k} data={item} />
                         ))}
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>
