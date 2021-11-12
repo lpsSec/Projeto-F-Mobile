@@ -53,7 +53,8 @@ export default function appHome() {
                 setList([]);
                 setMessageEmpty('flex');
             }
-        }).catch((error) => {
+        }).catch((err) => {
+            console.log(err);
             // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
@@ -114,7 +115,8 @@ export default function appHome() {
                     setMessageEmpty('flex');
                 }
             }
-        }).catch((error) => {
+        }).catch((err) => {
+            console.log(err);
             // alert('Erro inesperado, contate o adminstrador');
         });
         // Api.getBooks().then((response) => {

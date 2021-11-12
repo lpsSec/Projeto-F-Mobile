@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
-// const BASE_API = 'https://project-e-api.herokuapp.com';
+// const BASE_API = 'http://localhost:3000';
+const BASE_API = 'https://projeto-integrado-f.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
@@ -17,18 +17,15 @@ export default {
         return json;
     },
     signIn: async (email, password) => {
-        alert(JSON.stringify({email, password}));
         const req = await fetch(`${BASE_API}/session/create`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({email, password})
         });
+        
         const json = await req.json();
-        alert(json);
-
         return json;
     },
     // signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
@@ -48,12 +45,12 @@ export default {
         const req = await fetch(`${BASE_API}/user/create`, {
             method: 'POST',
             headers: {
-                Accept: 'application/json',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({name, last_name, cpf, email, passoword, birth_date, phone})
         });
-        const json = await req.text();
+        const json = await req.json();
         return json;
     },
     signOut: async () => {

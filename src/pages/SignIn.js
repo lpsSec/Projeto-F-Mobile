@@ -21,7 +21,6 @@ export default function SignIn() {
         
         // DEBUG: redirect to HOME screen
         navigation.reset({routes: [{name: 'Home'}]});
-        return;
         if(emailField != '' && passwordField != '') {
             let json = await Api.signIn(emailField, passwordField);
             alert("Token: " + json);
