@@ -83,6 +83,7 @@ export default function appHome(){
     };
 
     const handleSearch = async () => {
+        //TODO: faze busca por nome - ainda não tem para titulo do produto.
         setLoading(true);
         setList([]);
         if(searchFiled != ''){

@@ -25,9 +25,6 @@ export default ({data}) => {
             advertiser: data.advertiser,
             licenseType: data.licenseType,
             rating: data.rating
-            // BOOK_AUTHOR: data.BOOK_AUTHOR,
-            // BOOK_GEN: data.GEN_NOME,
-            // IMG_PATH: data.IMG_PATH
         });
     };
 

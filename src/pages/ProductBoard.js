@@ -6,7 +6,6 @@ import Api from '../Api';
 import Back from '../assets/back.svg';
 import FavoriteClean from '../assets/favorito-vazio.svg';
 import Favorite from '../assets/favorito.svg';
-import LocateModal from '../components/LocateModal';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,7 +15,6 @@ export default function ProductBoard() {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const [locateModal, setLocateModal] = useState(false);
     const [verify, setVerify] = useState(true);
     const [indie, setIndie] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -104,7 +102,7 @@ export default function ProductBoard() {
             </ImageBackground>
             <View style={styles.pageBody}>
                 <View style={styles.infoProcut}>
-                    <Text style={styles.titleBook}>{productInfo.name}</Text>
+                    <Text style={styles.titleProduct}>{productInfo.name}</Text>
                     <View style={styles.infoBody}>
                         <Text style={styles.typeTitle}>Título:</Text>
                         <Text style={styles.title}>{productInfo.name}</Text>
@@ -130,7 +128,7 @@ export default function ProductBoard() {
                     Livro removido dos favoritos!
                     </Text>
                 </View>
-                <View style={styles.locateBook}>
+                <View style={styles.viewCarrinho}>
                     {verify ?
                         <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
                             <FavoriteClean width="36" height="36" fill="#000000"/>
@@ -140,23 +138,11 @@ export default function ProductBoard() {
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
-                    {indie ?
-                        <TouchableOpacity style={styles.locateButton} onPress={() => { setLocateModal(true) }}>
+                        <TouchableOpacity style={styles.locateButton} onPress={() => {  }}>
                             <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
-                        </TouchableOpacity>
-                        :
-                        <TouchableOpacity style={styles.locateButton} disabled={true}>
-                            <Text style={styles.textLocate}>Indisponível</Text>
-                        </TouchableOpacity>
-                    }              
+                        </TouchableOpacity>             
                 </View>
             </View>
-            {/* <LocateModal 
-                show={locateModal}
-                setShow={setLocateModal}
-                value={bookInfo.BOOK_ID}
-                but={setIndie}
-            /> */}
         </View>
     );
 }
@@ -218,7 +204,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 17
     },
-    titleBook: {
+    titleProduct: {
         fontWeight: 'bold',
         fontSize: 24
     },
@@ -230,7 +216,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 17
     },
-    locateBook: {
+    viewCarrinho: {
         width: 380,
         height: 80,
         marginBottom: 20,
