@@ -20,7 +20,7 @@ export default function SignIn() {
     const handleSignClick = async () => {
         
         // DEBUG: redirect to HOME screen
-        // navigation.reset({routes: [{name: 'Home'}]});
+        navigation.reset({routes: [{name: 'Home'}]});
         // return;
         if(emailField != '' && passwordField != '') {
             let json = await Api.signIn(emailField, passwordField);

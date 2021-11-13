@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import React, { useState, useEffect, FlatList} from 'react';
+import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl, EdgeInsetsPropType } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
 import Produto from '../../components/ProductItem';
@@ -11,7 +11,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function appHome() {
+export default function appHome(){
     const navigation = useNavigation();
 
     const [list, setList] = useState([]);
@@ -21,6 +21,8 @@ export default function appHome() {
     const [searchEmpty, setSearchEmpty] = useState('none');
     const [textEmpty, setTextEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
+    
+
 
     // const onRefresh = React.useCallback(() => {
     //     setRefreshing(true);
@@ -43,9 +45,23 @@ export default function appHome() {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         Api.getProducts().then((response) => {
-            if(response.data[0] != null) {
-                alert("PRODUCTS NÃO É NULL");
-                setList(response.data);
+            if(response[0] != null) {                
+                let size =  Object.keys(response).length;
+                // alert("Size: " + size);
+                // setList(response[0]);
+                // alert("Size: " + Object.keys(response).length);
+                // for(var i = 0; i < size; i++)
+                // {
+                //     alert("I: " + i);
+                //     setList(response[i]);
+                // }
+                // list.forEach( (item) => {setList(item)})
+                // setList(response[0]);
+                // mainList.push(response[0]);
+                // mainList.push(response[1]);
+                setList(response[0]);
+                setList(response[1]);
+                alert("ADICIONADO NA LISTA.");
                 setTextEmpty('none');
                 setMessageEmpty('none');
             }
@@ -90,51 +106,49 @@ export default function appHome() {
         let isFlag = true;
         setList([]);
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getBooks().then((response) => {
-                if(response.data[0] != null) {
-                    setList(response.data);
+            // Api.getBooks().then((response) => {
+            //     if(response.data[0] != null) {
+            //         setList(response.data);
+            //         setTextEmpty('none');
+            //         setMessageEmpty('none');
+            //     }
+            //     else {
+            //         setList([]);
+            //         setMessageEmpty('flex');
+            //     }
+            // }).catch((error) => {
+            //     // alert('Erro inesperado, contate o adminstrador');
+            // });
+            Api.getProducts().then((response) => {
+                if(isFlag){
+                if(response[0] != null) {                
+                    let size =  Object.keys(response).length;
+                    // alert("Size: " + size);
+                    // setList(response[0]);
+                    // alert("Size: " + Object.keys(response).length);
+                    // for(var i = 0; i < size; i++)
+                    // {
+                        // Object.keys(response[i]).map((key, index) => {
+                        // });
+                        // setList(response[i]);
+                    // }
+                    setList(response[0]);
+                    setList(response[1]);
+                    alert("ADICIONADO NA LISTA.");
                     setTextEmpty('none');
                     setMessageEmpty('none');
                 }
                 else {
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
-            }).catch((error) => {
-                // alert('Erro inesperado, contate o adminstrador');
-            });
-        });
-        Api.getProducts().then((response) => {
-            if(isFlag){
-                if(response.data[0] != null) {
-                    setList(response.data);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
-                }
-                else {
+                    alert("PRODUCTS É NULL");
                     setList([]);
                     setMessageEmpty('flex');
                 }
             }
-        }).catch((err) => {
-            console.log(err);
-            alert('Erro inesperado, contate o adminstrador');
+            }).catch((err) => {
+                console.log("Erro onRefresh: " + err);
+                // alert('Erro inesperado, contate o adminstrador');
+            });
         });
-        // Api.getBooks().then((response) => {
-        //     if(isFlag){
-        //         if(response.data[0] != null) {
-        //             setList(response.data);
-        //             setTextEmpty('none');
-        //             setMessageEmpty('none');
-        //         }
-        //         else {
-        //             setList([]);
-        //             setMessageEmpty('flex');
-        //         }
-        //     }
-        // }).catch((error) => {
-        //     // alert('Erro inesperado, contate o adminstrador');
-        // });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
 
@@ -171,9 +185,23 @@ export default function appHome() {
                         <ActivityIndicator size="large" color="#000000"/>
                     }
                     <View style={styles.listArea}>
-                        {list.map((item, k) => (
+                        {/* {list.map((item, k) => (
                             <Produto key={k} data={item} />
-                        ))}
+                        ))} */}
+                        {/* {
+                            Object.entries(list).map( ([item, k]) =>{
+                                <Produto key={k} data={item} />
+                            } )
+                        } */}
+                        {/* {
+                            Object.keys(list)?.map( ([item, k]) =>{
+                                <Produto key={k} data={item} />
+                            } )
+                        } */}
+                        {/* <Produto key={""} data={mainList} /> */}
+                        {
+                            <Produto key={""} data={list} />
+                        }
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>
                         <NotFound width="60" height="60" fill="#FFFFFF" />

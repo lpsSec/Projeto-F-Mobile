@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // const BASE_API = 'http://localhost:3000';
 const BASE_API = 'https://projeto-integrado-f.herokuapp.com';
+// const BASE_API = 'https://project-e-api.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
@@ -83,11 +84,14 @@ export default {
     getProducts: async () => {
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/product/`, {
-            headers: {
-                "Authorization": 'Baerer ' + token
-            }
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
         });
+        // const json = await req.text();
         const json = await req.json();
+        const stringa = json[0].name;
+        // alert('REQ: '+stringa);
         return json;
     },
     getBooks: async () => {
