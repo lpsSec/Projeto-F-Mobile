@@ -20,7 +20,7 @@ export default function SignUp() {
     const navigation = useNavigation();
 
     const [nameField, setNameField] = useState('');
-    const [userFild, setUserFiled] = useState('');
+    // const [userFild, setUserFiled] = useState('');
     const [emailField, setEmailField] = useState('');
     const [passwordField, setpasswordField] = useState('');
     const [telField, setTelField] = useState('');
@@ -164,7 +164,7 @@ export default function SignUp() {
             if(result.success) {
                 const name = nameField.split(' ').slice(0,1).join(' ');
                 const last = nameField.split(' ').slice(-1).join(' ');
-                let json = await Api.signUp(name, last, cpfField, emailField, passwordField, telField, ageField);
+                let json = await Api.signUp(name.toString(), last.toString(), cpfField.toString(), emailField.toString(), passwordField.toString(), telField.toString(), ageField.toString());
                 alert("SIGN");
                 if(json.token) {
                     alert("Token signUp: " + json.token);
@@ -217,7 +217,7 @@ export default function SignUp() {
                             onChangeText={t=>setNameField(t)}
                         />
                     </View>
-                    <View style={styles.inputArea}>
+                    {/* <View style={styles.inputArea}>
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
@@ -226,7 +226,7 @@ export default function SignUp() {
                             value={userFild}
                             onChangeText={t=>setUserFiled(t)}
                         />
-                    </View>
+                    </View> */}
                     <View style={styles.inputArea}>
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 

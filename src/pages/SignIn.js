@@ -20,13 +20,14 @@ export default function SignIn() {
     const handleSignClick = async () => {
         
         // DEBUG: redirect to HOME screen
+        // await AsyncStorage.setItem('cpf', '19233311134');
         // navigation.reset({routes: [{name: 'Home'}]});
         // return;
         if(emailField != '' && passwordField != '') {
             let json = await Api.signIn(emailField, passwordField);
-            alert("Token signIn: " + json.token);
             if(json.token) {
                 await AsyncStorage.setItem('token', json.token);
+                await AsyncStorage.setItem('cpf', json.cpf);
 
                 navigation.reset({
                     routes: [{name: 'Home'}]

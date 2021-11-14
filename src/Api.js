@@ -27,6 +27,7 @@ export default {
         });
         
         const json = await req.json();
+        // alert("SignIn return: " + json);
         return json;
     },
     // signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
@@ -43,17 +44,15 @@ export default {
     //     return json;
     // },
     signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
-        alert(JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date}));
         const req = await fetch(`${BASE_API}/user/create`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                Accept : 'application/json',
-                'Content-Type': 'application/json'
+                "Accept" : "application/json",
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date})
         });
         const json = await req.json();
-        alert("Req: " + json);
         return json;
     },
     signOut: async () => {
@@ -79,6 +78,17 @@ export default {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({USR_EMAIL})
+        });
+        const json = await req.json();
+        return json;
+    },
+    getUserByCPF: async () => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/get/` + cpf, {
+            headers: {
+                // "Authorization": 'Baerer ' + token
+            }
         });
         const json = await req.json();
         return json;
