@@ -122,10 +122,10 @@ export default function ProductBoard() {
                 </View>
                 <View style={styles.warningFavorite}>
                     <Text style={{display: addFavorite, color: '#FF0000'}}>
-                    Livro adicionado aos favoritos!
+                    Produto adicionado aos favoritos!
                     </Text>
                     <Text style={{display: removeFavorite, color: '#FF0000', }}>
-                    Livro removido dos favoritos!
+                    Produto removido dos favoritos!
                     </Text>
                 </View>
                 <View style={styles.viewCarrinho}>

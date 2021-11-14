@@ -42,16 +42,18 @@ export default {
 
     //     return json;
     // },
-    signUp: async (name, last_name, cpf, email, passoword, birth_date, phone) => {
+    signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
+        alert(JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date}));
         const req = await fetch(`${BASE_API}/user/create`, {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
+                Accept : 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({name, last_name, cpf, email, passoword, birth_date, phone})
+            body: JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date})
         });
         const json = await req.json();
+        alert("Req: " + json);
         return json;
     },
     signOut: async () => {
