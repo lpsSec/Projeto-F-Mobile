@@ -163,7 +163,7 @@ export default function SignUp() {
             let result = fieldValidate();
             if(result.success) {
                 const name = nameField.split(' ').slice(0,1).join(' ');
-                const last = nameField.split(' ').slice(-1).join(' ');
+                const last = nameField.split(' ').slice(1,10).join(' ');
                 let json = await Api.signUp(name.toString(), last.toString(), cpfField.toString(), emailField.toString(), passwordField.toString(), telField.toString(), ageField.toString());
                 alert("SIGN");
                 if(json.token) {

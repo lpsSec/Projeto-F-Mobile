@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FlatList} from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl, EdgeInsetsPropType } from 'react-native';
+import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
 import Produto from '../../components/ProductItem';
@@ -21,47 +21,12 @@ export default function appHome(){
     const [searchEmpty, setSearchEmpty] = useState('none');
     const [textEmpty, setTextEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
-    
-
-
-    // const onRefresh = React.useCallback(() => {
-    //     setRefreshing(true);
-    //     Api.getBooks().then((response) => {
-    //         if(response.data[0] != null) {
-    //             setList(response.data);
-    //             setTextEmpty('none');
-    //             setMessageEmpty('none');
-    //         }
-    //         else {
-    //             setList([]);
-    //             setMessageEmpty('flex');
-    //         }
-    //     }).catch((error) => {
-    //         // alert('Erro inesperado, contate o adminstrador');
-    //     });
-    //     wait(2000).then(() => setRefreshing(false));
-    // }, []);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         Api.getProducts().then((response) => {
             if(response[0] != null) {                
-                let size =  Object.keys(response).length;
-                // alert("Size: " + size);
-                // setList(response[0]);
-                // alert("Size: " + Object.keys(response).length);
-                // for(var i = 0; i < size; i++)
-                // {
-                //     alert("I: " + i);
-                //     setList(response[i]);
-                // }
-                // list.forEach( (item) => {setList(item)})
-                // setList(response[0]);
-                // mainList.push(response[0]);
-                // mainList.push(response[1]);
-                setList(response[0]);
-                setList(response[1]);
-                alert("ADICIONADO NA LISTA.");
+                setList(response);
                 setTextEmpty('none');
                 setMessageEmpty('none');
             }
@@ -107,35 +72,10 @@ export default function appHome(){
         let isFlag = true;
         setList([]);
         const unsubscribe = navigation.addListener('focus', () => {
-            // Api.getBooks().then((response) => {
-            //     if(response.data[0] != null) {
-            //         setList(response.data);
-            //         setTextEmpty('none');
-            //         setMessageEmpty('none');
-            //     }
-            //     else {
-            //         setList([]);
-            //         setMessageEmpty('flex');
-            //     }
-            // }).catch((error) => {
-            //     // alert('Erro inesperado, contate o adminstrador');
-            // });
             Api.getProducts().then((response) => {
                 if(isFlag){
-                if(response[0] != null) {                
-                    let size =  Object.keys(response).length;
-                    // alert("Size: " + size);
-                    // setList(response[0]);
-                    // alert("Size: " + Object.keys(response).length);
-                    // for(var i = 0; i < size; i++)
-                    // {
-                        // Object.keys(response[i]).map((key, index) => {
-                        // });
-                        // setList(response[i]);
-                    // }
-                    setList(response[0]);
-                    setList(response[1]);
-                    alert("ADICIONADO NA LISTA.");
+                if(response[0] != null) {
+                    setList(response);
                     setTextEmpty('none');
                     setMessageEmpty('none');
                 }
@@ -186,22 +126,10 @@ export default function appHome(){
                         <ActivityIndicator size="large" color="#000000"/>
                     }
                     <View style={styles.listArea}>
-                        {/* {list.map((item, k) => (
-                            <Produto key={k} data={item} />
-                        ))} */}
-                        {/* {
-                            Object.entries(list).map( ([item, k]) =>{
-                                <Produto key={k} data={item} />
-                            } )
-                        } */}
-                        {/* {
-                            Object.keys(list)?.map( ([item, k]) =>{
-                                <Produto key={k} data={item} />
-                            } )
-                        } */}
-                        {/* <Produto key={""} data={mainList} /> */}
                         {
-                            <Produto key={""} data={list} />
+                            list.map((item, k) => (
+                                <Produto key={k} data={item} />
+                            ))
                         }
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>

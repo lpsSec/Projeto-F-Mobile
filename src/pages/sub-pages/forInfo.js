@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         height: 400,
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginTop: 10
+        // marginTop: 40
     },
     infoPhoto: {
         width: 380,
@@ -166,12 +166,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         marginLeft: 5
-    },
-    adminButton: {
-        width: 200,
-        marginLeft: 20,
-        alignItems: 'flex-end',
-        justifyContent: 'center'
     },
     infoBody: {
         width: 350,
@@ -195,7 +189,7 @@ const styles = StyleSheet.create({
     },
     passwordButton: {
         width: 150,
-        height: 40,
+        height: 25,
         borderRadius: 10,
         marginTop: 20,
         justifyContent: 'center',
