@@ -88,9 +88,9 @@ export default function SignIn() {
                         secureTextEntry={true}
                     />
                 </View>
-                {/* <TouchableOpacity onPress={navigation.navigate('LostPassword')}> */}
+                {/* <TouchableOpacity onPress={navigation.navigate('LostPassword')}>
                     <Text style={styles.subtitle}>Esqueceu sua senha?</Text>
-                {/* </TouchableOpacity> */}
+                </TouchableOpacity> */}
                 <View style={styles.wrongPassword}>
                     <Text style={{display: messagePassword, color: '#FF0000'}}>
                     Sua senha/email está incorreta. Por favor tente novamente.

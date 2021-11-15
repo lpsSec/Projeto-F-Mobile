@@ -62,18 +62,5 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20
-    },
-    newBook: {
-        height: 20,
-        width: 145,
-        backgroundColor: '#F00A62',
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    newBookText: {
-        fontSize: 13,
-        color: '#FFFFFF',
-        fontWeight: 'bold'
     }
 });

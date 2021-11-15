@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FlatList} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
@@ -51,20 +51,20 @@ export default function appHome(){
         //TODO: faze busca por nome - ainda não tem para titulo do produto.
         setLoading(true);
         setList([]);
-        if(searchFiled != ''){
-            let res = await Api.getBookByName(searchFiled, '');
-            if(res.data[0] != null) {
-                setList(res.data);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        } else {
-            setSearchEmpty('flex');
-        }
+        // if(searchFiled != ''){
+        //     let res = await Api.getBookByName(searchFiled, '');
+        //     if(res.data[0] != null) {
+        //         setList(res.data);
+        //         setTextEmpty('none');
+        //         setMessageEmpty('none');
+        //     }
+        //     else {
+        //         setList([]);
+        //         setMessageEmpty('flex');
+        //     }
+        // } else {
+        //     setSearchEmpty('flex');
+        // }
         setLoading(false);
     };
 

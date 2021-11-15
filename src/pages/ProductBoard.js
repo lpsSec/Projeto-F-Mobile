@@ -23,15 +23,6 @@ export default function ProductBoard() {
     const [disabledBack, setDisabledBack] = useState(false);
     const [disabledLocate, setDisabledLocate] = useState(false);
 
-    // const [bookInfo, setBookInfo] = useState({
-    //     BOOK_ID: route.params.BOOK_ID,
-    //     BOOK_NAME: route.params.BOOK_NAME,
-    //     BOOK_DESC: route.params.BOOK_DESC,
-    //     BOOK_STATUS: route.params.BOOK_STATUS,
-    //     BOOK_AUTHOR: route.params.BOOK_AUTHOR,
-    //     BOOK_GEN: route.params.BOOK_GEN,
-    //     IMG_PATH: route.params.IMG_PATH
-    // });
     const [productInfo, setProductInfo] = useState({
         _id: route.params._id,
         name: route.params.name,
@@ -53,7 +44,7 @@ export default function ProductBoard() {
     const setFavorite = async () => {
         setLoading(true);
         // if(verify) {
-        //     let json = await Api.addFavorite(bookInfo.BOOK_ID);
+        //     let json = await Api.addFavorite();
         //     if(!json.error) {
         //         setVerify(false);
         //         setAddFavorite('flex');
@@ -62,7 +53,7 @@ export default function ProductBoard() {
         //         setDisabledLocate(true);
         //     }
         // } else {
-        //     let json = await Api.removeFavorite(bookInfo.BOOK_ID);
+        //     let json = await Api.removeFavorite();
         //     if(!json.error) {
         //         setVerify(true);
         //         setRemoveFavorite('flex');
@@ -76,7 +67,7 @@ export default function ProductBoard() {
 
     // useEffect(() => {
     //     let isFlag = true;
-    //     Api.verifyFavorite(bookInfo.BOOK_ID).then((response) => {
+    //     Api.verifyFavorite().then((response) => {
     //         if(isFlag){
     //             if(response.data != 0 ) {
     //                 setVerify(false);

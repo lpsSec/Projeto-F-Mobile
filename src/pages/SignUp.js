@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native';
@@ -171,7 +171,6 @@ export default function SignUp() {
                     let signIn = await Api.signIn(emailField, passwordField); 
                     if(signIn.token)  {
                         await AsyncStorage.setItem('token', signIn.token);
-                        await AsyncStorage.setItem('user', signIn.data.USR_ID.toString());
 
                         navigation.reset({
                             routes: [{name: 'Home'}]
