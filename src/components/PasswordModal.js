@@ -8,7 +8,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow, value})  =>  {
+export default ({show, setShow})  =>  {
     const [passwordField, setPasswordField] = useState('');
     const [passwordField2, setPasswordField2] = useState('');
     const [message, setMessage] = useState('');
@@ -20,11 +20,11 @@ export default ({show, setShow, value})  =>  {
         if(passwordField != passwordField2) {
             setMessageEmpty('flex');
             wait(3000).then(() => { setMessageEmpty('none') });
-        } else if (passwordField.length < 6 || passwordField.length > 10) {
+        } else if (passwordField.length < 7 || passwordField.length > 12) {
             setMessageEmpty2('flex');
             wait(3000).then(() => { setMessageEmpty2('none') });
         } else {
-            let json = await Api.alterPassword(value, passwordField);
+            let json = await Api.alterPassword( passwordField );
             if(!json.error)
                 setShow(false);
             else {
@@ -77,7 +77,7 @@ export default ({show, setShow, value})  =>  {
                             As senhas são diferentes! Tente novamente
                         </Text>
                         <Text style={{ display: messageEmpty2, color: '#FF0000', fontSize: 15 }}>
-                            A senha deve ter entre 6 e 10 caracteres!
+                            A senha deve ter entre 7 e 12 caracteres!
                         </Text>
                         <Text style={{ display: messageEmpty3, color: '#FF0000', fontSize: 15 }}>
                             {message}

@@ -30,19 +30,6 @@ export default {
         // alert("SignIn return: " + json);
         return json;
     },
-    // signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
-    //     const req = await fetch(`${BASE_API}/auth/login`, {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({USR_LOGINNAME, USR_PASSWORD})
-    //     });
-    //     const json = await req.json();
-
-    //     return json;
-    // },
     signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
         const req = await fetch(`${BASE_API}/user/create`, {
             method: "POST",
@@ -70,14 +57,30 @@ export default {
 
         return json;
     },
-    LostPassword: async (USR_EMAIL) => {
-        const req = await fetch(`${BASE_API}/user/lostpassword`, {
+    alterPassword: async (new_password) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/edit/password/` + cpf, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({new_password})
+        });
+        const json = await req.json();
+        return json;
+    },
+    lostPassword: async (email) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/recover/password/` + cpf, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({USR_EMAIL})
+            body: JSON.stringify({email})
         });
         const json = await req.json();
         return json;
@@ -250,20 +253,6 @@ export default {
             headers: {
                 "Authorization": 'Baerer ' + token
             }
-        });
-        const json = await req.json();
-        return json;
-    },
-    alterPassword: async (USR_ID, USR_PASSWORD) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/auth/update/`, {
-            method: 'PATCH',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({USR_ID, USR_PASSWORD})
         });
         const json = await req.json();
         return json;

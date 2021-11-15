@@ -122,12 +122,11 @@ export default function forInfo() {
                     </View>
                 </ScrollView>
             </View>
-            {/* <PasswordModal 
+            <PasswordModal 
                 show={passwordModal}
                 setShow={setpasswordModal}
-                value={idUser}
             />
-            <DataModal 
+            {/* <DataModal 
                 show={dataModal}
                 setShow={setDataModal}
                 value={idUser}
