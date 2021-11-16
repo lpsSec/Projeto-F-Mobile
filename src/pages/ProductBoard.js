@@ -89,7 +89,7 @@ export default function ProductBoard() {
             >
                <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }} disabled={disabledBack}>
                     <Back width="36" height="36" fill="#FFFFFF"/>
-                </TouchableOpacity>
+               </TouchableOpacity>
             </ImageBackground>
             <View style={styles.pageBody}>
                 <View style={styles.infoProcut}>
@@ -129,9 +129,10 @@ export default function ProductBoard() {
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
+                    {/* TODO: move to cart page*/}
                         <TouchableOpacity style={styles.locateButton} onPress={() => {  }}>
                             <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
-                        </TouchableOpacity>             
+                        </TouchableOpacity>
                 </View>
             </View>
         </View>

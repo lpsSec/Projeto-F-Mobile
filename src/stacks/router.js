@@ -6,7 +6,6 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
-import Read from '../pages/Read';
 import ProductBoard from '../pages/ProductBoard';
 import LostPassword from '../pages/LostPassword';
 
@@ -26,7 +25,6 @@ function Routes(){
             {/* <Stack.Screen name="LostPassword" component={LostPassword} /> */}
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="Read" component={Read} />
             <Stack.Screen name="ProductBoard" component={ProductBoard} />
         </Stack.Navigator>
     );

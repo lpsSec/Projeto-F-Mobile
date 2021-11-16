@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, KeyboardAvoidingView, Animated } from 'react-native';
@@ -18,7 +18,7 @@ export default function SignIn() {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 150 }));
 
     const handleSignClick = async () => {
-        
+
         // DEBUG: redirect to HOME screen
         // await AsyncStorage.setItem('cpf', '19233311134');
         // navigation.reset({routes: [{name: 'Home'}]});
