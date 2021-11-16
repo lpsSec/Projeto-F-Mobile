@@ -12,9 +12,9 @@ export default ({ state, navigation }) => {
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('appHome')}>
                     <Text style={[styles.textPage, {opacity: state.index===0 ? 1 : 0.5}]}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('appPerfil')}>
+                {/* <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('appPerfil')}>
                     <Text style={[styles.textPage, {opacity: state.index===1 ? 1 : 0.5}]}>Perfil</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('appCarrinho')}>
                     <Text style={[styles.textPage, {opacity: state.index===2 ? 1 : 0.5}]}>Carrinho</Text>
                 </TouchableOpacity>

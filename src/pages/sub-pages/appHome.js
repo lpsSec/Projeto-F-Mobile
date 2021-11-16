@@ -52,7 +52,7 @@ export default function appHome(){
         setLoading(true);
         setList([]);
         // if(searchFiled != ''){
-        //     let res = await Api.getBookByName(searchFiled, '');
+        //     let res = await Api.getProductByName(searchFiled, '');
         //     if(res.data[0] != null) {
         //         setList(res.data);
         //         setTextEmpty('none');

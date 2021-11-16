@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // const BASE_API = 'http://localhost:3000';
 const BASE_API = 'https://projeto-integrado-f.herokuapp.com';
-// const BASE_API = 'https://project-e-api.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
@@ -119,7 +118,7 @@ export default {
         const json = await req.json();
         return json;
     },
-    verifyFavorite: async (BOOK_ID) => {
+    verifyFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/verifyFavorite`, {
@@ -129,12 +128,12 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;
     },
-    addFavorite: async (BOOK_ID) => {
+    addFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/addFavorite`, {
@@ -144,12 +143,12 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;
     },
-    removeFavorite: async (BOOK_ID) => {
+    removeFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/removeFavorites`, {
@@ -159,7 +158,7 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;

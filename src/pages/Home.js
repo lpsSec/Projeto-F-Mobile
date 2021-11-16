@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import HomeTabBar from '../components/HomeTabBar';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import appHome from './sub-pages/appHome';
-import appPerfil from '../pages/sub-pages/appPerfil';
+// import appPerfil from '../pages/sub-pages/appPerfil';
 import appCarrinho from '../pages/sub-pages/appCarrinho';
 
 import Softbear from '../assets/logo_softbear.svg';
@@ -26,7 +26,7 @@ export default function Home({state}) {
             </View>
             <Tab.Navigator tabBar={props=><HomeTabBar {...props} />}>
                 <Tab.Screen name="appHome" component={appHome}/>
-                <Tab.Screen name="appPerfil" component={appPerfil}/>
+                {/* <Tab.Screen name="appPerfil" component={appPerfil}/> */}
                 <Tab.Screen name="appCarrinho" component={appCarrinho}/>
             </Tab.Navigator>
         </View>
