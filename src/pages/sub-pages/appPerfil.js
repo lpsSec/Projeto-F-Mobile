@@ -45,7 +45,9 @@ export default function appPerfil() {
     useEffect(() => {
         let isFlag = true;
         setList([]);
-        
+        const unsubscribe = navigation.addListener('focus', () => {
+
+        });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
 
