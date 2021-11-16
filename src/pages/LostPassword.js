@@ -75,7 +75,7 @@ export default function LostPassword() {
                 </View>
                 <View style={styles.msgSuccess}>
                     <Text style={{display: messageSuccess, color: '#09FA09', }}>
-                    Email enviado com instruções!
+                    Email enviado com as instruções!
                     </Text>
                 </View>
                 <TouchableOpacity onPress={handleSendClick} style={styles.loginButton}>
