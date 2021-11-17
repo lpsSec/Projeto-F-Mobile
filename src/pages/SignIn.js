@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, KeyboardAvoidingView, Animated } from 'react-native';
@@ -18,15 +18,16 @@ export default function SignIn() {
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 150 }));
 
     const handleSignClick = async () => {
-        
+
         // DEBUG: redirect to HOME screen
+        // await AsyncStorage.setItem('cpf', '19233311134');
         // navigation.reset({routes: [{name: 'Home'}]});
         // return;
         if(emailField != '' && passwordField != '') {
-            let json = await Api.signIn(emailField, passwordField); 
+            let json = await Api.signIn(emailField, passwordField);
             if(json.token) {
                 await AsyncStorage.setItem('token', json.token);
-                await AsyncStorage.setItem('user', json.data.USR_ID.toString());
+                await AsyncStorage.setItem('cpf', json.cpf);
 
                 navigation.reset({
                     routes: [{name: 'Home'}]
@@ -87,9 +88,9 @@ export default function SignIn() {
                         secureTextEntry={true}
                     />
                 </View>
-                {/* <TouchableOpacity onPress={navigation.navigate('LostPassword')}> */}
+                <TouchableOpacity onPress={ () => navigation.navigate('LostPassword')}>
                     <Text style={styles.subtitle}>Esqueceu sua senha?</Text>
-                {/* </TouchableOpacity> */}
+                </TouchableOpacity>
                 <View style={styles.wrongPassword}>
                     <Text style={{display: messagePassword, color: '#FF0000'}}>
                     Sua senha/email está incorreta. Por favor tente novamente.

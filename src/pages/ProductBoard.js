@@ -6,17 +6,15 @@ import Api from '../Api';
 import Back from '../assets/back.svg';
 import FavoriteClean from '../assets/favorito-vazio.svg';
 import Favorite from '../assets/favorito.svg';
-import LocateModal from '../components/LocateModal';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function LocateBook() {
+export default function ProductBoard() {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const [locateModal, setLocateModal] = useState(false);
     const [verify, setVerify] = useState(true);
     const [indie, setIndie] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -25,14 +23,14 @@ export default function LocateBook() {
     const [disabledBack, setDisabledBack] = useState(false);
     const [disabledLocate, setDisabledLocate] = useState(false);
 
-    const [bookInfo, setBookInfo] = useState({
-        BOOK_ID: route.params.BOOK_ID,
-        BOOK_NAME: route.params.BOOK_NAME,
-        BOOK_DESC: route.params.BOOK_DESC,
-        BOOK_STATUS: route.params.BOOK_STATUS,
-        BOOK_AUTHOR: route.params.BOOK_AUTHOR,
-        BOOK_GEN: route.params.BOOK_GEN,
-        IMG_PATH: route.params.IMG_PATH
+    const [productInfo, setProductInfo] = useState({
+        _id: route.params._id,
+        name: route.params.name,
+        description: route.params.description,
+        price: route.params.price,
+        advertiser: route.params.advertiser,
+        licenseType: route.params.licenseType,
+        rating: route.params.rating
     });
 
     const setMessage = () => {
@@ -45,79 +43,83 @@ export default function LocateBook() {
 
     const setFavorite = async () => {
         setLoading(true);
-        if(verify) {
-            let json = await Api.addFavorite(bookInfo.BOOK_ID);
-            if(!json.error) {
-                setVerify(false);
-                setAddFavorite('flex');
-                setRemoveFavorite('none');
-                setDisabledBack(true);
-                setDisabledLocate(true);
-            }
-        } else {
-            let json = await Api.removeFavorite(bookInfo.BOOK_ID);
-            if(!json.error) {
-                setVerify(true);
-                setRemoveFavorite('flex');
-                setAddFavorite('none');
-                setDisabledBack(true);
-                setDisabledLocate(true);
-            }
-        }
+        // if(verify) {
+        //     let json = await Api.addFavorite();
+        //     if(!json.error) {
+        //         setVerify(false);
+        //         setAddFavorite('flex');
+        //         setRemoveFavorite('none');
+        //         setDisabledBack(true);
+        //         setDisabledLocate(true);
+        //     }
+        // } else {
+        //     let json = await Api.removeFavorite();
+        //     if(!json.error) {
+        //         setVerify(true);
+        //         setRemoveFavorite('flex');
+        //         setAddFavorite('none');
+        //         setDisabledBack(true);
+        //         setDisabledLocate(true);
+        //     }
+        // }
         wait(3000).then(setMessage);
     };
 
-    useEffect(() => {
-        let isFlag = true;
-        Api.verifyFavorite(bookInfo.BOOK_ID).then((response) => {
-            if(isFlag){
-                if(response.data != 0 ) {
-                    setVerify(false);
-                } else {
-                    setVerify(true);
-                }
-            }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
-        return () => { isFlag = false };
-    }, []);
+    // useEffect(() => {
+    //     let isFlag = true;
+    //     Api.verifyFavorite().then((response) => {
+    //         if(isFlag){
+    //             if(response.data != 0 ) {
+    //                 setVerify(false);
+    //             } else {
+    //                 setVerify(true);
+    //             }
+    //         }
+    //     }).catch((error) => {
+    //         // alert('Erro inesperado, contate o adminstrador');
+    //     });
+    //     return () => { isFlag = false };
+    // }, []);
 
     return (
         <View style={styles.background}>
             <ImageBackground 
             style={styles.photoArea} 
-            source={{ uri: 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' }}
+            source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
                <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }} disabled={disabledBack}>
                     <Back width="36" height="36" fill="#FFFFFF"/>
-                </TouchableOpacity>
+               </TouchableOpacity>
             </ImageBackground>
             <View style={styles.pageBody}>
-                <View style={styles.infoBook}>
-                    <Text style={styles.titleBook}>{bookInfo.BOOK_NAME}</Text>
+                <View style={styles.infoProcut}>
+                    <Text style={styles.titleProduct}>{productInfo.name}</Text>
                     <View style={styles.infoBody}>
-                        <Text style={styles.typeTitle}>Genêro:</Text>
-                        <Text style={styles.title}>{bookInfo.BOOK_GEN}</Text>
+                        <Text style={styles.typeTitle}>Título:</Text>
+                        <Text style={styles.title}>{productInfo.name}</Text>
                     </View>
                     <View style={styles.infoBody}>
-                        <Text style={styles.typeTitle}>Autor:</Text>
-                        <Text style={styles.title}>{bookInfo.BOOK_AUTHOR}</Text>
+                        <Text style={styles.typeTitle}>Fornecedor:</Text>
+                        <Text style={styles.title}>{productInfo.advertiser}</Text>
                     </View>
                     <View style={styles.infoBodyForDesc}>
                         <Text style={styles.typeTitle}>Descrição:</Text>
-                        <Text style={styles.titleDesc}>{bookInfo.BOOK_DESC}</Text>
+                        <Text style={styles.titleDesc}>{productInfo.description}</Text>
+                    </View>
+                    <View style={styles.infoBodyForDesc}>
+                        <Text style={styles.typeTitle}>Preço:</Text>
+                        <Text style={styles.titleDesc}>{productInfo.price}</Text>
                     </View>
                 </View>
                 <View style={styles.warningFavorite}>
                     <Text style={{display: addFavorite, color: '#FF0000'}}>
-                    Livro adicionado aos favoritos!
+                    Produto adicionado aos favoritos!
                     </Text>
                     <Text style={{display: removeFavorite, color: '#FF0000', }}>
-                    Livro removido dos favoritos!
+                    Produto removido dos favoritos!
                     </Text>
                 </View>
-                <View style={styles.locateBook}>
+                <View style={styles.viewCarrinho}>
                     {verify ?
                         <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
                             <FavoriteClean width="36" height="36" fill="#000000"/>
@@ -127,23 +129,12 @@ export default function LocateBook() {
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
-                    {indie ?
-                        <TouchableOpacity style={styles.locateButton} onPress={() => { setLocateModal(true) }}>
-                            <Text style={styles.textLocate}>Locar</Text>
+                    {/* TODO: move to cart page*/}
+                        <TouchableOpacity style={styles.locateButton} onPress={() => {  }}>
+                            <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
                         </TouchableOpacity>
-                        :
-                        <TouchableOpacity style={styles.locateButton} disabled={true}>
-                            <Text style={styles.textLocate}>Indisponível</Text>
-                        </TouchableOpacity>
-                    }              
                 </View>
             </View>
-            <LocateModal 
-                show={locateModal}
-                setShow={setLocateModal}
-                value={bookInfo.BOOK_ID}
-                but={setIndie}
-            />
         </View>
     );
 }
@@ -173,7 +164,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         backgroundColor: '#FFFFFF'
     },
-    infoBook: {
+    infoProcut: {
         width: 400,
         height: 400,
         marginTop: 10,
@@ -205,7 +196,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 17
     },
-    titleBook: {
+    titleProduct: {
         fontWeight: 'bold',
         fontSize: 24
     },
@@ -217,7 +208,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 17
     },
-    locateBook: {
+    viewCarrinho: {
         width: 380,
         height: 80,
         marginBottom: 20,

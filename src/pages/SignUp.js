@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native';
@@ -20,7 +20,7 @@ export default function SignUp() {
     const navigation = useNavigation();
 
     const [nameField, setNameField] = useState('');
-    const [userFild, setUserFiled] = useState('');
+    // const [userFild, setUserFiled] = useState('');
     const [emailField, setEmailField] = useState('');
     const [passwordField, setpasswordField] = useState('');
     const [telField, setTelField] = useState('');
@@ -162,12 +162,15 @@ export default function SignUp() {
         if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfField != '') {
             let result = fieldValidate();
             if(result.success) {
-                let json = await Api.signUp(nameField, ageField, telField, cpfField,  emailField, passwordField);
+                const name = nameField.split(' ').slice(0,1).join(' ');
+                const last = nameField.split(' ').slice(1,10).join(' ');
+                let json = await Api.signUp(name.toString(), last.toString(), cpfField.toString(), emailField.toString(), passwordField.toString(), telField.toString(), ageField.toString());
+                alert("SIGN");
                 if(json.token) {
+                    alert("Token signUp: " + json.token);
                     let signIn = await Api.signIn(emailField, passwordField); 
                     if(signIn.token)  {
                         await AsyncStorage.setItem('token', signIn.token);
-                        await AsyncStorage.setItem('user', signIn.data.USR_ID.toString());
 
                         navigation.reset({
                             routes: [{name: 'Home'}]
@@ -178,7 +181,7 @@ export default function SignUp() {
                     alert("Erro: " + json.mensagem);
                 }
             } else {
-                setValidateEmpty('flex'); 
+                setValidateEmpty('flex');
                 wait(3000).then(setMessage);
             }
         } else {
@@ -213,7 +216,7 @@ export default function SignUp() {
                             onChangeText={t=>setNameField(t)}
                         />
                     </View>
-                    <View style={styles.inputArea}>
+                    {/* <View style={styles.inputArea}>
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
@@ -222,7 +225,7 @@ export default function SignUp() {
                             value={userFild}
                             onChangeText={t=>setUserFiled(t)}
                         />
-                    </View>
+                    </View> */}
                     <View style={styles.inputArea}>
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 

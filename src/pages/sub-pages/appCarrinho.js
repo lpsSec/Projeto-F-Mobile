@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl  } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
-import BookItem from '../../components/BookItem';
+import ProductItem from '../../components/ProductItem';
 import FabButton from '../../components/FabButton';
 import Search from '../../assets/search.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
@@ -24,19 +24,7 @@ export default function appCarrinho() {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getBookByGen('Realismo').then((response) => {
-            if(response.data[0] != null) {
-                setList(response.data);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
+
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
@@ -48,20 +36,7 @@ export default function appCarrinho() {
     const handleSearch = async () => {
         setLoading(true);
         setList([]);
-        if(searchFiled != ''){
-            let res = await Api.getBookByName(searchFiled, 'Realismo');
-            if(res.data[0] != null) {
-                setList(res.data);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        } else {
-            setSearchEmpty('flex');
-        }
+
         setLoading(false);
     };
 
@@ -69,33 +44,7 @@ export default function appCarrinho() {
         let isFlag = true;
         setList([]);
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getBookByGen('Realismo').then((response) => {
-                if(response.data[0] != null) {
-                    setList(response.data);
-                    setTextEmpty('none');
-                }
-                else {
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
-            }).catch((error) => {
-                // alert('Erro inesperado, contate o adminstrador');
-            });
-        });
-        Api.getBookByGen('Realismo').then((response) => {
-            if(isFlag) {
-                if(response.data[0] != null) {
-                    setList(response.data);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
-                }
-                else {
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
-            }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            
         });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
@@ -134,7 +83,7 @@ export default function appCarrinho() {
                     }
                     <View style={styles.listArea}>
                         {list.map((item, k) => (
-                            <BookItem key={k} data={item} />
+                            <ProductItem key={k} data={item} />
                         ))}
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>

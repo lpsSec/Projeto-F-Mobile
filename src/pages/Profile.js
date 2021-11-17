@@ -17,7 +17,7 @@ export default function Profile() {
         <View style={styles.background}>
             <ImageBackground 
             style={styles.photoArea} 
-            source={{ uri: 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' }}
+            source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
                 <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }}>
                     <Back width="36" height="36" fill="#FFFFFF"/>

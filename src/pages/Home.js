@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import HomeTabBar from '../components/HomeTabBar';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import appHome from './sub-pages/appHome';
-import appPerfil from '../pages/sub-pages/appPerfil';
+// import appPerfil from '../pages/sub-pages/appPerfil';
 import appCarrinho from '../pages/sub-pages/appCarrinho';
 
 import Softbear from '../assets/logo_softbear.svg';
@@ -26,7 +26,7 @@ export default function Home({state}) {
             </View>
             <Tab.Navigator tabBar={props=><HomeTabBar {...props} />}>
                 <Tab.Screen name="appHome" component={appHome}/>
-                <Tab.Screen name="appPerfil" component={appPerfil}/>
+                {/* <Tab.Screen name="appPerfil" component={appPerfil}/> */}
                 <Tab.Screen name="appCarrinho" component={appCarrinho}/>
             </Tab.Navigator>
         </View>
@@ -62,18 +62,5 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20
-    },
-    newBook: {
-        height: 20,
-        width: 145,
-        backgroundColor: '#F00A62',
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    newBookText: {
-        fontSize: 13,
-        color: '#FFFFFF',
-        fontWeight: 'bold'
     }
 });

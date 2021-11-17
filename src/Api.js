@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// const BASE_API = 'https://projeto-integrado-f.herokuapp.com/';
-const BASE_API = 'https://project-e-api.herokuapp.com';
+// const BASE_API = 'http://localhost:3000';
+const BASE_API = 'https://projeto-integrado-f.herokuapp.com';
 
 export default {
     checkToken: async (token, user) => {
@@ -16,27 +16,26 @@ export default {
         const json = await req.json();
         return json;
     },
-    signIn: async (USR_LOGINNAME, USR_PASSWORD) => {
-        const req = await fetch(`${BASE_API}/auth/login`, {
-            method: 'POST',
+    signIn: async (email, password) => {
+        const req = await fetch(`${BASE_API}/session/create`, {
+            method: "POST",
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({USR_LOGINNAME, USR_PASSWORD})
+            body: JSON.stringify({email, password})
         });
+        
         const json = await req.json();
-
         return json;
     },
-    signUp: async (USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD) => {
-        const req = await fetch(`${BASE_API}/auth/register`, {
-            method: 'POST',
+    signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
+        const req = await fetch(`${BASE_API}/user/create`, {
+            method: "POST",
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
+                "Accept" : "application/json",
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({USR_NAME, USR_DATEBIRTHDAY, USR_PHONENUMBER, USRDOC_CPFNUMBER, USR_LOGINNAME, USR_PASSWORD})
+            body: JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date})
         });
         const json = await req.json();
         return json;
@@ -56,56 +55,70 @@ export default {
 
         return json;
     },
-    LostPassword: async (USR_EMAIL) => {
-        const req = await fetch(`${BASE_API}/user/lostpassword`, {
+    updateUserInfo: async (name, last_name, email, phone) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/edit/` + cpf, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name, last_name, email, phone})
+        });
+        const json = await req.json();
+        return json;
+    },
+    alterPassword: async (new_password) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/edit/password/` + cpf, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({new_password})
+        });
+        const json = await req.json();
+        return json;
+    },
+    lostPassword: async (email) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/recover/password/` + cpf, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({USR_EMAIL})
+            body: JSON.stringify({email})
         });
         const json = await req.json();
         return json;
     },
-    getBooks: async () => {
-        const user = await AsyncStorage.getItem('user');
+    getUserByCPF: async () => {
+        const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/` + user, {
+        const req = await fetch(`${BASE_API}/user/get/` + cpf, {
             headers: {
-                "Authorization": 'Baerer ' + token
+                // "Authorization": 'Baerer ' + token
             }
         });
         const json = await req.json();
         return json;
     },
-    getBookByGen: async (GEN_NOME) => {
+    getProducts: async () => {
         const token = await AsyncStorage.getItem('token');
-        const user = await AsyncStorage.getItem('user');
-        const req = await fetch(`${BASE_API}/book/byGen`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({user, GEN_NOME})
+        const req = await fetch(`${BASE_API}/product/`, {
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
         });
+        // const json = await req.text();
         const json = await req.json();
-        return json;
-    },
-    getBookByName: async (BOOK_NAME, GEN_NOME) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/byName`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({BOOK_NAME, GEN_NOME})
-        });
-        const json = await req.json();
+        const stringa = json[0].name;
+        // alert('REQ: '+stringa);
         return json;
     },
     getUserId: async () => {
@@ -119,48 +132,7 @@ export default {
         const json = await req.json();
         return json;
     },
-    locateBook: async (BOOK_ID, LOC_DATE_RETIRADA) => {
-        const token = await AsyncStorage.getItem('token');
-        const user = await AsyncStorage.getItem('user');
-        const req = await fetch(`${BASE_API}/user`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({user, BOOK_ID, LOC_DATE_RETIRADA})
-        });
-        const json = await req.json();
-        return json;
-    },
-    getLocates: async () => {
-        const token = await AsyncStorage.getItem('token');
-        const user = await AsyncStorage.getItem('user');
-        const req = await fetch(`${BASE_API}/user/getLocates/` + user, {
-            headers: {
-                "Authorization": 'Baerer ' + token
-            }
-        });
-        const json = await req.json();
-        return json;
-    },
-    giveBackBook: async (BOOK_ID) => {
-        const token = await AsyncStorage.getItem('token');
-        const user = await AsyncStorage.getItem('user');
-        const req = await fetch(`${BASE_API}/user/giveBack`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({user, BOOK_ID})
-        });
-        const json = await req.json();
-        return json;
-    },
-    verifyFavorite: async (BOOK_ID) => {
+    verifyFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/verifyFavorite`, {
@@ -170,12 +142,12 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;
     },
-    addFavorite: async (BOOK_ID) => {
+    addFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/addFavorite`, {
@@ -185,12 +157,12 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;
     },
-    removeFavorite: async (BOOK_ID) => {
+    removeFavorite: async (ITEM_ID) => {
         const token = await AsyncStorage.getItem('token');
         const user = await AsyncStorage.getItem('user');
         const req = await fetch(`${BASE_API}/user/removeFavorites`, {
@@ -200,7 +172,7 @@ export default {
                 'Content-Type': 'application/json',
                 "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({user, BOOK_ID})
+            body: JSON.stringify({user, ITEM_ID})
         });
         const json = await req.json();
         return json;
@@ -216,108 +188,4 @@ export default {
         const json = await req.json();
         return json;
     },
-    alterPassword: async (USR_ID, USR_PASSWORD) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/auth/update/`, {
-            method: 'PATCH',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({USR_ID, USR_PASSWORD})
-        });
-        const json = await req.json();
-        return json;
-    },
-    alterData: async (USR_ID, USR_NAME, USR_LOGINNAME, USR_PHONENUMBER, USR_DATEBIRTHDAY, USRDOC_CPFNUMBER) => {
-        if(USR_NAME == '')
-            USR_NAME = null;
-        if(USR_LOGINNAME == '')
-            USR_LOGINNAME = null;
-        if(USR_PHONENUMBER == '')
-            USR_PHONENUMBER = null;
-        if(USR_DATEBIRTHDAY == '')
-            USR_DATEBIRTHDAY = null;
-        if(USRDOC_CPFNUMBER == '')
-            USRDOC_CPFNUMBER = null;
-
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/auth/updateData/`, {
-            method: 'PATCH',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({USR_ID, USR_NAME, USR_LOGINNAME, USR_PHONENUMBER, USR_DATEBIRTHDAY, USRDOC_CPFNUMBER})
-        });
-        const json = await req.json();
-        return json;
-    },
-    addBook: async (BOOK_NAME, BOOK_DESC, BOOK_GEN, BOOK_AUTHOR, BOOK_PATH) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({BOOK_NAME, BOOK_DESC, BOOK_GEN, BOOK_AUTHOR, BOOK_PATH})
-        });
-        const json = await req.json();
-        return json;
-    },
-    getBookLocates: async () => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/locates/`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            }
-        });
-        const json = await req.json();
-        return json;
-    },
-    getBookLocatesByUserName: async (USR_NAME) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/locatesByUserName/`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({USR_NAME})
-        });
-        const json = await req.json();
-        return json;
-    },
-    getBookLocatesByBookName: async (BOOK_NAME) => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/locatesByBookName/`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": 'Baerer ' + token
-            },
-            body: JSON.stringify({BOOK_NAME})
-        });
-        const json = await req.json();
-        return json;
-    },
-    getGenres: async () => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/book/getGenre/`, {
-            headers: {
-                "Authorization": 'Baerer ' + token
-            }
-        });
-        const json = await req.json();
-        return json;
-    }
 };

@@ -6,27 +6,27 @@ import Favorite from '../assets/favorito.svg';
 export default ({data}) => {
     const navigation = useNavigation();
 
-    const handleLocateBook = async () => {
-        navigation.navigate('LocateBookTwo', {
-            BOOK_ID: data.BOOK_ID,
-            BOOK_NAME: data.BOOK_NAME,
-            BOOK_DESC: data.BOOK_DESC,
-            BOOK_STATUS: data.BOOK_STATUS,
-            BOOK_AUTHOR: data.BOOK_AUTHOR,
-            BOOK_GEN: data.GEN_NOME,
+    const handleSaveItem = async () => {
+        navigation.navigate('saveItem', {
+            ID: data.ID,
+            NAME: data.NAME,
+            DESC: data.DESC,
+            STATUS: data.STATUS,
+            AUTHOR: data.AUTHOR,
+            GEN: data.GEN_NOME,
             IMG_PATH: data.IMG_PATH
         });
     };
 
     return (
-        <TouchableOpacity style={styles.favoriteItem} onPress={handleLocateBook}>
-            <Image style={styles.bookPhoto} source={{ uri: data.IMG_PATH == null ? 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' : data.IMG_PATH }} />
+        <TouchableOpacity style={styles.favoriteItem} onPress={handleSaveItem}>
+            <Image style={styles.itemPhoto} source={{ uri: data.IMG_PATH == null ? 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' : data.IMG_PATH }} />
             <View style={styles.viewArea}>
-                <View style={styles.bookInfo}>
-                    <View style={styles.bookText}>
-                        <Text style={styles.title}>{data.BOOK_NAME}</Text>
+                <View style={styles.itemInfo}>
+                    <View style={styles.itemText}>
+                        <Text style={styles.title}>{data.NAME}</Text>
                     </View>
-                    <View style={styles.bookFavorite}>
+                    <View style={styles.itemFavorite}>
                         <View style={styles.favoriteButton}>
                             <Favorite width="36" height="36" fill="#000000"/>
                         </View>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         borderColor: '#000000',
         alignItems: 'center'
     },
-    bookPhoto: {
+    itemPhoto: {
         width: 77,
         height: 77
     },
@@ -58,14 +58,14 @@ const styles = StyleSheet.create({
         width: 250,
         backgroundColor: '#F5F5F5'
     },
-    bookInfo: {
+    itemInfo: {
         backgroundColor: '#F5F5F5',
         alignItems: 'center',
         justifyContent: 'space-around',
         flexDirection: 'row',
         minHeight: 70,
     },
-    bookText: {
+    itemText: {
         backgroundColor: '#F5F5F5',
         alignItems: 'flex-start',
         justifyContent: 'center',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000000'
     },
-    bookFavorite: {
+    itemFavorite: {
         backgroundColor: '#F5F5F5',
         alignItems: 'center',
         justifyContent: 'center',

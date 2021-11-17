@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
-import BookItem from '../../components/BookItem';
+import Produto from '../../components/ProductItem';
 import FabButton from '../../components/FabButton';
 import Search from '../../assets/search.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
@@ -11,7 +11,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function appHome() {
+export default function appHome(){
     const navigation = useNavigation();
 
     const [list, setList] = useState([]);
@@ -24,17 +24,19 @@ export default function appHome() {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getBooks().then((response) => {
-            if(response.data[0] != null) {
-                setList(response.data);
+        Api.getProducts().then((response) => {
+            if(response[0] != null) {                
+                setList(response);
                 setTextEmpty('none');
                 setMessageEmpty('none');
             }
             else {
+                alert("PRODUCTS É NULL");
                 setList([]);
                 setMessageEmpty('flex');
             }
-        }).catch((error) => {
+        }).catch((err) => {
+            console.log("Erro onRefresh: " + err);
             // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
@@ -46,22 +48,23 @@ export default function appHome() {
     };
 
     const handleSearch = async () => {
+        //TODO: faze busca por nome - ainda não tem para titulo do produto.
         setLoading(true);
         setList([]);
-        if(searchFiled != ''){
-            let res = await Api.getBookByName(searchFiled, '');
-            if(res.data[0] != null) {
-                setList(res.data);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        } else {
-            setSearchEmpty('flex');
-        }
+        // if(searchFiled != ''){
+        //     let res = await Api.getProductByName(searchFiled, '');
+        //     if(res.data[0] != null) {
+        //         setList(res.data);
+        //         setTextEmpty('none');
+        //         setMessageEmpty('none');
+        //     }
+        //     else {
+        //         setList([]);
+        //         setMessageEmpty('flex');
+        //     }
+        // } else {
+        //     setSearchEmpty('flex');
+        // }
         setLoading(false);
     };
 
@@ -69,34 +72,23 @@ export default function appHome() {
         let isFlag = true;
         setList([]);
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getBooks().then((response) => {
-                if(response.data[0] != null) {
-                    setList(response.data);
+            Api.getProducts().then((response) => {
+                if(isFlag){
+                if(response[0] != null) {
+                    setList(response);
                     setTextEmpty('none');
                     setMessageEmpty('none');
                 }
                 else {
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
-            }).catch((error) => {
-                // alert('Erro inesperado, contate o adminstrador');
-            });
-        });
-        Api.getBooks().then((response) => {
-            if(isFlag){
-                if(response.data[0] != null) {
-                    setList(response.data);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
-                }
-                else {
+                    alert("PRODUCTS É NULL");
                     setList([]);
                     setMessageEmpty('flex');
                 }
             }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            }).catch((err) => {
+                console.log("Erro onRefresh: " + err);
+                // alert('Erro inesperado, contate o adminstrador');
+            });
         });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
@@ -134,9 +126,11 @@ export default function appHome() {
                         <ActivityIndicator size="large" color="#000000"/>
                     }
                     <View style={styles.listArea}>
-                        {list.map((item, k) => (
-                            <BookItem key={k} data={item} />
-                        ))}
+                        {
+                            list.map((item, k) => (
+                                <Produto key={k} data={item} />
+                            ))
+                        }
                     </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>
                         <NotFound width="60" height="60" fill="#FFFFFF" />

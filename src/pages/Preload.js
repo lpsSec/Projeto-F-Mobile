@@ -8,6 +8,11 @@ export default () => {
     const navigation = useNavigation();
 
     useEffect(()=>{
+        //DEBUG: Disable theese lines to check if user is logged in.
+        navigation.reset({
+            routes: [{name: 'SignIn'}]
+        });
+        return;
         const checkToken = async () => {
             const token = await AsyncStorage.getItem('token');
             const user = await AsyncStorage.getItem('user');

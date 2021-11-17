@@ -15,34 +15,30 @@ const wait = (timeout) => {
 
 export default function forInfo() {
     const navigation = useNavigation();
-
-    const [idUser, setIdUser] = useState(0);
-    const [name, setName] = useState('');
-    const [cpf, setCPF] = useState('');
-    const [phone, setPhone] = useState('');
-    const [birthday, setBirthday] = useState('');
-    const [email, setEmail] = useState('');
-    const [userType, setUserType] = useState(0);
+    
     const [refreshing, setRefreshing] = useState(false);
     const [passwordModal, setpasswordModal] = useState(false);
     const [dataModal, setDataModal] = useState(false);
 
+    const [nameField, setNameField] = useState('');
+    const [emailField, setEmailField] = useState('');
+    const [passwordField, setpasswordField] = useState('');
+    const [telField, setTelField] = useState('');
+    const [cpfField, setCPFField] = useState('');
+    const [ageField, setAgeField] = useState('');
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getUserId().then((response) => {
+        Api.getUserByCPF().then((response) => {
             if(response.lenght < 1) {
                 alert('Usuário não encontrado');
             }
             else {
-                response.data.map((item, k) => {
-                    setCPF(item.USRDOC_CPFNUMBER);
-                    setPhone(item.USR_PHONENUMBER);
-                    setBirthday(item.USR_DATEBIRTHDAY);
-                    setEmail(item.USR_LOGINNAME);
-                    setName(item.USR_NAME);
-                    setIdUser(item.USR_ID);
-                    setUserType(item.USRTYPE_ID);
-                });
+                setCPFField(response.cpf);
+                setTelField(response.phone);
+                setAgeField(response.birth_date);
+                setEmailField(response.email);
+                setNameField(response.name + " " + response.last_name);
             }
         }).catch((error) => {
             // alert('Erro inesperado, contate o adminstrador');
@@ -64,21 +60,17 @@ export default function forInfo() {
 
     useEffect(() => {
         let isFlag = true;
-        Api.getUserId().then((response) => {
+        Api.getUserByCPF().then((response) => {
             if(isFlag) {
                 if(response.lenght < 1) {
                     alert('Usuário não encontrado');
                 }
                 else {
-                    response.data.map((item, k) => {
-                        setCPF(item.USRDOC_CPFNUMBER);
-                        setPhone(item.USR_PHONENUMBER);
-                        setBirthday(item.USR_DATEBIRTHDAY);
-                        setEmail(item.USR_LOGINNAME);
-                        setName(item.USR_NAME);
-                        setIdUser(item.USR_ID);
-                        setUserType(item.USRTYPE_ID);
-                    });
+                    setCPFField(response.cpf);
+                    setTelField(response.phone);
+                    setAgeField(response.birth_date);
+                    setEmailField(response.email);
+                    setNameField(response.name + " " + response.last_name);
                 }
             }
         }).catch((error) => {
@@ -100,21 +92,31 @@ export default function forInfo() {
                     }
                 >
                     <View style={styles.container}>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>CPF:</Text>
-                            <Text style={styles.title}>{cpf}</Text>
+                    <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Nome:</Text>
+                            <Text style={styles.title}>{nameField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Telefone:</Text>
-                            <Text style={styles.title}>{phone}</Text>
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Nascimento:</Text>
-                            <Text style={styles.title}>{birthday}</Text>
+                            <Text style={styles.title}>{telField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Email:</Text>
-                            <Text style={styles.title}>{email}</Text>
+                            <Text style={styles.title}>{emailField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
+                        </View>
+                        <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>CPF:</Text>
+                            <Text style={styles.title}>{cpfField}</Text>
+                        </View>
+                        <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Nascimento:</Text>
+                            <Text style={styles.title}>{ageField}</Text>
                         </View>
                         <TouchableOpacity style={styles.passwordButton} onPress={()=>{ setpasswordModal(true) }}>
                             <Text style={styles.passwordText}>Alterar senha</Text>
@@ -133,12 +135,13 @@ export default function forInfo() {
             <PasswordModal 
                 show={passwordModal}
                 setShow={setpasswordModal}
-                value={idUser}
             />
             <DataModal 
                 show={dataModal}
                 setShow={setDataModal}
-                value={idUser}
+                name={nameField}
+                phone={telField}
+                email={emailField}
             />
         </ScrollView>
     );
@@ -153,10 +156,10 @@ const styles = StyleSheet.create({
     },
     container: {
         width: 400,
-        height: 400,
+        height: 250,
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginTop: 10
+        // marginTop: 40
     },
     infoPhoto: {
         width: 380,
@@ -175,12 +178,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         marginLeft: 5
-    },
-    adminButton: {
-        width: 200,
-        marginLeft: 20,
-        alignItems: 'flex-end',
-        justifyContent: 'center'
     },
     infoBody: {
         width: 350,
@@ -204,7 +201,7 @@ const styles = StyleSheet.create({
     },
     passwordButton: {
         width: 150,
-        height: 40,
+        height: 35,
         borderRadius: 10,
         marginTop: 20,
         justifyContent: 'center',
