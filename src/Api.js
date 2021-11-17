@@ -55,6 +55,20 @@ export default {
 
         return json;
     },
+    updateUserInfo: async (name, last_name, email, phone) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/edit/` + cpf, {
+            method: 'PATCH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name, last_name, email, phone})
+        });
+        const json = await req.json();
+        return json;
+    },
     alterPassword: async (new_password) => {
         const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');

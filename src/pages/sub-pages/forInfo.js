@@ -38,7 +38,7 @@ export default function forInfo() {
                 setTelField(response.phone);
                 setAgeField(response.birth_date);
                 setEmailField(response.email);
-                setNameField(response.name);
+                setNameField(response.name + " " + response.last_name);
             }
         }).catch((error) => {
             // alert('Erro inesperado, contate o adminstrador');
@@ -70,7 +70,7 @@ export default function forInfo() {
                     setTelField(response.phone);
                     setAgeField(response.birth_date);
                     setEmailField(response.email);
-                    setNameField(response.name);
+                    setNameField(response.name + " " + response.last_name);
                 }
             }
         }).catch((error) => {
@@ -92,21 +92,31 @@ export default function forInfo() {
                     }
                 >
                     <View style={styles.container}>
+                    <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Nome:</Text>
+                            <Text style={styles.title}>{nameField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
+                        </View>
+                        <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Telefone:</Text>
+                            <Text style={styles.title}>{telField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
+                        </View>
+                        <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Email:</Text>
+                            <Text style={styles.title}>{emailField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
+                        </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>CPF:</Text>
                             <Text style={styles.title}>{cpfField}</Text>
                         </View>
                         <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Telefone:</Text>
-                            <Text style={styles.title}>{telField}</Text>
-                        </View>
-                        <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Nascimento:</Text>
                             <Text style={styles.title}>{ageField}</Text>
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Email:</Text>
-                            <Text style={styles.title}>{emailField}</Text>
                         </View>
                         <TouchableOpacity style={styles.passwordButton} onPress={()=>{ setpasswordModal(true) }}>
                             <Text style={styles.passwordText}>Alterar senha</Text>
@@ -126,11 +136,13 @@ export default function forInfo() {
                 show={passwordModal}
                 setShow={setpasswordModal}
             />
-            {/* <DataModal 
+            <DataModal 
                 show={dataModal}
                 setShow={setDataModal}
-                value={idUser}
-            /> */}
+                name={nameField}
+                phone={telField}
+                email={emailField}
+            />
         </ScrollView>
     );
 }
@@ -144,7 +156,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: 400,
-        height: 400,
+        height: 250,
         alignItems: 'center',
         justifyContent: 'space-around',
         // marginTop: 40
@@ -189,7 +201,7 @@ const styles = StyleSheet.create({
     },
     passwordButton: {
         width: 150,
-        height: 25,
+        height: 35,
         borderRadius: 10,
         marginTop: 20,
         justifyContent: 'center',

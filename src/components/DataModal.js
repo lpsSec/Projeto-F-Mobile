@@ -14,13 +14,11 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow, value})  =>  {
+export default ({show, setShow, name, phone, email})  =>  {
 
     const [nameField, setNameField] = useState('');
     const [emailField, setEmailField] = useState('');
     const [telField, setTelField] = useState('');
-    const [cpfField, setCPFField] = useState('');
-    const [ageField, setAgeField] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [resultEmpty, setResultEmpty] = useState('none');
     const [lResult, setlResult] = useState({
@@ -63,88 +61,21 @@ export default ({show, setShow, value})  =>  {
             lResult.error = 'O TELEFONE foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(!dateValidate() && ageField.length != 0) {
-            lResult.error = 'A DATA não é válida!',
-            lResult.success = false;
-            return lResult;
-        } else if(cpfField.length < 14 && cpfField.length != 0) {
-                lResult.error = 'O CPF foi preenchido incorretamente!',
-                lResult.success = false;
-                return lResult;
-        } else if(cpfField.length == 14) {
-            var unmasked = cpfField;
-            unmasked = unmasked.replace(".", "");
-            unmasked = unmasked.replace(".", "");
-            unmasked = unmasked.replace("-", "");
-
-            var sum;
-            var rest;
-            sum = 0;
-            if (unmasked == "00000000000" ||
-                unmasked == "11111111111" ||
-                unmasked == "22222222222" ||
-                unmasked == "33333333333" ||
-                unmasked == "44444444444" ||
-                unmasked == "55555555555" ||
-                unmasked == "66666666666" ||
-                unmasked == "77777777777" ||
-                unmasked == "88888888888" ||
-                unmasked == "99999999999" ) 
-            {
-                lResult.error = 'O CPF é inválido!',
-                lResult.success = false;
-                return lResult;
-            }
-
-            for (let i = 1; i <= 9; i++) {
-                sum = sum + parseInt(unmasked.substring(i - 1, i)) * (11 - i);
-            }
-            rest = (sum * 10) % 11;
-
-            if ((rest == 10) || (rest == 11))  
-                rest = 0;
-
-            if (rest != parseInt(unmasked.substring(9, 10)) ) {
-                lResult.error = 'O CPF é inválido!',
-                lResult.success = false;
-                return lResult;
-            }
-
-            sum = 0;
-            for (let i = 1; i <= 10; i++) {
-                sum = sum + parseInt(unmasked.substring(i - 1, i)) * (12 - i);
-            }
-            rest = (sum * 10) % 11;
-
-            if ((rest == 10) || (rest == 11))  
-                rest = 0;
-
-            if (rest != parseInt(unmasked.substring(10, 11) ) ) {
-                lResult.error = 'O CPF é inválido!',
-                lResult.success = false;
-                return lResult;
-            } 
         }
 
         return lResult;
     };
 
-    const dateValidate = () => {
-        var regex = /^(((0[1-9]|[12][0-9]|3[01])([-.\/])(0[13578]|10|12)([-.\/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([-.\/])(0[469]|11)([-.\/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([-.\/])(02)([-.\/])(\d{4}))|((29)(\.|-|\/)(02)([-.\/])([02468][048]00))|((29)([-.\/])(02)([-.\/])([13579][26]00))|((29)([-.\/])(02)([-.\/])([0-9][0-9][0][48]))|((29)([-.\/])(02)([-.\/])([0-9][0-9][2468][048]))|((29)([-.\/])(02)([-.\/])([0-9][0-9][13579][26])))$/;
-        if(regex.test(ageField))
-            return true;
-        else 
-            return false;
-    };
-
     const AlterData = async () => {
-        if(emailField == '' && nameField == '' && telField == '' && ageField == '' && cpfField == '') {
+        const name = nameField.split(' ').slice(0,1).join(' ');
+        const last = nameField.split(' ').slice(1,10).join(' ');
+        if(emailField == '' && nameField == '' && telField == '') {
             setMessageEmpty('flex');
             wait(2000).then(() => { setMessageEmpty('none') });
         } else {
             let result = fieldValidate();
             if(result.success) {
-                let json = await Api.alterData(value, nameField, emailField, telField, ageField, cpfField);
+                let json = await Api.updateUserInfo( name, last, emailField, telField);
                 if(!json.error) {
                     setShow(false);
                 } else {
@@ -156,6 +87,16 @@ export default ({show, setShow, value})  =>  {
             }
         }
     };
+
+    useEffect(() => {
+        let isFlag = true;
+
+        setNameField(name);
+        setEmailField(email);
+        setTelField(phone);
+        
+        return () => { isFlag = false };
+    }, [] );
 
     return (
         <Modal
@@ -177,6 +118,7 @@ export default ({show, setShow, value})  =>  {
                             placeholderTextColor="#000000"
                             value={nameField}
                             onChangeText={t=>setNameField(t)}
+                            onFocus={t=>setNameField("")}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -188,6 +130,7 @@ export default ({show, setShow, value})  =>  {
                             value={emailField}
                             autoCapitalize='none'
                             onChangeText={t=>setEmailField(t)}
+                            onFocus={t=>setEmailField("")}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -204,44 +147,20 @@ export default ({show, setShow, value})  =>  {
                             style={styles.TextMasked}
                             value={telField}
                             onChangeText={t=>setTelField(t)}
-                        />
-                    </View>
-                    <View style={styles.inputArea}>
-                        <Today width="24" height="24" fill="#000000" />
-                        <TextInputMask
-                            type={'datetime'}
-                            options={{
-                                format: 'DD/MM/YYYY'
-                            }}
-                            placeholder="Data de nascimento"
-                            placeholderTextColor="#000000"
-                            value={ageField}
-                            style={styles.TextMasked}
-                            onChangeText={t=>setAgeField(t)}
-                        />
-                    </View>
-                    <View style={styles.inputArea}>
-                        <Doc width="24" height="24" fill="#000000" />
-                        <TextInputMask
-                            type={'cpf'}
-                            value={cpfField}
-                            placeholder="Digite seu CPF"
-                            placeholderTextColor="#000000"
-                            style={styles.TextMasked}
-                            onChangeText={t=>setCPFField(t)}
+                            onFocus={t=>setTelField("")}
                         />
                     </View>
                     <View style={styles.messageArea}>
                         <Text style={{ display: messageEmpty, color: '#FF0000', fontSize: 15 }}>
-                            Todos os campos estão em branco!
+                            Preencha os campos!
                         </Text>
                         <Text style={{ display: resultEmpty, color: '#FF0000', fontSize: 15 }}>
                             {lResult.error}
                         </Text>
                     </View>
                     <View style={styles.confirmArea}>
-                        <TouchableOpacity style={styles.passwordButton} onPress={AlterData}>
-                            <Text style={styles.textPassword}>Confirmar</Text>
+                        <TouchableOpacity style={styles.acceptButton} onPress={AlterData}>
+                            <Text style={styles.textAccept}>Atualizar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -304,7 +223,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    passwordButton: {
+    acceptButton: {
         width: 300,
         height: 50,
         backgroundColor: '#17F1A1',
@@ -312,7 +231,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    textPassword: {
+    textAccept: {
         fontSize: 22,
         fontWeight: 'bold',
         color: '#000000'
