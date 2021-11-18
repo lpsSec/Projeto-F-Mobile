@@ -31,7 +31,6 @@ export default function appHome(){
                 setMessageEmpty('none');
             }
             else {
-                alert("PRODUCTS É NULL");
                 setList([]);
                 setMessageEmpty('flex');
             }
@@ -51,20 +50,28 @@ export default function appHome(){
         //TODO: faze busca por nome - ainda não tem para titulo do produto.
         setLoading(true);
         setList([]);
-        // if(searchFiled != ''){
-        //     let res = await Api.getProductByName(searchFiled, '');
-        //     if(res.data[0] != null) {
-        //         setList(res.data);
-        //         setTextEmpty('none');
-        //         setMessageEmpty('none');
-        //     }
-        //     else {
-        //         setList([]);
-        //         setMessageEmpty('flex');
-        //     }
-        // } else {
-        //     setSearchEmpty('flex');
-        // }
+
+        const Filters = [
+            {"name": searchFiled}
+        ];
+
+
+        if( searchFiled != "")
+        {
+            let response = await Api.getProductsWithFilter(Filters[0].name)
+            
+            if( response[0] != null) {
+                setList(response);
+                // alert(response[0].description);
+                setTextEmpty('none');
+                setMessageEmpty('none');
+            } else {
+                setList([]);
+                setMessageEmpty('flex');
+            }
+        } else {
+            setSearchEmpty('flex');
+        }
         setLoading(false);
     };
 
@@ -80,7 +87,6 @@ export default function appHome(){
                     setMessageEmpty('none');
                 }
                 else {
-                    alert("PRODUCTS É NULL");
                     setList([]);
                     setMessageEmpty('flex');
                 }

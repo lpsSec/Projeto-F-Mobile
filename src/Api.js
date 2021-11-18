@@ -108,6 +108,22 @@ export default {
         const json = await req.json();
         return json;
     },
+    getProductsWithFilter: async ( Filters ) => {
+        const token = await AsyncStorage.getItem('token');
+        const name = Filters;
+        alert("Search: " + JSON.stringify({name}));
+        const req = await fetch(`${BASE_API}/product/filter`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({name})
+        });
+        const json = await req.json();
+        return json;
+    },
     getProducts: async () => {
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/product/`, {
@@ -118,7 +134,6 @@ export default {
         // const json = await req.text();
         const json = await req.json();
         const stringa = json[0].name;
-        // alert('REQ: '+stringa);
         return json;
     },
     getUserId: async () => {

@@ -164,8 +164,9 @@ export default function SignUp() {
             if(result.success) {
                 const name = nameField.split(' ').slice(0,1).join(' ');
                 const last = nameField.split(' ').slice(1,10).join(' ');
-                let json = await Api.signUp(name.toString(), last.toString(), cpfField.toString(), emailField.toString(), passwordField.toString(), telField.toString(), ageField.toString());
-                alert("SIGN");
+
+                let json = await Api.signUp(name, last, cpfField, emailField, passwordField, telField, ageField);
+                alert("SIGN ok");
                 if(json.token) {
                     alert("Token signUp: " + json.token);
                     let signIn = await Api.signIn(emailField, passwordField); 

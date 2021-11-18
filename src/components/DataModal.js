@@ -69,6 +69,7 @@ export default ({show, setShow, name, phone, email})  =>  {
     const AlterData = async () => {
         const name = nameField.split(' ').slice(0,1).join(' ');
         const last = nameField.split(' ').slice(1,10).join(' ');
+        
         if(emailField == '' && nameField == '' && telField == '') {
             setMessageEmpty('flex');
             wait(2000).then(() => { setMessageEmpty('none') });
