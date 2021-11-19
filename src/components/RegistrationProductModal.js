@@ -8,9 +8,13 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow, idUSer})  =>  {
-    const [passwordField, setPasswordField] = useState('');
-    const [passwordField2, setPasswordField2] = useState('');
+export default ({show, setShow})  =>  {
+    const [nome, setNome] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [categoria, setCategoria] = useState('none');
+    const [licenca, setLicenca] = useState('none');
+    const [price, setPrice] = useState('');
+
     const [message, setMessage] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageEmpty2, setMessageEmpty2] = useState('none');
@@ -18,22 +22,12 @@ export default ({show, setShow, idUSer})  =>  {
     const [selectedValue, setSelectedValue] = useState("java");
 
     const RegisterProduct = async () => {
-        // if(passwordField != passwordField2) {
-        //     setMessageEmpty('flex');
-        //     wait(3000).then(() => { setMessageEmpty('none') });
-        // } else if (passwordField.length < 6 || passwordField.length > 10) {
-        //     setMessageEmpty2('flex');
-        //     wait(3000).then(() => { setMessageEmpty2('none') });
-        // } else {
-        //     let json = await Api.registerProduct(value, passwordField);
-        //     if(!json.error)
-        //         setShow(false);
-        //     else {
-        //         setMessage(json.mensagem);
-        //         setMessageEmpty3('flex');
-        //         wait(3000).then(() => { setMessageEmpty3('none') });
-        //     }
-        // }
+        let json = await Api.createProduct(nome, descricao, categoria, licenca, price);
+        if(json.name){
+            setShow(false);
+        } else {
+            alert('Não foi possível efetuar o cadastro!');
+        }
     };
 
     return (
@@ -55,6 +49,7 @@ export default ({show, setShow, idUSer})  =>  {
                                 placeholder="Digite o nome aqui"
                                 placeholderTextColor="#000000"
                                 autoCapitalize='none'
+                                onChangeText={t=>setNome(t)}
                             />
                         </View>
                         <View style={styles.infoBody}>
@@ -64,34 +59,35 @@ export default ({show, setShow, idUSer})  =>  {
                                 placeholder="Digite a descrição aqui"
                                 placeholderTextColor="#000000"
                                 autoCapitalize='none'
+                                onChangeText={t=>setDescricao(t)}
                             />
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Categoria:</Text>
                             <Picker
                                 style={{ height: 50, width: 150 }}
-                                selectedValue={selectedValue}
-                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                selectedValue={categoria}
+                                onValueChange={(itemValue, itemIndex) => setCategoria(itemValue)}
                             >
-                                <Picker.Item value="mobile" label="Mobile" />
-                                <Picker.Item value="web" label="Web" />
-                                <Picker.Item value="hibrido" label="Híbrido" />
+                                <Picker.Item value="1" label="Mobile" />
+                                <Picker.Item value="2" label="Web" />
+                                <Picker.Item value="3" label="Híbrido" />
                             </Picker>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Licença:</Text>
                             <Picker
                                 style={{ height: 50, width: 220 }}
-                                selectedValue={selectedValue}
-                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                                selectedValue={licenca}
+                                onValueChange={(itemValue, itemIndex) => setLicenca(itemValue)}
                             >
-                                <Picker.Item value="eula" label="EULA" />
-                                <Picker.Item value="sp" label="Software Proprietário" />
-                                <Picker.Item value="sl" label="Software Livre" />
-                                <Picker.Item value="sc" label="Software Comercial" />
-                                <Picker.Item value="op" label="Open Source" />
-                                <Picker.Item value="gnu" label="GNU GPL" />
-                                <Picker.Item value="sg" label="Software Gratuito" />
+                                <Picker.Item value="1" label="EULA" />
+                                <Picker.Item value="2" label="Software Proprietário" />
+                                <Picker.Item value="3" label="Software Livre" />
+                                <Picker.Item value="4" label="Software Comercial" />
+                                <Picker.Item value="5" label="Open Source" />
+                                <Picker.Item value="6" label="GNU GPL" />
+                                <Picker.Item value="7" label="Software Gratuito" />
                             </Picker>
                         </View>
                         <View style={styles.infoBody}>
@@ -102,6 +98,7 @@ export default ({show, setShow, idUSer})  =>  {
                                 placeholderTextColor="#000000"
                                 autoCapitalize='none'
                                 keyboardType="numeric"
+                                onChangeText={t=>setPrice(Number.parseInt(t))}
                             />
                         </View>
                     </View>

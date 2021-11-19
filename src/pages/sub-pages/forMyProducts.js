@@ -18,19 +18,19 @@ export default function forInfo() {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getLocates().then((response) => {
-            if(response.data[0] != null) {
-                setListLocate(response.data);
-                setMessageEmpty('none');
-            }
-            else {
-                setListLocate([]);
-                setMessageEmpty('flex');
-            }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
-        wait(2000).then(() => setRefreshing(false));
+        // Api.getLocates().then((response) => {
+        //     if(response.data[0] != null) {
+        //         setListLocate(response.data);
+        //         setMessageEmpty('none');
+        //     }
+        //     else {
+        //         setListLocate([]);
+        //         setMessageEmpty('flex');
+        //     }
+        // }).catch((error) => {
+        //     // alert('Erro inesperado, contate o adminstrador');
+        // });
+        // wait(2000).then(() => setRefreshing(false));
     }, []);
 
     const registerProduct = async () => {
@@ -48,20 +48,20 @@ export default function forInfo() {
     useEffect(() => {
         let isFlag = true;
         setListLocate([]);
-        Api.getLocates().then((response) => {
-            if(isFlag) {
-                if(response.data[0] != null) {
-                    setListLocate(response.data);
-                    setMessageEmpty('none');
-                }
-                else {
-                    setListLocate([]);
-                    setMessageEmpty('flex');
-                }
-            }
-        }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
+        // Api.getLocates().then((response) => {
+        //     if(isFlag) {
+        //         if(response.data[0] != null) {
+        //             setListLocate(response.data);
+        //             setMessageEmpty('none');
+        //         }
+        //         else {
+        //             setListLocate([]);
+        //             setMessageEmpty('flex');
+        //         }
+        //     }
+        // }).catch((error) => {
+        //     // alert('Erro inesperado, contate o adminstrador');
+        // });
         return () => { isFlag = false };
     }, []);
     return(
@@ -95,7 +95,6 @@ export default function forInfo() {
             <RegistrationProductModal 
                 show={registrationProductModal}
                 setShow={setRegistrationProductModal}
-                idUser={idUser}
             />
         </ScrollView>
     );
