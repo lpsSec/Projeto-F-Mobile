@@ -11,6 +11,7 @@ export default ({data}) => {
             name: data.name,
             description: data.description,
             price: data.price,
+            category: data.category,
             advertiser: data.advertiser,
             licenseType: data.licenseType,
             rating: data.rating

@@ -52,13 +52,14 @@ export default function appHome(){
         setList([]);
 
         const Filters = [
-            {"name": searchFiled}
+            {"name": searchFiled,
+            "price": 5000}
         ];
 
 
         if( searchFiled != "")
         {
-            let response = await Api.getProductsWithFilter(Filters[0].name)
+            let response = await Api.getProductsWithFilter(Filters[0])
             
             if( response[0] != null) {
                 setList(response);

@@ -18,7 +18,7 @@ export default function LostPassword() {
 
     const handleSendClick = async () => {
         if(emailField != '' ) {
-            let json = await Api.LostPassword(emailField);
+            let json = await Api.lostPassword(emailField);
             if(json) {
                 //TODO: Set Success msg
                 setMessageSuccess('flex');

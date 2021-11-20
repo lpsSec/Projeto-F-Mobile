@@ -110,8 +110,9 @@ export default {
     },
     getProductsWithFilter: async ( Filters ) => {
         const token = await AsyncStorage.getItem('token');
-        const name = Filters;
-        alert("Search: " + JSON.stringify({name}));
+        const name = Filters.name;
+        const price = Filters.price;
+        // alert("Search: " + JSON.stringify({name}));
         const req = await fetch(`${BASE_API}/product/filter`, {
             method: 'POST',
             headers: {
@@ -119,7 +120,7 @@ export default {
                 'Content-Type': 'application/json'
                 // "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({name})
+            body: JSON.stringify({name, price})
         });
         const json = await req.json();
         return json;
