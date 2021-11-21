@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, ScrollView, Image} from 'react-native';
-import Api from '../Api';
 
 import Back from '../assets/back.svg';
 import FavoriteClean from '../assets/favorito-vazio.svg';
 import Favorite from '../assets/favorito.svg';
-import StarFilled from '../assets/star-filled.png';
-import StarUnfilled from '../assets/star-unfilled.png';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -18,11 +15,8 @@ export default function ProductBoard() {
     const route = useRoute();
 
     const [verify, setVerify] = useState(true);
-    const [indie, setIndie] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [addFavorite, setAddFavorite] = useState('none');
     const [removeFavorite, setRemoveFavorite] = useState('none');
-    const [disabledBack, setDisabledBack] = useState(false);
     const [disabledLocate, setDisabledLocate] = useState(false);
     const [licenseType, setLisence] = useState('');
     const [category, setCategory] = useState('');
@@ -40,22 +34,18 @@ export default function ProductBoard() {
     });
 
     const setMessage = () => {
-        setLoading(false);
         setAddFavorite('none');
         setRemoveFavorite('none');
-        setDisabledBack(false);
         setDisabledLocate(false);
     };
 
     const setFavorite = async () => {
-        setLoading(true);
         // if(verify) {
         //     let json = await Api.addFavorite();
         //     if(!json.error) {
         //         setVerify(false);
         //         setAddFavorite('flex');
         //         setRemoveFavorite('none');
-        //         setDisabledBack(true);
         //         setDisabledLocate(true);
         //     }
         // } else {
@@ -64,7 +54,6 @@ export default function ProductBoard() {
         //         setVerify(true);
         //         setRemoveFavorite('flex');
         //         setAddFavorite('none');
-        //         setDisabledBack(true);
         //         setDisabledLocate(true);
         //     }
         // }
@@ -85,7 +74,6 @@ export default function ProductBoard() {
 				IconStart = require('../assets/star-unfilled.png');
 			}
 			// Push the Image tag in the stars array
-			// starsVector.push((<Image style={styles.image} source={IconStart}/>));
             tempStars.push(<Image key={i} style={styles.image} source={IconStart}/>);
 		}
         setStars(tempStars);
@@ -165,7 +153,7 @@ export default function ProductBoard() {
             style={styles.photoArea} 
             source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
-               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }} disabled={disabledBack}>
+               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }}>
                     <Back width="36" height="36" fill="#FFFFFF"/>
                </TouchableOpacity>
             </ImageBackground>
@@ -200,7 +188,7 @@ export default function ProductBoard() {
                     <View style={styles.infoBody}>
                         <Text style={styles.typeTitle}>Avaliação:</Text>
                         { starsVector }
-                        <Text style={styles.title}>({productInfo.rating})</Text>
+                        <Text style={styles.title}>({productInfo.rating==null?"0":productInfo.rating})</Text>
                     </View>
                 </View>
                 <View style={styles.warningFavorite}>
@@ -222,7 +210,7 @@ export default function ProductBoard() {
                         </TouchableOpacity>
                     }
                     {/* TODO: move to cart page - OR - display successful msg*/}
-                        <TouchableOpacity style={styles.locateButton} onPress={() => {  }}>
+                        <TouchableOpacity style={styles.addToCart} onPress={() => {  }}>
                             <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
                         </TouchableOpacity>
                 </View>
@@ -321,7 +309,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 5
     },
-    locateButton: {
+    addToCart: {
         width: 300,
         height: 50,
         backgroundColor: '#17F1A1',

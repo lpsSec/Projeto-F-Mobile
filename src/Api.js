@@ -28,14 +28,14 @@ export default {
         const json = await req.json();
         return json;
     },
-    signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
+    signUp: async (name, last_name, cpf, email, password, phone, birth_date) => {
         const req = await fetch(`${BASE_API}/user/create`, {
             method: "POST",
             headers: {
-                "Accept" : "application/json",
+                // "Accept" : "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date})
+            body: JSON.stringify({name, last_name, cpf, email, password, phone, birth_date})
         });
         const json = await req.json();
         return json;

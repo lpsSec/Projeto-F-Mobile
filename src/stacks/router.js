@@ -8,6 +8,7 @@ import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import ProductBoard from '../pages/ProductBoard';
 import LostPassword from '../pages/LostPassword';
+import Cart from '../pages/Cart';
 
 const Stack = createStackNavigator();
 
@@ -23,10 +24,10 @@ function Routes(){
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="LostPassword" component={LostPassword} />
             <Stack.Screen name="SignUp" component={SignUp} />
-            {/* <Stack.Screen name="LostPassword" component={LostPassword} /> */}
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ProductBoard" component={ProductBoard} />
+            <Stack.Screen name="Cart" component={Cart} />
         </Stack.Navigator>
     );
 };

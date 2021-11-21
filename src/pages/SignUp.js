@@ -70,6 +70,16 @@ export default function SignUp() {
 
     const fieldValidate = () => {
         clearResult();
+
+        const name = nameField.split(' ').slice(0,1).join(' ');
+        const last = nameField.split(' ').slice(1,10).join(' ');
+
+        if( !last ) {
+            lResult.error = 'Você deve entrar com seu sobrenome também.',
+            lResult.success = false;
+            return lResult;
+        }
+
         if(!emailValidate()) {
             lResult.error = 'O EMAIL é inválido!',
             lResult.success = false;
@@ -166,12 +176,12 @@ export default function SignUp() {
                 const last = nameField.split(' ').slice(1,10).join(' ');
 
                 let json = await Api.signUp(name, last, cpfField, emailField, passwordField, telField, ageField);
-                alert("SIGN ok");
-                if(json.token) {
-                    alert("Token signUp: " + json.token);
+                if(json.cpf) {
+                    alert("Email: " + emailField + "\nSenha: " + passwordField);
                     let signIn = await Api.signIn(emailField, passwordField); 
-                    if(signIn.token)  {
+                    if(signIn.token) {
                         await AsyncStorage.setItem('token', signIn.token);
+                        await AsyncStorage.setItem('cpf', json.cpf);
 
                         navigation.reset({
                             routes: [{name: 'Home'}]
@@ -179,7 +189,7 @@ export default function SignUp() {
 
                     }
                 } else {
-                    alert("Erro: " + json.mensagem);
+                    alert("Erro: " + json.message.message);
                 }
             } else {
                 setValidateEmpty('flex');

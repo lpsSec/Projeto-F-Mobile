@@ -47,13 +47,14 @@ export default function appHome(){
     };
 
     const handleSearch = async () => {
-        //TODO: faze busca por nome - ainda não tem para titulo do produto.
         setLoading(true);
         setList([]);
 
         const Filters = [
-            {"name": searchFiled,
-            "price": 5000}
+        {
+            "name": searchFiled,
+            "price": 5000
+        }
         ];
 
 
