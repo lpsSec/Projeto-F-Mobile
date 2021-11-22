@@ -17,7 +17,6 @@ export default function ProductBoard() {
     const [verify, setVerify] = useState(true);
     const [addFavorite, setAddFavorite] = useState('none');
     const [removeFavorite, setRemoveFavorite] = useState('none');
-    const [disabledLocate, setDisabledLocate] = useState(false);
     const [licenseType, setLisence] = useState('');
     const [category, setCategory] = useState('');
     const [starsVector, setStars] = useState([]);
@@ -36,7 +35,6 @@ export default function ProductBoard() {
     const setMessage = () => {
         setAddFavorite('none');
         setRemoveFavorite('none');
-        setDisabledLocate(false);
     };
 
     const setFavorite = async () => {
@@ -46,7 +44,6 @@ export default function ProductBoard() {
         //         setVerify(false);
         //         setAddFavorite('flex');
         //         setRemoveFavorite('none');
-        //         setDisabledLocate(true);
         //     }
         // } else {
         //     let json = await Api.removeFavorite();
@@ -54,7 +51,6 @@ export default function ProductBoard() {
         //         setVerify(true);
         //         setRemoveFavorite('flex');
         //         setAddFavorite('none');
-        //         setDisabledLocate(true);
         //     }
         // }
         wait(3000).then(setMessage);
@@ -154,7 +150,7 @@ export default function ProductBoard() {
             source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
                <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }}>
-                    <Back width="36" height="36" fill="#FFFFFF"/>
+                    <Back width="36" height="36" fill="#000000"/>
                </TouchableOpacity>
             </ImageBackground>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
@@ -201,17 +197,17 @@ export default function ProductBoard() {
                 </View>
                 <View style={styles.viewCarrinho}>
                     {verify ?
-                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
+                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite}>
                             <FavoriteClean width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
+                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite}>
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
                     {/* TODO: move to cart page - OR - display successful msg*/}
                         <TouchableOpacity style={styles.addToCart} onPress={() => {  }}>
-                            <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
+                            <Text style={styles.textAddToCart}>Adicionar ao carrinho</Text>
                         </TouchableOpacity>
                 </View>
             </View>
@@ -317,7 +313,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    textLocate: {
+    textAddToCart: {
         fontSize: 22,
         fontWeight: 'bold',
         color: '#000000'

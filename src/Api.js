@@ -134,7 +134,17 @@ export default {
         });
         // const json = await req.text();
         const json = await req.json();
-        const stringa = json[0].name;
+        return json;
+    },
+    getProductsOnCart: async () => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+        const req = await fetch(`${BASE_API}/user/cart` + cpf, {
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
+        });
+        const json = await req.json();
         return json;
     },
     getUserId: async () => {

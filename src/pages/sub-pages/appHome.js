@@ -35,7 +35,6 @@ export default function appHome(){
                 setMessageEmpty('flex');
             }
         }).catch((err) => {
-            console.log("Erro onRefresh: " + err);
             // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));

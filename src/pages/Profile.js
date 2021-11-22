@@ -20,7 +20,7 @@ export default function Profile() {
             source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
                 <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }}>
-                    <Back width="36" height="36" fill="#FFFFFF"/>
+                    <Back width="36" height="36" fill="#000000"/>
                 </TouchableOpacity>
             </ImageBackground>
             <Tab.Navigator tabBar={props=><ProfileTabBar {...props} />}>

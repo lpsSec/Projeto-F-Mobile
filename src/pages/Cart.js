@@ -1,13 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 
 import Back from '../assets/back.svg';
 import MyCart from '../assets/cart.svg';
+import Api from '../Api';
 
+import Produto from '../components/ProductItem';
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export default function Home({state}) {
     const navigation = useNavigation();
+
+    const [list, setList] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        Api.getProductsOnCart().then((response) => {
+            if(response[0] != null) {                
+                setList(response);
+                setTextEmpty('none');
+                setMessageEmpty('none');
+            }
+            else {
+                setList([]);
+                setMessageEmpty('flex');
+            }
+        }).catch((err) => {
+            // alert('Erro inesperado, contate o adminstrador');
+        });
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    useEffect(() => {
+        let isFlag = true;
+        setList([]);
+
+        const unsubscribe = navigation.addListener('focus', () => {
+            Api.getProductsOnCart().then((response) => {
+                if(isFlag){
+                if(response[0] != null) {
+                    setList(response);
+                    setTextEmpty('none');
+                    setMessageEmpty('none');
+                }
+                else {
+                    setList([]);
+                    setMessageEmpty('flex');
+                }
+            }
+            }).catch((err) => {
+                // alert('Erro inesperado, contate o adminstrador');
+            });
+        });
+        return () => { isFlag = false, unsubscribe };
+    }, [], [navigation]);
 
     return (
         <View style={styles.background}>
@@ -21,7 +73,28 @@ export default function Home({state}) {
                 <MyCart width="30" height="30"  alignItems='center' fill="#000000"/>
             </TouchableOpacity>
             </View>
+            {/* PRODUCT LIST */}
+            <ScrollView 
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor: '#FFFFFF' }} 
+                    horizontal={false} 
+                    refreshControl={
+                        <RefreshControl 
+                        refreshing={refreshing} 
+                        onRefresh={onRefresh} 
+                        />}>
+                    {loading && 
+                        <ActivityIndicator size="large" color="#000000"/>
+                    }
+                    <View style={styles.listArea}>
+                        {
+                            list.map((item, k) => (
+                                <Produto key={k} data={item} />
+                            ))
+                        }
+                    </View>
+            </ScrollView>
 
+            {/* FOOTER */}
             <View style={styles.footer}>
                 <View style={styles.priceBox}>
                     <Text style={styles.footerText}>Total:</Text>
@@ -109,6 +182,9 @@ const styles = StyleSheet.create({
     icon: {
         width: 36,
         height: 36,
+    },
+    listArea: {
+        width: 400,
     },
     toBack: {
         width: 36,
