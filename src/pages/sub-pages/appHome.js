@@ -49,17 +49,20 @@ export default function appHome(){
         setLoading(true);
         setList([]);
 
-        const Filters = [
-        {
+        // Hardcoded first product
+        const Filters =  {
             "name": searchFiled,
-            "price": 5000
-        }
-        ];
+            "price": 5000,
+            "category": 1,
+            "advertiser": "Lourenço",
+            "licenseType": 1,
+            "rating": 5
+        };
 
 
         if( searchFiled != "")
         {
-            let response = await Api.getProductsWithFilter(Filters[0])
+            let response = await Api.getProductsWithFilter(Filters)
             
             if( response[0] != null) {
                 setList(response);

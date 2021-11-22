@@ -53,6 +53,16 @@ export default ({show, setShow, name, phone, email})  =>  {
 
     const fieldValidate = () => {
         clearResult();
+
+        const name = nameField.split(' ').slice(0,1).join(' ');
+        const last = nameField.split(' ').slice(1,10).join(' ');
+
+        if( !last ) {
+            lResult.error = 'Você deve entrar com seu sobrenome também.',
+            lResult.success = false;
+            return lResult;
+        }
+        
         if(!emailValidate() && emailField.length != 0) {
             lResult.error = 'O EMAIL é inválido!',
             lResult.success = false;
@@ -92,9 +102,9 @@ export default ({show, setShow, name, phone, email})  =>  {
     useEffect(() => {
         let isFlag = true;
 
-        setNameField(name);
-        setEmailField(email);
-        setTelField(phone);
+        // setNameField(name);
+        // setEmailField(email);
+        // setTelField(phone);
         
         return () => { isFlag = false };
     }, [] );
@@ -115,7 +125,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
-                            placeholder="Digite seu nome"
+                            placeholder="Digite seu novo nome"
                             placeholderTextColor="#000000"
                             value={nameField}
                             onChangeText={t=>setNameField(t)}
@@ -126,7 +136,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
-                            placeholder="Digite seu e-mail"
+                            placeholder="Digite seu novo e-mail"
                             placeholderTextColor="#000000"
                             value={emailField}
                             autoCapitalize='none'
@@ -143,7 +153,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                                 withDDD: true,
                                 dddMask: '(99)'
                             }}
-                            placeholder="Digite seu telefone"
+                            placeholder="Digite seu novo telefone"
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
                             value={telField}

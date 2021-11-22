@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Animated, StyleSheet, Switch } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import Api from '../Api';
 
@@ -19,12 +19,12 @@ const wait = (timeout) => {
 export default function SignUp() {
     const navigation = useNavigation();
 
+    const [pessoaFisica, setPessoaFisica] = useState(true);
     const [nameField, setNameField] = useState('');
-    // const [userFild, setUserFiled] = useState('');
     const [emailField, setEmailField] = useState('');
     const [passwordField, setpasswordField] = useState('');
     const [telField, setTelField] = useState('');
-    const [cpfField, setCPFField] = useState('');
+    const [cpfCnpjField, setCPFField] = useState('');
     const [ageField, setAgeField] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
@@ -100,12 +100,12 @@ export default function SignUp() {
             lResult.error = 'O TELEFONE foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfField.length < 14) {
+        } else if(cpfCnpjField.length < 14) {
             lResult.error = 'O CPF foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfField.length == 14) { //TODO: Validar também CNPJ
-            var unmasked = cpfField;
+        } else if(cpfCnpjField.length == 14) { //TODO: Validar também CNPJ
+            var unmasked = cpfCnpjField;
             unmasked = unmasked.replace(".", "");
             unmasked = unmasked.replace(".", "");
             unmasked = unmasked.replace("-", "");
@@ -169,15 +169,14 @@ export default function SignUp() {
     };
 
     const handleSignClick = async () => {
-        if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfField != '') {
+        if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfCnpjField != '') {
             let result = fieldValidate();
             if(result.success) {
                 const name = nameField.split(' ').slice(0,1).join(' ');
                 const last = nameField.split(' ').slice(1,10).join(' ');
 
-                let json = await Api.signUp(name, last, cpfField, emailField, passwordField, telField, ageField);
+                let json = await Api.signUp(name, last, cpfCnpjField, emailField, passwordField, telField, ageField);
                 if(json.cpf) {
-                    alert("Email: " + emailField + "\nSenha: " + passwordField);
                     let signIn = await Api.signIn(emailField, passwordField); 
                     if(signIn.token) {
                         await AsyncStorage.setItem('token', signIn.token);
@@ -217,6 +216,14 @@ export default function SignUp() {
             </View>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                 <Animated.View style={[ styles.pageBody,  { transform: [ { translateY: offset.y } ] }]}>
+                <View style={styles.switchContainer}>
+                    <Switch
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={setPessoaFisica}
+                    value={pessoaFisica}
+                    />
+                    <Text style={styles.label}>Pessoa física</Text>
+                </View>
                     <View style={styles.inputArea}>
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
@@ -227,16 +234,6 @@ export default function SignUp() {
                             onChangeText={t=>setNameField(t)}
                         />
                     </View>
-                    {/* <View style={styles.inputArea}>
-                        <Person width="24" height="24" fill="#000000" />
-                        <TextInput 
-                            style={styles.input} 
-                            placeholder="Usuário"
-                            placeholderTextColor="#000000"
-                            value={userFild}
-                            onChangeText={t=>setUserFiled(t)}
-                        />
-                    </View> */}
                     <View style={styles.inputArea}>
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 
@@ -263,8 +260,8 @@ export default function SignUp() {
                     <View style={styles.inputArea}>
                         <Doc width="24" height="24" fill="#000000" />
                         <TextInputMask
-                            type={'cpf'}
-                            value={cpfField}
+                            type={pessoaFisica?'cpf':'cnpj'}
+                            value={cpfCnpjField}
                             placeholder="CPF/CNPJ"
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
@@ -329,6 +326,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 20,
         backgroundColor: '#49B4EF'
+    },
+    switchContainer: {
+        alignSelf: 'flex-start',
+        marginLeft: 30,
+        flexDirection: "row",
+    },
+    label: {
+        margin: 8,
+        fontSize: 15,
+        fontWeight: 'bold'
     },
     headerBody: {
         height: 200,
