@@ -6,6 +6,7 @@ import ProfileTabBar from '../components/ProfileTabBar';
 import forInfo from '../pages/sub-pages/forInfo';
 import forMyProducts from '../pages/sub-pages/forMyProducts';
 import forFavorites from '../pages/sub-pages/forFavorites';
+import forMyShopping from '../pages/sub-pages/forMyShopping';
 import Back from '../assets/back.svg';
 
 const Tab = createMaterialTopTabNavigator();
@@ -26,6 +27,7 @@ export default function Profile() {
             <Tab.Navigator tabBar={props=><ProfileTabBar {...props} />}>
                 <Tab.Screen name="forInfo" component={forInfo}/>
                 <Tab.Screen name="forMyProducts" component={forMyProducts}/>
+                <Tab.Screen name="forMyShopping" component={forMyShopping}/>
                 <Tab.Screen name="forFavorites" component={forFavorites}/>
             </Tab.Navigator>
         </View>
