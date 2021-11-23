@@ -24,9 +24,10 @@ export default function SignUp() {
     const [emailField, setEmailField] = useState('');
     const [passwordField, setpasswordField] = useState('');
     const [telField, setTelField] = useState('');
-    const [cpfCnpjField, setCPFField] = useState('');
+    const [cpfCnpjField, setCpfCnpjField] = useState('');
     const [ageField, setAgeField] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
+    const [messageSucess, setMessageSucess] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
     const [lResult, setlResult] = useState({
         error: '',
@@ -68,7 +69,7 @@ export default function SignUp() {
         lResult.success = true;
     }
 
-    const fieldValidate = () => {
+    const fieldValidate = async () => {
         clearResult();
 
         const name = nameField.split(' ').slice(0,1).join(' ');
@@ -100,11 +101,15 @@ export default function SignUp() {
             lResult.error = 'O TELEFONE foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfCnpjField.length < 14) {
+        } else if(cpfCnpjField.length < 14 && pessoaFisica) {
             lResult.error = 'O CPF foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfCnpjField.length == 14) { //TODO: Validar também CNPJ
+        } else if(cpfCnpjField.length < 18 && !pessoaFisica) {
+            lResult.error = 'O CNPJ foi preenchido incorretamente!',
+            lResult.success = false;
+            return lResult;
+        } else if(cpfCnpjField.length == 14 && pessoaFisica) {
             var unmasked = cpfCnpjField;
             unmasked = unmasked.replace(".", "");
             unmasked = unmasked.replace(".", "");
@@ -158,6 +163,20 @@ export default function SignUp() {
                 return lResult;
             } 
 
+        } else if(cpfCnpjField.length == 18 && !pessoaFisica) {
+            var unmasked = cpfCnpjField;
+            unmasked = unmasked.replace(".", "");
+            unmasked = unmasked.replace(".", "");
+            unmasked = unmasked.replace("-", "");
+            unmasked = unmasked.replace("/", "");
+
+            let json = await Api.validaCNPJ(unmasked);
+            if(json.message == "CNPJ inválido")
+            {
+                lResult.error = 'O CNPJ é inválido!',
+                lResult.success = false;
+                return lResult;
+            }
         }
         
         return lResult;
@@ -166,12 +185,14 @@ export default function SignUp() {
     const setMessage = () => {
         setValidateEmpty('none'); 
         setMessageEmpty('none');
+        setMessageSucess('none');
     };
 
     const handleSignClick = async () => {
         if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfCnpjField != '') {
             let result = fieldValidate();
-            if(result.success) {
+            if((await result).success) {
+                setMessageSucess('flex');
                 const name = nameField.split(' ').slice(0,1).join(' ');
                 const last = nameField.split(' ').slice(1,10).join(' ');
 
@@ -221,6 +242,7 @@ export default function SignUp() {
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={setPessoaFisica}
                     value={pessoaFisica}
+                    disabled={cpfCnpjField.length}
                     />
                     <Text style={styles.label}>Pessoa física</Text>
                 </View>
@@ -265,7 +287,7 @@ export default function SignUp() {
                             placeholder="CPF/CNPJ"
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
-                            onChangeText={t=>setCPFField(t)}
+                            onChangeText={t=>setCpfCnpjField(t)}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -299,6 +321,9 @@ export default function SignUp() {
                         />
                     </View>
                     <View style={styles.messageValid}>
+                    <Text style={{display: messageSucess, color: '#00FF00', }}>
+                        Cadastrado! Você será redirecionado.
+                        </Text>
                         <Text style={{display: messageEmpty, color: '#FF0000', }}>
                         Preencha todos os campos!
                         </Text>

@@ -155,13 +155,8 @@ export default {
         const json = await req.json();
         return json;
     },
-    getUserId: async () => {
-        const user = await AsyncStorage.getItem('user');
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/user/` + user, {
-            headers: {
-                "Authorization": 'Baerer ' + token
-            }
+    validaCNPJ: async ( cnpj ) => {
+        const req = await fetch(`https://www.receitaws.com.br/v1/cnpj/` + cnpj, {
         });
         const json = await req.json();
         return json;
