@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import HomeTabBar from '../components/HomeTabBar';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import appHome from './sub-pages/appHome';
-import appCarrinho from '../pages/sub-pages/appCarrinho';
 
 import Softbear from '../assets/logo_softbear.svg';
 import Account from '../assets/account.svg';
@@ -29,7 +28,6 @@ export default function Home({state}) {
             </View>
             <Tab.Navigator tabBar={props=><HomeTabBar {...props} />}>
                 <Tab.Screen name="appHome" component={appHome}/>
-                <Tab.Screen name="appCarrinho" component={appCarrinho}/>
             </Tab.Navigator>
         </View>
     );

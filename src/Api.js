@@ -108,17 +108,8 @@ export default {
         const json = await req.json();
         return json;
     },
-    getProductsWithFilter: async ( Filters ) => {
+    searchProductByCategory: async ( category ) => {
         const token = await AsyncStorage.getItem('token');
-
-        const FilterObject = {
-            "name": String(Filters.name),
-            "price": Number(Filters.price),
-            "category": Number(Filters.category),
-            "advertiser": String(Filters.advertiser),
-            "licenseType": Number(Filters.licenseType),
-            "rating": Number(Filters.rating)
-        };
 
         const req = await fetch(`${BASE_API}/product/filter`, {
             method: 'POST',
@@ -127,12 +118,51 @@ export default {
                 'Content-Type': 'application/json'
                 // "Authorization": 'Baerer ' + token
             },
-            // body: JSON.stringify({name, price})
-            body: JSON.stringify(FilterObject)
+            body: JSON.stringify({category})
         });
         const json = await req.json();
         return json;
     },
+    searchProductByString: async ( name ) => {
+        const token = await AsyncStorage.getItem('token');
+
+        const req = await fetch(`${BASE_API}/product/filter`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({name})
+        });
+        const json = await req.json();
+        return json;
+    },
+    // getProductsWithFilter: async ( Filters ) => {
+    //     const token = await AsyncStorage.getItem('token');
+
+    //     const FilterObject = {
+    //         "name": String(Filters.name),
+    //         "price": Number(Filters.price),
+    //         "category": Number(Filters.category),
+    //         "advertiser": String(Filters.advertiser),
+    //         "licenseType": Number(Filters.licenseType),
+    //         "rating": Number(Filters.rating)
+    //     };
+
+    //     const req = await fetch(`${BASE_API}/product/filter`, {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //             // "Authorization": 'Baerer ' + token
+    //         },
+    //         // body: JSON.stringify({name, price})
+    //         body: JSON.stringify(FilterObject)
+    //     });
+    //     const json = await req.json();
+    //     return json;
+    // },
     getProducts: async () => {
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/product/`, {
