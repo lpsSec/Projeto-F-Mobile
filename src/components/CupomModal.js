@@ -8,11 +8,12 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow, setCupomName})  =>  {
+export default ({show, setShow, setCupomName, setRefreshCallBack})  =>  {
     const [cupomFiled, setCupomFiled] = useState('');
     const [successApplyed, setSuccessApplyed] = useState('none');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageInvalid, setMessageInvalid] = useState('none');
+    const [discount, setDiscount] = useState(0);
 
     const applyCupom = async () => {
         if(cupomFiled == "") {
@@ -23,8 +24,9 @@ export default ({show, setShow, setCupomName})  =>  {
 
             if( response._id  != null) {
                 setCupomName(response.name);
+                setDiscount(response.value);
                 setSuccessApplyed('flex');
-                wait(2000).then(() => { setSuccessApplyed('none'); setShow(false);});
+                wait(2000).then(() => { setSuccessApplyed('none'); setShow(false); setRefreshCallBack(true)});
             }
             else
             {
@@ -59,14 +61,14 @@ export default ({show, setShow, setCupomName})  =>  {
                         </View>
                     </View>
                     <View style={styles.messageArea}>
-                        <Text style={{ display: messageEmpty, color: '#FF0000', fontSize: 15 }}>
+                        <Text style={{ display: messageEmpty, color: '#FF0000', fontSize: 17 }}>
                             Preecha o campo!
                         </Text>
-                        <Text style={{ display: messageInvalid, color: '#FF0000', fontSize: 15 }}>
+                        <Text style={{ display: messageInvalid, color: '#FF0000', fontSize: 17 }}>
                             O cupom inserido não é valido
                         </Text>
-                        <Text style={{ display: successApplyed, color: '#00FF00', fontSize: 15 }}>
-                            Cupom adicionado!
+                        <Text style={{ display: successApplyed, color: '#00FF00', fontSize: 17 }}>
+                            Cupom de {discount*100}% adicionado!
                         </Text>
                     </View>
                     <View style={styles.confirmArea}>

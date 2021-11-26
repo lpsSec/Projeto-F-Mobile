@@ -25,10 +25,31 @@ export default function Home({state}) {
     const [total, setTotal] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
     const [cupom, setCupom] = useState('');
+    const [refreshPage, setRefreshPage ] = useState(false);
     const [discount, setDiscount] = useState(0);
 
-    const onRefresh = React.useCallback(() => {
+    const refreshTotalPrice = async (cupom) => {
+        setRefreshPage(false);
+
+        Api.calculateCart(cupom).then((response) => {
+            if(response != null) {
+                setTotal(response.total);
+                setSubTotal(response.subTotal);
+
+                if( response.discountValue != null)
+                {
+                    setDiscount(response.discountValue);
+                }
+            }
+        }).catch((err) => {
+            // alert('Erro inesperado, contate o adminstrador');
+        });
+    };
+
+    const onRefresh = React.useCallback( async () => {
         setRefreshing(true);
+        setRefreshPage(false);
+
         Api.getProductsOnCart().then((response) => {
             if(response.productsInCart != null) {
                 setList(response.productsInCart);
@@ -63,6 +84,7 @@ export default function Home({state}) {
         setSubTotal(0);
 
         const unsubscribe = navigation.addListener('focus', () => {
+
             Api.getProductsOnCart().then((response) => {
                 if(isFlag){
                 if(response.productsInCart != null) {
@@ -94,7 +116,7 @@ export default function Home({state}) {
                 // alert('Erro inesperado, contate o adminstrador');
             });
         });
-        return () => { isFlag = false, unsubscribe };
+        return () => { isFlag = false, unsubscribe};
     }, [], [navigation]);
 
     return (
@@ -141,7 +163,7 @@ export default function Home({state}) {
                 <TouchableOpacity style={styles.buttonBuy} onPress={() => {  }}>
                     <Text style={styles.textBuy}>Comprar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonBuy} onPress={() => { setCoupmModal(true); }}>
+                <TouchableOpacity style={styles.buttonBuy} onPress={() => { setCoupmModal(true) }}>
                     <Text style={styles.textBuy}>+ Cupom</Text>
                 </TouchableOpacity>
             </View>
@@ -150,7 +172,12 @@ export default function Home({state}) {
                     show={couponModal}
                     setShow={setCoupmModal}
                     setCupomName={setCupom}
+                    setRefreshCallBack={setRefreshPage}
                 />
+                {
+                    refreshPage &&
+                    refreshTotalPrice(cupom)
+                }
         </View>
     );
 }
@@ -197,13 +224,14 @@ const styles = StyleSheet.create({
     columnBtn: {
         flexDirection: 'column',
         justifyContent: 'space-between',
-        maxWidth: 200,
+        maxWidth: 140,
         flex: 1,
         // width: 300,
         bottom: 35,
+        marginLeft: 10
     },
     buttonBuy: {
-        width: 150,
+        width: 120,
         height: 40,
         backgroundColor: '#000',
         borderRadius: 10,
@@ -211,7 +239,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 9,
         marginBottom: -2,
-        marginLeft: 20
+        marginLeft: 0
     },
     textBuy: {
         fontSize: 22,
@@ -226,13 +254,11 @@ const styles = StyleSheet.create({
         color: '#FFFFFF'
     },
     footerText: {
-        fontSize: 24,
+        fontSize: 20,
         color: '#000',
         height: 25,
         color: '#FFFFFF',
-        marginLeft: 10,
-        // justifyContent: 'center',
-        // marginBottom: 30
+        marginLeft: 3,
     },
     icon: {
         width: 36,
