@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, ScrollView, Image} from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, ScrollView, Image } from 'react-native';
 
 import Back from '../assets/back.svg';
 import FavoriteClean from '../assets/favorito-vazio.svg';
 import Favorite from '../assets/favorito.svg';
+import Api from '../Api';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -36,6 +37,19 @@ export default function ProductBoard() {
         setAddFavorite('none');
         setRemoveFavorite('none');
     };
+
+    const addProductToCart = async () => {
+        let response = await Api.addToCart(productInfo._id);
+
+        if( response.cpf != null )
+        {
+            alert("Produto adicionado ao carrinho");
+        }
+        else
+        {
+            alert("Erro: " + response.message);
+        }
+    }
 
     const setFavorite = async () => {
         // if(verify) {
@@ -149,7 +163,7 @@ export default function ProductBoard() {
             style={styles.photoArea} 
             source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
-               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }}>
+               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.goBack() }}>
                     <Back width="36" height="36" fill="#000000"/>
                </TouchableOpacity>
             </ImageBackground>
@@ -205,8 +219,7 @@ export default function ProductBoard() {
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
-                    {/* TODO: move to cart page - OR - display successful msg*/}
-                        <TouchableOpacity style={styles.addToCart} onPress={() => {  }}>
+                        <TouchableOpacity style={styles.addToCart} onPress={() => { addProductToCart() }}>
                             <Text style={styles.textAddToCart}>Adicionar ao carrinho</Text>
                         </TouchableOpacity>
                 </View>

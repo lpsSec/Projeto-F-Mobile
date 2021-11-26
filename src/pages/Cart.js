@@ -4,8 +4,10 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl} f
 
 import Back from '../assets/back.svg';
 import MyCart from '../assets/cart.svg';
+
 import Api from '../Api';
 
+import CupomModal from '../components/CupomModal';
 import Produto from '../components/ProductItem';
 
 const wait = (timeout) => {
@@ -15,43 +17,77 @@ const wait = (timeout) => {
 export default function Home({state}) {
     const navigation = useNavigation();
 
+    const [couponModal, setCoupmModal] = useState(false);
+
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [total, setTotal] = useState(0);
+    const [subTotal, setSubTotal] = useState(0);
+    const [cupom, setCupom] = useState('');
+    const [discount, setDiscount] = useState(0);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         Api.getProductsOnCart().then((response) => {
-            if(response[0] != null) {                
-                setList(response);
-                setTextEmpty('none');
-                setMessageEmpty('none');
+            if(response.productsInCart != null) {
+                setList(response.productsInCart);
             }
             else {
                 setList([]);
-                setMessageEmpty('flex');
             }
         }).catch((err) => {
             // alert('Erro inesperado, contate o adminstrador');
         });
+        Api.calculateCart(cupom).then((response) => {
+            if(response != null) {
+                setTotal(response.total);
+                setSubTotal(response.subTotal);
+
+                if( response.discountValue != null)
+                {
+                    setDiscount(response.discountValue);
+                }
+            }
+        }).catch((err) => {
+            // alert('Erro inesperado, contate o adminstrador');
+        });
+
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
     useEffect(() => {
         let isFlag = true;
         setList([]);
+        setTotal(0);
+        setSubTotal(0);
 
         const unsubscribe = navigation.addListener('focus', () => {
             Api.getProductsOnCart().then((response) => {
                 if(isFlag){
-                if(response[0] != null) {
-                    setList(response);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
+                if(response.productsInCart != null) {
+                    setList(response.productsInCart);
                 }
                 else {
                     setList([]);
-                    setMessageEmpty('flex');
+                }
+            }
+            }).catch((err) => {
+                // alert('Erro inesperado, contate o adminstrador');
+            });
+            Api.calculateCart(cupom).then((response) => {
+                if(isFlag){
+                if(response != null) {
+                    setTotal(response.total);
+                    setSubTotal(response.subTotal);
+
+                    if( response.discountValue != null)
+                    {
+                        setDiscount(response.discountValue);
+                    }
+                }
+                else {
+                    setList([]);
                 }
             }
             }).catch((err) => {
@@ -88,7 +124,7 @@ export default function Home({state}) {
                     <View style={styles.listArea}>
                         {
                             list.map((item, k) => (
-                                <Produto key={k} data={item} />
+                                <Produto key={k} data={item} removeItem={true} />
                             ))
                         }
                     </View>
@@ -96,14 +132,25 @@ export default function Home({state}) {
 
             {/* FOOTER */}
             <View style={styles.footer}>
-                <View style={styles.priceBox}>
-                    <Text style={styles.footerText}>Total:</Text>
-                    <Text style={styles.footerText}>R$ 0</Text>
-                </View>
+            <View style={styles.columnPrice}>
+                    <Text style={styles.footerText}>Subtotal: R$ {subTotal}</Text>
+                    <Text style={styles.footerText}>Cupom: {cupom==""?'--':cupom}</Text>
+                    <Text style={styles.footerText}>Total: R$ {total}</Text>
+            </View>
+            <View style={styles.columnBtn}>
                 <TouchableOpacity style={styles.buttonBuy} onPress={() => {  }}>
                     <Text style={styles.textBuy}>Comprar</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonBuy} onPress={() => { setCoupmModal(true); }}>
+                    <Text style={styles.textBuy}>+ Cupom</Text>
+                </TouchableOpacity>
             </View>
+            </View>
+            <CupomModal 
+                    show={couponModal}
+                    setShow={setCoupmModal}
+                    setCupomName={setCupom}
+                />
         </View>
     );
 }
@@ -125,40 +172,46 @@ const styles = StyleSheet.create({
         backgroundColor: '#49B4EF'
     },
     footer: {
-        height: 70,
-        width: 415,
+        height: 95,
+        width: 420,
         flexDirection: 'row',
         alignItems: 'center',
-        // justifyContent: 'space-around',
         justifyContent: 'space-around',
         paddingTop: 60,
         backgroundColor: '#49B4EF',
         position: 'absolute',
+        flex: 1,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0,
     },
-    priceBox: {
-        height: 70,
-        width: 90,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        paddingTop: 60,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0
+    columnPrice: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        maxWidth: 200,
+        flex: 1,
+        width: 300,
+        justifyContent: 'space-between',
+        bottom: 35
+    },
+    columnBtn: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        maxWidth: 200,
+        flex: 1,
+        // width: 300,
+        bottom: 35,
     },
     buttonBuy: {
         width: 150,
-        height: 50,
+        height: 40,
         backgroundColor: '#000',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 60,
-        marginLeft: 200
+        marginTop: 9,
+        marginBottom: -2,
+        marginLeft: 20
     },
     textBuy: {
         fontSize: 22,
@@ -175,9 +228,11 @@ const styles = StyleSheet.create({
     footerText: {
         fontSize: 24,
         color: '#000',
-        height: 90,
+        height: 25,
         color: '#FFFFFF',
-        marginLeft: 10
+        marginLeft: 10,
+        // justifyContent: 'center',
+        // marginBottom: 30
     },
     icon: {
         width: 36,

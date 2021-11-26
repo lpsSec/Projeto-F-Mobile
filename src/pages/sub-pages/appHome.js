@@ -62,6 +62,7 @@ export default function appHome(){
 
     const handleSearchFilter = async (categoty) => {
         setLoading(true);
+        setList([]);
         setCategoryFilter(categoty);
         setSearchEmpty('none');
 
@@ -176,7 +177,7 @@ export default function appHome(){
                     <View style={styles.listArea}>
                         {
                             list.map((item, k) => (
-                                <Produto key={k} data={item} />
+                                <Produto key={k} data={item} removeItem={false} />
                             ))
                         }
                     </View>

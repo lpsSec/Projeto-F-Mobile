@@ -69,7 +69,7 @@ export default {
         const json = await req.json();
         return json;
     },
-    alterPassword: async (new_password) => {
+    alterPassword: async (password, passwordConfirm) => {
         const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/user/edit/password/` + cpf, {
@@ -78,7 +78,7 @@ export default {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({new_password})
+            body: JSON.stringify({password, passwordConfirm})
         });
         const json = await req.json();
         return json;
@@ -108,6 +108,18 @@ export default {
         const json = await req.json();
         return json;
     },
+    validateCupom: async ( name ) => {
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/coupon/name?name=` + name, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            }
+        });
+        const json = await req.json();
+        return json;
+    },
     searchProductByCategory: async ( category ) => {
         const token = await AsyncStorage.getItem('token');
 
@@ -119,6 +131,73 @@ export default {
                 // "Authorization": 'Baerer ' + token
             },
             body: JSON.stringify({category})
+        });
+        const json = await req.json();
+        return json;
+    },
+    addToCart: async ( productId ) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const cpf = await AsyncStorage.getItem('cpf');
+    
+            const req = await fetch(`${BASE_API}/user/cart`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                    // "Authorization": 'Baerer ' + token
+                },
+                body: JSON.stringify({cpf, productId})
+            });
+            const json = await req.json();
+            return json;
+        } catch (error) {
+            alert(error.message);
+        }
+    },
+    calculateCart: async ( couponName ) => {
+        const token = await AsyncStorage.getItem('token');
+            const cpf = await AsyncStorage.getItem('cpf');
+    
+            const req = await fetch(`${BASE_API}/user/cart/calculate`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                    // "Authorization": 'Baerer ' + token
+                },
+                body: JSON.stringify({cpf, couponName})
+            });
+            const json = await req.json();
+            return json;
+    },
+    deleteFromCart: async ( productId ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart`, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({cpf, productId})
+        });
+        const json = await req.json();
+        return json;
+    },
+    clearCart: async () => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart` + cpf, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
         });
         const json = await req.json();
         return json;
@@ -177,7 +256,7 @@ export default {
     getProductsOnCart: async () => {
         const token = await AsyncStorage.getItem('token');
         const cpf = await AsyncStorage.getItem('cpf');
-        const req = await fetch(`${BASE_API}/user/cart` + cpf, {
+        const req = await fetch(`${BASE_API}/user/cart/` + cpf, {
             // headers: {
             //     "Authorization": 'Baerer ' + token
             // }
