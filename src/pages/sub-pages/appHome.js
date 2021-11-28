@@ -39,19 +39,28 @@ export default function appHome(){
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getProducts().then((response) => {
-            if(response[0] != null) {                
-                setList(response);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        }).catch((err) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
+
+        //TODO: fix bug - category is not saved yet in categoryFilter variable.
+        if( categoryFilter != 0 ) {
+            handleSearchFilter(categoryFilter);
+        }
+        else
+        {
+            Api.getProducts().then((response) => {
+                if(response[0] != null) {                
+                    setList(response);
+                    setTextEmpty('none');
+                    setMessageEmpty('none');
+                }
+                else {
+                    setList([]);
+                    setMessageEmpty('flex');
+                }
+            }).catch((err) => {
+                // alert('Erro inesperado, contate o adminstrador');
+            });
+        }
+        
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
@@ -86,6 +95,7 @@ export default function appHome(){
     const handleSearch = async () => {
         setLoading(true);
         setList([]);
+        setCategoryFilter(0);
 
         // Hardcoded first product
         // const Filters =  {
@@ -118,23 +128,32 @@ export default function appHome(){
     useEffect(() => {
         let isFlag = true;
         setList([]);
+
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getProducts().then((response) => {
-                if(isFlag){
-                if(response[0] != null) {
-                    setList(response);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
-                }
-                else {
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
+            
+            if( categoryFilter != 0 ) {
+                handleSearchFilter( categoryFilter );
             }
-            }).catch((err) => {
-                console.log("Erro onRefresh: " + err);
-                // alert('Erro inesperado, contate o adminstrador');
-            });
+            else
+            {
+                Api.getProducts().then((response) => {
+                    if(isFlag){
+                    if(response[0] != null) {
+                        setList(response);
+                        setTextEmpty('none');
+                        setMessageEmpty('none');
+                    }
+                    else {
+                        setList([]);
+                        setMessageEmpty('flex');
+                    }
+                }
+                }).catch((err) => {
+                    console.log("Erro onRefresh: " + err);
+                    // alert('Erro inesperado, contate o adminstrador');
+                });
+            }
+        
         });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
@@ -192,6 +211,10 @@ export default function appHome(){
             </View>
             {displayFilter &&
                 <ModalSelector
+                // onTouchCancel={setCategoryFilter(0)}
+                // closeOnChange={alert("a")}
+                cancelButtonAccessible={true}
+                    cancelText="Cancelar"
                     visible={true}
                     data={categoryData}
                     initValue=""
