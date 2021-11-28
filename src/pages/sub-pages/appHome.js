@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl, DatePickerAndroid } from 'react-native';
+import { View, Text, TextInput, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
 import Produto from '../../components/ProductItem';
@@ -9,7 +9,7 @@ import FilterIcon from '../../assets/filter.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
 
 import ModalSelector from 'react-native-modal-selector'
-// TODO: fix modal style.3
+// TODO: fix modal style
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));

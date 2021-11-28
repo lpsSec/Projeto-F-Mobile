@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl} from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, Alert} from 'react-native';
 
 import Back from '../assets/back.svg';
 import MyCart from '../assets/cart.svg';
+import Trash from '../assets/trash.svg';
 
 import Api from '../Api';
 
@@ -14,8 +15,9 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function Home({state}) {
+export default function Cart({}) {
     const navigation = useNavigation();
+    const route = useRoute();
 
     const [couponModal, setCoupmModal] = useState(false);
 
@@ -27,6 +29,45 @@ export default function Home({state}) {
     const [cupom, setCupom] = useState('');
     const [refreshPage, setRefreshPage ] = useState(false);
     const [discount, setDiscount] = useState(0);
+
+    //TODO: use this method to refresh the products on cart when one is deleted.
+    const refreshProducts = async (flag) => {
+        setList([]);
+
+        Api.getProductsOnCart().then((response) => {
+            if(response.productsInCart != null) {
+                setList(response.productsInCart);
+            }
+            else {
+                setList([]);
+            }
+        }).catch((err) => {
+            // alert('Erro inesperado, contate o adminstrador');
+        });
+    };
+
+    const clearCart = async () => {
+        Alert.alert(
+            'Limpar carrinho?',
+            'Todos os item presentes no carrinho serão removidos.',
+            [
+              { text: "Sim", onPress: () => {
+                Api.deleteAllCart().then((response) => {
+                    if(response.cpf != null) {
+                        setList([]);
+                        setTotal(0);
+                        setSubTotal(0);
+                        setCupom('');
+                    }
+                }).catch((err) => {
+                    // alert('Erro inesperado, contate o adminstrador');
+                });
+              }},
+              { text: "Não", onPress: () =>{}}
+            ], 
+            { cancelable: false }
+          )
+    };
 
     const refreshTotalPrice = async (cupom) => {
         setRefreshPage(false);
@@ -82,6 +123,7 @@ export default function Home({state}) {
         setList([]);
         setTotal(0);
         setSubTotal(0);
+        setCupom('');
 
         const unsubscribe = navigation.addListener('focus', () => {
 
@@ -127,6 +169,9 @@ export default function Home({state}) {
             </TouchableOpacity>
             <Text style={styles.title}>Carrinho</Text>
             
+            <TouchableOpacity style={styles.toBack} onPress={ ()=> { clearCart() }}>
+                <Trash width="30" height="30"  alignItems='center' fill="#FF0000"/>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.toBack} onPress={ ()=> {}}>
                 <MyCart width="30" height="30"  alignItems='center' fill="#000000"/>
             </TouchableOpacity>

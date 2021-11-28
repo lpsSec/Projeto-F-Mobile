@@ -16,7 +16,9 @@ export default ({data, removeItem}) => {
             //TODO: improve navigation. Remove item and refresh the cart, instead of navigation.reset()
             // Strange behavior when using navigation.reset()
             // *navigation.navigate does not refresh the product in the cart.
-            navigation.navigate('Cart');
+            navigation.navigate('Cart',{
+                refresh: true
+            });
             // navigation.reset({
             //     routes: [{name: 'Cart'}]
             // });

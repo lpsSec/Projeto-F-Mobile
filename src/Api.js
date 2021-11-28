@@ -187,6 +187,22 @@ export default {
         const json = await req.json();
         return json;
     },
+    deleteAllCart: async ( ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart/` + cpf, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            // body: JSON.stringify({})
+        });
+        const json = await req.json();
+        return json;
+    },
     clearCart: async () => {
         const token = await AsyncStorage.getItem('token');
         const cpf = await AsyncStorage.getItem('cpf');
