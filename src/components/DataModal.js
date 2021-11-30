@@ -76,6 +76,7 @@ export default ({show, setShow, name, phone, email})  =>  {
         return lResult;
     };
 
+    //TODO: refresh 'forInfo' screen when data was updated.
     const AlterData = async () => {
         const name = nameField.split(' ').slice(0,1).join(' ');
         const last = nameField.split(' ').slice(1,10).join(' ');

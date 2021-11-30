@@ -30,6 +30,14 @@ export default function Cart({}) {
     const [refreshPage, setRefreshPage ] = useState(false);
     const [discount, setDiscount] = useState(0);
 
+    const sendTheBill = async () => {
+        navigation.navigate('Checkout',{
+            total: total,
+            subTotal: subTotal,
+            cupom, cupom
+        })
+    };
+
     //TODO: use this method to refresh the products on cart when one is deleted.
     const refreshProducts = async (flag) => {
         setList([]);
@@ -205,8 +213,8 @@ export default function Cart({}) {
                     <Text style={styles.footerText}>Total: R$ {total}</Text>
             </View>
             <View style={styles.columnBtn}>
-                <TouchableOpacity style={styles.buttonBuy} onPress={() => {  }}>
-                    <Text style={styles.textBuy}>Comprar</Text>
+                <TouchableOpacity style={styles.buttonBuy} onPress={() => {sendTheBill() }}>
+                    <Text style={styles.textBuy}>Continuar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonBuy} onPress={() => { setCoupmModal(true) }}>
                     <Text style={styles.textBuy}>+ Cupom</Text>

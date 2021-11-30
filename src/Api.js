@@ -84,15 +84,29 @@ export default {
         return json;
     },
     lostPassword: async (email) => {
-        const cpf = await AsyncStorage.getItem('cpf');
+        // const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/user/recover/password/` + cpf, {
+        const req = await fetch(`${BASE_API}/user/recovery-password/`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({email})
+        });
+        const json = await req.json();
+        return json;
+    },
+    recoverCode: async ( codeVerification ) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        // const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/code-verification/`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({codeVerification, cpf})
         });
         const json = await req.json();
         return json;

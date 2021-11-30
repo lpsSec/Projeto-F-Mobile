@@ -9,6 +9,7 @@ import Profile from '../pages/Profile';
 import ProductBoard from '../pages/ProductBoard';
 import LostPassword from '../pages/LostPassword';
 import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ function Routes(){
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ProductBoard" component={ProductBoard} />
             <Stack.Screen name="Cart" component={Cart} />
+            <Stack.Screen name="Checkout" component={Checkout} />
         </Stack.Navigator>
     );
 };

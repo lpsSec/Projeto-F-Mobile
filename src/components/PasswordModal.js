@@ -8,7 +8,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow})  =>  {
+export default ({show, setShow, setRefreshCallBack})  =>  {
     const [passwordField, setPasswordField] = useState('');
     const [passwordField2, setPasswordField2] = useState('');
     // const [message, setMessage] = useState('');
@@ -25,9 +25,10 @@ export default ({show, setShow})  =>  {
             wait(3000).then(() => { setMessageEmpty2('none') });
         } else {
             let json = await Api.alterPassword( passwordField, passwordField);
-            if(json.cpf)
+            if(json.cpf) {
                 setShow(false);
-            else {
+                setRefreshCallBack(true);
+            } else {
                 // setMessage(json.message);
                 // setMessageEmpty3('flex');
                 wait(3000).then(() => { setMessageEmpty3('none') });
