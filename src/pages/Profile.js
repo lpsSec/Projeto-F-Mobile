@@ -6,7 +6,7 @@ import ProfileTabBar from '../components/ProfileTabBar';
 import forInfo from '../pages/sub-pages/forInfo';
 import forMyProducts from '../pages/sub-pages/forMyProducts';
 import forFavorites from '../pages/sub-pages/forFavorites';
-import forRegistrationProduct from '../pages/sub-pages/forRegistrationProduct';
+// import forRegistrationProduct from '../pages/sub-pages/forRegistrationProduct';
 // import forFavorites from '../pages/sub-pages/forFavorites';
 import Back from '../assets/back.svg';
 
@@ -29,7 +29,7 @@ export default function Profile() {
                 <Tab.Screen name="forInfo" component={forInfo}/>
                 <Tab.Screen name="forMyProducts" component={forMyProducts}/>
                 <Tab.Screen name="forFavorites" component={forFavorites}/>
-                <Tab.Screen name="forRegistrationProduct" component={forRegistrationProduct}/>
+                {/* <Tab.Screen name="forRegistrationProduct" component={forRegistrationProduct}/> */}
                 {/* <Tab.Screen name="forFavorites" component={forFavorites}/> */}
             </Tab.Navigator>
         </View>
