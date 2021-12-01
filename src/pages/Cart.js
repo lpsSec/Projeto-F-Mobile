@@ -15,12 +15,11 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function Cart({}) {
+export default function Cart() {
     const navigation = useNavigation();
     const route = useRoute();
 
     const [couponModal, setCoupmModal] = useState(false);
-
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -125,6 +124,17 @@ export default function Cart({}) {
 
         wait(2000).then(() => setRefreshing(false));
     }, []);
+
+    const refreshCart = () => {
+        onRefresh();
+
+        route.params.refresh = false;
+    };
+
+    if( route.params?.refresh )
+    {
+        refreshCart();
+    }
 
     useEffect(() => {
         let isFlag = true;
