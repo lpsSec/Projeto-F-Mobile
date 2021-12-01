@@ -6,6 +6,7 @@ import Api from '../Api';
 
 import Email from '../assets/email.svg';
 import Lock from '../assets/lock.svg';
+import User from '../assets/userLoginPage.svg';
 
 export default function SignIn() {
     const navigation = useNavigation();
@@ -60,7 +61,7 @@ export default function SignIn() {
         <View style={styles.background}>
             <View style={styles.headerBody}>
                 <Text style={styles.title}>Login</Text>
-                <Image style={styles.icon} source={require('../assets/user.png')}/>
+                <User width="120" height="120" fill="#000000" />
             </View>
             <Animated.View style={[ styles.pageBody, { transform: [ { translateY: offset.y } ] }]}>
                 <View style={styles.inputArea}>

@@ -89,7 +89,7 @@ export default function forInfo() {
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>
                         <NotFound width="60" height="60" fill="#FFFFFF" />
                         <Text style={{color: '#000000', fontWeight: 'bold', fontSize: 16, marginTop: 10}}>
-                        Você não possui livros na lista de favoritos!
+                        Você não possui produtos na lista de favoritos!
                         </Text>
                     </View>
                 </ScrollView>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Animated, StyleSheet, Switch } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import Api from '../Api';
 
+import User from '../assets/userLoginPage.svg';
 import Email from '../assets/email.svg';
 import Lock from '../assets/lock.svg';
 import Person from '../assets/person.svg';
@@ -19,14 +20,15 @@ const wait = (timeout) => {
 export default function SignUp() {
     const navigation = useNavigation();
 
+    const [pessoaFisica, setPessoaFisica] = useState(true);
     const [nameField, setNameField] = useState('');
-    // const [userFild, setUserFiled] = useState('');
     const [emailField, setEmailField] = useState('');
     const [passwordField, setpasswordField] = useState('');
     const [telField, setTelField] = useState('');
-    const [cpfField, setCPFField] = useState('');
+    const [cpfCnpjField, setCpfCnpjField] = useState('');
     const [ageField, setAgeField] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
+    const [messageSucess, setMessageSucess] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
     const [lResult, setlResult] = useState({
         error: '',
@@ -68,8 +70,18 @@ export default function SignUp() {
         lResult.success = true;
     }
 
-    const fieldValidate = () => {
+    const fieldValidate = async () => {
         clearResult();
+
+        const name = nameField.split(' ').slice(0,1).join(' ');
+        const last = nameField.split(' ').slice(1,10).join(' ');
+
+        if( !last ) {
+            lResult.error = 'Você deve entrar com seu sobrenome também.',
+            lResult.success = false;
+            return lResult;
+        }
+
         if(!emailValidate()) {
             lResult.error = 'O EMAIL é inválido!',
             lResult.success = false;
@@ -90,12 +102,16 @@ export default function SignUp() {
             lResult.error = 'O TELEFONE foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfField.length < 14) {
+        } else if(cpfCnpjField.length < 14 && pessoaFisica) {
             lResult.error = 'O CPF foi preenchido incorretamente!',
             lResult.success = false;
             return lResult;
-        } else if(cpfField.length == 14) { //TODO: Validar também CNPJ
-            var unmasked = cpfField;
+        } else if(cpfCnpjField.length < 18 && !pessoaFisica) {
+            lResult.error = 'O CNPJ foi preenchido incorretamente!',
+            lResult.success = false;
+            return lResult;
+        } else if(cpfCnpjField.length == 14 && pessoaFisica) {
+            var unmasked = cpfCnpjField;
             unmasked = unmasked.replace(".", "");
             unmasked = unmasked.replace(".", "");
             unmasked = unmasked.replace("-", "");
@@ -148,6 +164,20 @@ export default function SignUp() {
                 return lResult;
             } 
 
+        } else if(cpfCnpjField.length == 18 && !pessoaFisica) {
+            var unmasked = cpfCnpjField;
+            unmasked = unmasked.replace(".", "");
+            unmasked = unmasked.replace(".", "");
+            unmasked = unmasked.replace("-", "");
+            unmasked = unmasked.replace("/", "");
+
+            let json = await Api.validaCNPJ(unmasked);
+            if(json.message == "CNPJ inválido")
+            {
+                lResult.error = 'O CNPJ é inválido!',
+                lResult.success = false;
+                return lResult;
+            }
         }
         
         return lResult;
@@ -156,21 +186,23 @@ export default function SignUp() {
     const setMessage = () => {
         setValidateEmpty('none'); 
         setMessageEmpty('none');
+        setMessageSucess('none');
     };
 
     const handleSignClick = async () => {
-        if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfField != '') {
+        if(nameField != '' && ageField != '' && emailField != '' && passwordField != '' && cpfCnpjField != '') {
             let result = fieldValidate();
-            if(result.success) {
+            if((await result).success) {
+                setMessageSucess('flex');
                 const name = nameField.split(' ').slice(0,1).join(' ');
                 const last = nameField.split(' ').slice(1,10).join(' ');
-                let json = await Api.signUp(name.toString(), last.toString(), cpfField.toString(), emailField.toString(), passwordField.toString(), telField.toString(), ageField.toString());
-                alert("SIGN");
-                if(json.token) {
-                    alert("Token signUp: " + json.token);
+
+                let json = await Api.signUp(name, last, cpfCnpjField, emailField, passwordField, telField, ageField);
+                if(json.cpf) {
                     let signIn = await Api.signIn(emailField, passwordField); 
-                    if(signIn.token)  {
+                    if(signIn.token) {
                         await AsyncStorage.setItem('token', signIn.token);
+                        await AsyncStorage.setItem('cpf', json.cpf);
 
                         navigation.reset({
                             routes: [{name: 'Home'}]
@@ -178,7 +210,7 @@ export default function SignUp() {
 
                     }
                 } else {
-                    alert("Erro: " + json.mensagem);
+                    alert("Erro: " + json.message.message);
                 }
             } else {
                 setValidateEmpty('flex');
@@ -201,11 +233,20 @@ export default function SignUp() {
     return (
         <View style={styles.background}>
             <View style={styles.headerBody}>
-                <Image style={styles.icon} source={require('../assets/user.png')}/>
+            <User width="120" height="120" fill="#000000" />
                 <Text style={styles.title}>Cadastro</Text>
             </View>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                 <Animated.View style={[ styles.pageBody,  { transform: [ { translateY: offset.y } ] }]}>
+                <View style={styles.switchContainer}>
+                    <Switch
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={setPessoaFisica}
+                    value={pessoaFisica}
+                    disabled={cpfCnpjField.length}
+                    />
+                    <Text style={styles.label}>Pessoa física</Text>
+                </View>
                     <View style={styles.inputArea}>
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
@@ -216,16 +257,6 @@ export default function SignUp() {
                             onChangeText={t=>setNameField(t)}
                         />
                     </View>
-                    {/* <View style={styles.inputArea}>
-                        <Person width="24" height="24" fill="#000000" />
-                        <TextInput 
-                            style={styles.input} 
-                            placeholder="Usuário"
-                            placeholderTextColor="#000000"
-                            value={userFild}
-                            onChangeText={t=>setUserFiled(t)}
-                        />
-                    </View> */}
                     <View style={styles.inputArea}>
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 
@@ -252,12 +283,12 @@ export default function SignUp() {
                     <View style={styles.inputArea}>
                         <Doc width="24" height="24" fill="#000000" />
                         <TextInputMask
-                            type={'cpf'}
-                            value={cpfField}
+                            type={pessoaFisica?'cpf':'cnpj'}
+                            value={cpfCnpjField}
                             placeholder="CPF/CNPJ"
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
-                            onChangeText={t=>setCPFField(t)}
+                            onChangeText={t=>setCpfCnpjField(t)}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -291,6 +322,9 @@ export default function SignUp() {
                         />
                     </View>
                     <View style={styles.messageValid}>
+                    <Text style={{display: messageSucess, color: '#00FF00', }}>
+                        Cadastrado! Você será redirecionado.
+                        </Text>
                         <Text style={{display: messageEmpty, color: '#FF0000', }}>
                         Preencha todos os campos!
                         </Text>
@@ -318,6 +352,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 20,
         backgroundColor: '#49B4EF'
+    },
+    switchContainer: {
+        alignSelf: 'flex-start',
+        marginLeft: 30,
+        flexDirection: "row",
+    },
+    label: {
+        margin: 8,
+        fontSize: 15,
+        fontWeight: 'bold'
     },
     headerBody: {
         height: 200,

@@ -2,37 +2,38 @@ import React, { useState } from 'react';
 import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet } from 'react-native';
 import Api from '../Api';
 import ExpandIcon from '../assets/expand.svg';
-import Lock from '../assets/lock.svg';
+import CupomIcon from '../assets/coupon.svg'
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default ({show, setShow, setRefreshCallBack})  =>  {
-    const [passwordField, setPasswordField] = useState('');
-    const [passwordField2, setPasswordField2] = useState('');
-    // const [message, setMessage] = useState('');
+export default ({show, setShow, setCupomName, setRefreshCallBack})  =>  {
+    const [cupomFiled, setCupomFiled] = useState('');
+    const [successApplyed, setSuccessApplyed] = useState('none');
     const [messageEmpty, setMessageEmpty] = useState('none');
-    const [messageEmpty2, setMessageEmpty2] = useState('none');
-    // const [messageEmpty3, setMessageEmpty3] = useState('none');
+    const [messageInvalid, setMessageInvalid] = useState('none');
+    const [discount, setDiscount] = useState(0);
 
-    const AlterPassword = async () => {
-        if(passwordField != passwordField2) {
+    const applyCupom = async () => {
+        if(cupomFiled == "") {
             setMessageEmpty('flex');
             wait(3000).then(() => { setMessageEmpty('none') });
-        } else if (passwordField.length < 7 || passwordField.length > 12) {
-            setMessageEmpty2('flex');
-            wait(3000).then(() => { setMessageEmpty2('none') });
         } else {
-            let json = await Api.alterPassword( passwordField, passwordField);
-            if(json.cpf) {
-                setShow(false);
-                setRefreshCallBack(true);
-            } else {
-                // setMessage(json.message);
-                // setMessageEmpty3('flex');
-                wait(3000).then(() => { setMessageEmpty3('none') });
+            let response = await Api.validateCupom( cupomFiled );
+
+            if( response._id  != null) {
+                setCupomName(response.name);
+                setDiscount(response.value);
+                setSuccessApplyed('flex');
+                wait(2000).then(() => { setSuccessApplyed('none'); setShow(false); setRefreshCallBack(true)});
             }
+            else
+            {
+                setMessageInvalid('flex');
+                wait(3000).then(() => { setMessageInvalid('none') });
+            }
+            
         }
     };
 
@@ -47,46 +48,32 @@ export default ({show, setShow, setRefreshCallBack})  =>  {
                     <TouchableOpacity style={{width: 40, height: 40}} onPress={()=>{ setShow(false) }}>
                         <ExpandIcon width="40" height="40" fill="#000000"/>
                     </TouchableOpacity>
-                    <View style={styles.passwordArea}>
+                    <View style={styles.couponArea}>
                         <View style={styles.inputArea}>
-                            <Lock width="24" height="24" fill="#000000" />
+                            <CupomIcon width="24" height="24" fill="#000000" />
                             <TextInput
                                 style={styles.input} 
-                                placeholder="Digite sua nova senha"
+                                placeholder="Insira um cupom de desconto."
                                 placeholderTextColor="#000000"
-                                value={passwordField}
                                 autoCapitalize='none'
-                                onChangeText={t=>setPasswordField(t)}
-                                secureTextEntry={true}
-                            />
-                        </View>
-                        <View style={styles.inputArea}>
-                            <Lock width="24" height="24" fill="#000000" />
-                            <TextInput
-                                style={styles.input} 
-                                placeholder="Digite novamente sua senha"
-                                placeholderTextColor="#000000"
-                                value={passwordField2}
-                                autoCapitalize='none'
-                                onChangeText={t=>setPasswordField2(t)}
-                                secureTextEntry={true}
+                                onChangeText={t=>setCupomFiled(t)}
                             />
                         </View>
                     </View>
                     <View style={styles.messageArea}>
-                        <Text style={{ display: messageEmpty, color: '#FF0000', fontSize: 15 }}>
-                            As senhas são diferentes! Tente novamente
+                        <Text style={{ display: messageEmpty, color: '#FF0000', fontSize: 17 }}>
+                            Preecha o campo!
                         </Text>
-                        <Text style={{ display: messageEmpty2, color: '#FF0000', fontSize: 15 }}>
-                            A senha deve ter entre 7 e 12 caracteres!
+                        <Text style={{ display: messageInvalid, color: '#FF0000', fontSize: 17 }}>
+                            O cupom inserido não é valido
                         </Text>
-                        {/* <Text style={{ display: messageEmpty3, color: '#FF0000', fontSize: 15 }}>
-                            {message}
-                        </Text> */}
+                        <Text style={{ display: successApplyed, color: '#00FF00', fontSize: 17 }}>
+                            Cupom de {discount*100}% adicionado!
+                        </Text>
                     </View>
                     <View style={styles.confirmArea}>
-                        <TouchableOpacity style={styles.passwordButton} onPress={AlterPassword}>
-                            <Text style={styles.textPassword}>Confirmar</Text>
+                        <TouchableOpacity style={styles.appluCoupon} onPress={() => applyCupom()}>
+                            <Text style={styles.textConfirm}>Aplicar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -109,7 +96,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    passwordArea: {
+    couponArea: {
         width: 350,
         height: 150,
         alignItems: 'center',
@@ -143,9 +130,9 @@ const styles = StyleSheet.create({
         height: 100,
         marginBottom: 10,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
-    passwordButton: {
+    appluCoupon: {
         width: 300,
         height: 50,
         backgroundColor: '#17F1A1',
@@ -153,7 +140,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    textPassword: {
+    textConfirm: {
         fontSize: 22,
         fontWeight: 'bold',
         color: '#000000'

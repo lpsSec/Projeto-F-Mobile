@@ -99,19 +99,19 @@ export default function forInfo() {
                             <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
                         </View>
                         <View style={styles.infoBody}>
+                            <Text style={styles.typeTitle}>Email:</Text>
+                            <Text style={styles.title}>{emailField}</Text>
+                            <Text>{"    "}</Text>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true) }}/>
+                        </View>
+                        <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>Telefone:</Text>
                             <Text style={styles.title}>{telField}</Text>
                             <Text>{"    "}</Text>
                             <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
                         </View>
                         <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>Email:</Text>
-                            <Text style={styles.title}>{emailField}</Text>
-                            <Text>{"    "}</Text>
-                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
-                        </View>
-                        <View style={styles.infoBody}>
-                            <Text style={styles.typeTitle}>CPF:</Text>
+                            <Text style={styles.typeTitle}>{cpfField.length==14?"CPF:":"CNPJ:"}</Text>
                             <Text style={styles.title}>{cpfField}</Text>
                         </View>
                         <View style={styles.infoBody}>

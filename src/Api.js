@@ -28,21 +28,21 @@ export default {
         const json = await req.json();
         return json;
     },
-    signUp: async (name, last_name, cpf, email, passoword, phone, birth_date) => {
+    signUp: async (name, last_name, cpf, email, password, phone, birth_date) => {
         const req = await fetch(`${BASE_API}/user/create`, {
             method: "POST",
             headers: {
-                "Accept" : "application/json",
+                // "Accept" : "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({name, last_name, cpf, email, passoword, phone, birth_date})
+            body: JSON.stringify({name, last_name, cpf, email, password, phone, birth_date})
         });
         const json = await req.json();
         return json;
     },
     signOut: async () => {
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/auth/logout`, {
+        const req = await fetch(`${BASE_API}/user/logout`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -69,7 +69,7 @@ export default {
         const json = await req.json();
         return json;
     },
-    alterPassword: async (new_password) => {
+    alterPassword: async (password, passwordConfirm) => {
         const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/user/edit/password/` + cpf, {
@@ -78,21 +78,35 @@ export default {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({new_password})
+            body: JSON.stringify({password, passwordConfirm})
         });
         const json = await req.json();
         return json;
     },
     lostPassword: async (email) => {
-        const cpf = await AsyncStorage.getItem('cpf');
+        // const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/user/recover/password/` + cpf, {
+        const req = await fetch(`${BASE_API}/user/recovery-password/`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({email})
+        });
+        const json = await req.json();
+        return json;
+    },
+    recoverCode: async ( codeVerification ) => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        // const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/user/code-verification/`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({codeVerification, cpf})
         });
         const json = await req.json();
         return json;
@@ -108,6 +122,156 @@ export default {
         const json = await req.json();
         return json;
     },
+    validateCupom: async ( name ) => {
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/coupon/name?name=` + name, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            }
+        });
+        const json = await req.json();
+        return json;
+    },
+    searchProductByCategory: async ( category ) => {
+        const token = await AsyncStorage.getItem('token');
+
+        const req = await fetch(`${BASE_API}/product/filter`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({category})
+        });
+        const json = await req.json();
+        return json;
+    },
+    addToCart: async ( productId ) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const cpf = await AsyncStorage.getItem('cpf');
+    
+            const req = await fetch(`${BASE_API}/user/cart`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                    // "Authorization": 'Baerer ' + token
+                },
+                body: JSON.stringify({cpf, productId})
+            });
+            const json = await req.json();
+            return json;
+        } catch (error) {
+            alert(error.message);
+        }
+    },
+    calculateCart: async ( couponName ) => {
+        const token = await AsyncStorage.getItem('token');
+            const cpf = await AsyncStorage.getItem('cpf');
+    
+            const req = await fetch(`${BASE_API}/user/cart/calculate`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                    // "Authorization": 'Baerer ' + token
+                },
+                body: JSON.stringify({cpf, couponName})
+            });
+            const json = await req.json();
+            return json;
+    },
+    deleteFromCart: async ( productId ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart`, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({cpf, productId})
+        });
+        const json = await req.json();
+        return json;
+    },
+    deleteAllCart: async ( ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart/` + cpf, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            // body: JSON.stringify({})
+        });
+        const json = await req.json();
+        return json;
+    },
+    clearCart: async () => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+
+        const req = await fetch(`${BASE_API}/user/cart` + cpf, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+        });
+        const json = await req.json();
+        return json;
+    },
+    searchProductByString: async ( name ) => {
+        const token = await AsyncStorage.getItem('token');
+
+        const req = await fetch(`${BASE_API}/product/filter`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+                // "Authorization": 'Baerer ' + token
+            },
+            body: JSON.stringify({name})
+        });
+        const json = await req.json();
+        return json;
+    },
+    // getProductsWithFilter: async ( Filters ) => {
+    //     const token = await AsyncStorage.getItem('token');
+
+    //     const FilterObject = {
+    //         "name": String(Filters.name),
+    //         "price": Number(Filters.price),
+    //         "category": Number(Filters.category),
+    //         "advertiser": String(Filters.advertiser),
+    //         "licenseType": Number(Filters.licenseType),
+    //         "rating": Number(Filters.rating)
+    //     };
+
+    //     const req = await fetch(`${BASE_API}/product/filter`, {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //             // "Authorization": 'Baerer ' + token
+    //         },
+    //         // body: JSON.stringify({name, price})
+    //         body: JSON.stringify(FilterObject)
+    //     });
+    //     const json = await req.json();
+    //     return json;
+    // },
     getProducts: async () => {
         const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/product/`, {
@@ -117,17 +281,21 @@ export default {
         });
         // const json = await req.text();
         const json = await req.json();
-        const stringa = json[0].name;
-        // alert('REQ: '+stringa);
         return json;
     },
-    getUserId: async () => {
-        const user = await AsyncStorage.getItem('user');
+    getProductsOnCart: async () => {
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/user/` + user, {
-            headers: {
-                "Authorization": 'Baerer ' + token
-            }
+        const cpf = await AsyncStorage.getItem('cpf');
+        const req = await fetch(`${BASE_API}/user/cart/` + cpf, {
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
+        });
+        const json = await req.json();
+        return json;
+    },
+    validaCNPJ: async ( cnpj ) => {
+        const req = await fetch(`https://www.receitaws.com.br/v1/cnpj/` + cnpj, {
         });
         const json = await req.json();
         return json;
