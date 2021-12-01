@@ -42,7 +42,7 @@ export default {
     },
     signOut: async () => {
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/auth/logout`, {
+        const req = await fetch(`${BASE_API}/user/logout`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

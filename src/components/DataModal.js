@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet } from 'react-native';
+import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet, AccessibilityInfo } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import Api from '../Api';
 import ExpandIcon from '../assets/expand.svg';
@@ -7,8 +7,6 @@ import ExpandIcon from '../assets/expand.svg';
 import Person from '../assets/person.svg';
 import Email from '../assets/email.svg';
 import Tel from '../assets/telefone-celular.svg';
-import Doc from '../assets/pasta-de-documentos.svg';
-import Today from '../assets/today.svg';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,6 +14,7 @@ const wait = (timeout) => {
 
 export default ({show, setShow, name, phone, email})  =>  {
 
+    const [flagUpdate, setFlagUpdate] = useState(false);
     const [nameField, setNameField] = useState('');
     const [emailField, setEmailField] = useState('');
     const [telField, setTelField] = useState('');
@@ -100,13 +99,23 @@ export default ({show, setShow, name, phone, email})  =>  {
         }
     };
 
+    const oneShot = () => {
+
+        setEmailField(email);
+        setNameField(name);
+        setTelField(phone);
+
+        setFlagUpdate(true);
+    };
+
+    if( email != "" && name != "" && phone != "" && !flagUpdate)
+    {
+        oneShot();
+    }
+
     useEffect(() => {
         let isFlag = true;
 
-        // setNameField(name);
-        // setEmailField(email);
-        // setTelField(phone);
-        
         return () => { isFlag = false };
     }, [] );
 

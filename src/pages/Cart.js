@@ -213,7 +213,7 @@ export default function Cart({}) {
                     <Text style={styles.footerText}>Total: R$ {total}</Text>
             </View>
             <View style={styles.columnBtn}>
-                <TouchableOpacity style={styles.buttonBuy} onPress={() => {sendTheBill() }}>
+                <TouchableOpacity style={styles.buttonBuy} onPress={() => { sendTheBill() }}>
                     <Text style={styles.textBuy}>Continuar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonBuy} onPress={() => { setCoupmModal(true) }}>

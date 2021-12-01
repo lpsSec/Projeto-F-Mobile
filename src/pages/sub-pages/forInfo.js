@@ -108,7 +108,7 @@ export default function forInfo() {
                             <Text style={styles.typeTitle}>Email:</Text>
                             <Text style={styles.title}>{emailField}</Text>
                             <Text>{"    "}</Text>
-                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true)}}/>
+                            <Edit width="20" height="20" fill="#000000" onPress={()=> { setDataModal(true) }}/>
                         </View>
                         <View style={styles.infoBody}>
                             <Text style={styles.typeTitle}>{cpfField.length==14?"CPF:":"CNPJ:"}</Text>
