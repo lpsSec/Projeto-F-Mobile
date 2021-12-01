@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet } from 'react-native';
+import { Modal, TouchableOpacity, View, TextInput, Text, StyleSheet, AccessibilityInfo } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import Api from '../Api';
 import ExpandIcon from '../assets/expand.svg';
@@ -7,8 +7,6 @@ import ExpandIcon from '../assets/expand.svg';
 import Person from '../assets/person.svg';
 import Email from '../assets/email.svg';
 import Tel from '../assets/telefone-celular.svg';
-import Doc from '../assets/pasta-de-documentos.svg';
-import Today from '../assets/today.svg';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,6 +14,7 @@ const wait = (timeout) => {
 
 export default ({show, setShow, name, phone, email})  =>  {
 
+    const [flagUpdate, setFlagUpdate] = useState(false);
     const [nameField, setNameField] = useState('');
     const [emailField, setEmailField] = useState('');
     const [telField, setTelField] = useState('');
@@ -53,6 +52,16 @@ export default ({show, setShow, name, phone, email})  =>  {
 
     const fieldValidate = () => {
         clearResult();
+
+        const name = nameField.split(' ').slice(0,1).join(' ');
+        const last = nameField.split(' ').slice(1,10).join(' ');
+
+        if( !last ) {
+            lResult.error = 'Você deve entrar com seu sobrenome também.',
+            lResult.success = false;
+            return lResult;
+        }
+        
         if(!emailValidate() && emailField.length != 0) {
             lResult.error = 'O EMAIL é inválido!',
             lResult.success = false;
@@ -66,9 +75,11 @@ export default ({show, setShow, name, phone, email})  =>  {
         return lResult;
     };
 
+    //TODO: refresh 'forInfo' screen when data was updated.
     const AlterData = async () => {
         const name = nameField.split(' ').slice(0,1).join(' ');
         const last = nameField.split(' ').slice(1,10).join(' ');
+        
         if(emailField == '' && nameField == '' && telField == '') {
             setMessageEmpty('flex');
             wait(2000).then(() => { setMessageEmpty('none') });
@@ -88,13 +99,23 @@ export default ({show, setShow, name, phone, email})  =>  {
         }
     };
 
+    const oneShot = () => {
+
+        setEmailField(email);
+        setNameField(name);
+        setTelField(phone);
+
+        setFlagUpdate(true);
+    };
+
+    if( email != "" && name != "" && phone != "" && !flagUpdate)
+    {
+        oneShot();
+    }
+
     useEffect(() => {
         let isFlag = true;
 
-        setNameField(name);
-        setEmailField(email);
-        setTelField(phone);
-        
         return () => { isFlag = false };
     }, [] );
 
@@ -114,7 +135,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                         <Person width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
-                            placeholder="Digite seu nome"
+                            placeholder="Digite seu novo nome"
                             placeholderTextColor="#000000"
                             value={nameField}
                             onChangeText={t=>setNameField(t)}
@@ -125,7 +146,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                         <Email width="24" height="24" fill="#000000" />
                         <TextInput 
                             style={styles.input} 
-                            placeholder="Digite seu e-mail"
+                            placeholder="Digite seu novo e-mail"
                             placeholderTextColor="#000000"
                             value={emailField}
                             autoCapitalize='none'
@@ -142,7 +163,7 @@ export default ({show, setShow, name, phone, email})  =>  {
                                 withDDD: true,
                                 dddMask: '(99)'
                             }}
-                            placeholder="Digite seu telefone"
+                            placeholder="Digite seu novo telefone"
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
                             value={telField}

@@ -1,3 +1,5 @@
+/* NOT IN USE 
+
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl  } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -138,3 +140,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+- NOT IN USE */

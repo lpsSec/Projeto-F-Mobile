@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { View, ActivityIndicator, Image, StyleSheet } from 'react-native';
-import Api from '../Api'; 
+import Api from '../Api';
 
 export default () => {
     const navigation = useNavigation();
@@ -40,7 +40,7 @@ export default () => {
 
     return (
         <View style={styles.container}>
-            <Image style={styles.icon} source={require('../assets/logo.jpg')}/>
+            <Image style={styles.icon} source={require('../assets/logo.png')}/>
             <ActivityIndicator size="large" color="#000000" style={styles.loading}/>
         </View>
     );

@@ -5,7 +5,11 @@ import Api from '../../Api';
 import Produto from '../../components/ProductItem';
 import FabButton from '../../components/FabButton';
 import Search from '../../assets/search.svg';
+import FilterIcon from '../../assets/filter.svg';
 import NotFound from '../../assets/nao-encontrado.svg';
+
+import ModalSelector from 'react-native-modal-selector'
+// TODO: fix modal style
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,29 +20,47 @@ export default function appHome(){
 
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [categoryFilter, setCategoryFilter] = useState(0);
     const [searchFiled, setSearchField] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [searchEmpty, setSearchEmpty] = useState('none');
     const [textEmpty, setTextEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
+    const [displayFilter, setDisplayFilter] = useState(false);
+
+    // Populate Modal Picker
+    const categoryData = [
+        { key: 1, label: 'MOBILE' },
+        { key: 2, label: 'DESKTOP' },
+        { key: 3, label: 'BANCO_DE_DADOS' },
+        { key: 4, label: 'BACKEND' },
+        { key: 5, label: 'DESIGN' }
+    ];
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        Api.getProducts().then((response) => {
-            if(response[0] != null) {                
-                setList(response);
-                setTextEmpty('none');
-                setMessageEmpty('none');
-            }
-            else {
-                alert("PRODUCTS É NULL");
-                setList([]);
-                setMessageEmpty('flex');
-            }
-        }).catch((err) => {
-            console.log("Erro onRefresh: " + err);
-            // alert('Erro inesperado, contate o adminstrador');
-        });
+
+        //TODO: fix bug - category is not saved yet in categoryFilter variable.
+        if( categoryFilter != 0 ) {
+            handleSearchFilter(categoryFilter);
+        }
+        else
+        {
+            Api.getProducts().then((response) => {
+                if(response[0] != null) {                
+                    setList(response);
+                    setTextEmpty('none');
+                    setMessageEmpty('none');
+                }
+                else {
+                    setList([]);
+                    setMessageEmpty('flex');
+                }
+            }).catch((err) => {
+                // alert('Erro inesperado, contate o adminstrador');
+            });
+        }
+        
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
@@ -47,48 +69,91 @@ export default function appHome(){
         setMessageEmpty('none');
     };
 
-    const handleSearch = async () => {
-        //TODO: faze busca por nome - ainda não tem para titulo do produto.
+    const handleSearchFilter = async (categoty) => {
         setLoading(true);
         setList([]);
-        // if(searchFiled != ''){
-        //     let res = await Api.getProductByName(searchFiled, '');
-        //     if(res.data[0] != null) {
-        //         setList(res.data);
-        //         setTextEmpty('none');
-        //         setMessageEmpty('none');
-        //     }
-        //     else {
-        //         setList([]);
-        //         setMessageEmpty('flex');
-        //     }
-        // } else {
-        //     setSearchEmpty('flex');
-        // }
+        setCategoryFilter(categoty);
+        setSearchEmpty('none');
+
+        if( categoryFilter != 0 )
+        {
+            let response = await Api.searchProductByCategory(categoryFilter)
+            
+            if( response[0] != null) {
+                setList(response);
+                setTextEmpty('none');
+                setMessageEmpty('none');
+            } else {
+                setList([]);
+                setMessageEmpty('flex');
+            }
+        }
+
+        setLoading(false);
+    }
+
+    const handleSearch = async () => {
+        setLoading(true);
+        setList([]);
+        setCategoryFilter(0);
+
+        // Hardcoded first product
+        // const Filters =  {
+        //     "name": searchFiled,
+        //     "price": 5000,
+        //     "category": 1,
+        //     "advertiser": "Lourenço",
+        //     "licenseType": 1,
+        //     "rating": 5
+        // };
+
+        if( searchFiled != "")
+        {
+            let response = await Api.searchProductByString(searchFiled)
+            
+            if( response[0] != null) {
+                setList(response);
+                setTextEmpty('none');
+                setMessageEmpty('none');
+            } else {
+                setList([]);
+                setMessageEmpty('flex');
+            }
+        } else {
+            setSearchEmpty('flex');
+        }
         setLoading(false);
     };
 
     useEffect(() => {
         let isFlag = true;
         setList([]);
+
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getProducts().then((response) => {
-                if(isFlag){
-                if(response[0] != null) {
-                    setList(response);
-                    setTextEmpty('none');
-                    setMessageEmpty('none');
-                }
-                else {
-                    alert("PRODUCTS É NULL");
-                    setList([]);
-                    setMessageEmpty('flex');
-                }
+            
+            if( categoryFilter != 0 ) {
+                handleSearchFilter( categoryFilter );
             }
-            }).catch((err) => {
-                console.log("Erro onRefresh: " + err);
-                // alert('Erro inesperado, contate o adminstrador');
-            });
+            else
+            {
+                Api.getProducts().then((response) => {
+                    if(isFlag){
+                    if(response[0] != null) {
+                        setList(response);
+                        setTextEmpty('none');
+                        setMessageEmpty('none');
+                    }
+                    else {
+                        setList([]);
+                        setMessageEmpty('flex');
+                    }
+                }
+                }).catch((err) => {
+                    console.log("Erro onRefresh: " + err);
+                    // alert('Erro inesperado, contate o adminstrador');
+                });
+            }
+        
         });
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
@@ -108,6 +173,9 @@ export default function appHome(){
                         onChangeText={t=>setSearchField(t)}
                         onFocus={t=>clearMsg()}
                     />
+                    <TouchableOpacity style={styles.search} onPress={() => {setDisplayFilter(true)}}>
+                        <FilterIcon width="24" height="24" fill="#000000" />
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.search} onPress={handleSearch}>
                         <Search width="24" height="24" fill="#000000" />
                     </TouchableOpacity>
@@ -128,7 +196,7 @@ export default function appHome(){
                     <View style={styles.listArea}>
                         {
                             list.map((item, k) => (
-                                <Produto key={k} data={item} />
+                                <Produto key={k} data={item} removeItem={false} />
                             ))
                         }
                     </View>
@@ -141,6 +209,18 @@ export default function appHome(){
                 </ScrollView>
                 <FabButton style={{ bottom: 130, right: 60 }} onPress={()=>{ textEmpty == 'none' ? setTextEmpty('flex') : setTextEmpty('none')}}/>
             </View>
+            {displayFilter &&
+                <ModalSelector
+                // onTouchCancel={setCategoryFilter(0)}
+                // closeOnChange={alert("a")}
+                cancelButtonAccessible={true}
+                    cancelText="Cancelar"
+                    visible={true}
+                    data={categoryData}
+                    initValue=""
+                    onModalClose={()=>{ setDisplayFilter(false) }}
+                    onChange={(option)=>handleSearchFilter(option.key)}
+                    />}
         </ScrollView>
     );
 }

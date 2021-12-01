@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
-import Api from '../Api';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, ScrollView, Image } from 'react-native';
 
 import Back from '../assets/back.svg';
 import FavoriteClean from '../assets/favorito-vazio.svg';
 import Favorite from '../assets/favorito.svg';
+import Api from '../Api';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -16,41 +16,48 @@ export default function ProductBoard() {
     const route = useRoute();
 
     const [verify, setVerify] = useState(true);
-    const [indie, setIndie] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [addFavorite, setAddFavorite] = useState('none');
     const [removeFavorite, setRemoveFavorite] = useState('none');
-    const [disabledBack, setDisabledBack] = useState(false);
-    const [disabledLocate, setDisabledLocate] = useState(false);
+    const [licenseType, setLisence] = useState('');
+    const [category, setCategory] = useState('');
+    const [starsVector, setStars] = useState([]);
 
     const [productInfo, setProductInfo] = useState({
         _id: route.params._id,
         name: route.params.name,
         description: route.params.description,
         price: route.params.price,
+        category: route.params.category,
         advertiser: route.params.advertiser,
         licenseType: route.params.licenseType,
         rating: route.params.rating
     });
 
     const setMessage = () => {
-        setLoading(false);
         setAddFavorite('none');
         setRemoveFavorite('none');
-        setDisabledBack(false);
-        setDisabledLocate(false);
     };
 
+    const addProductToCart = async () => {
+        let response = await Api.addToCart(productInfo._id);
+
+        if( response.cpf != null )
+        {
+            alert("Produto adicionado ao carrinho");
+        }
+        else
+        {
+            alert("Erro: " + response.message);
+        }
+    }
+
     const setFavorite = async () => {
-        setLoading(true);
         // if(verify) {
         //     let json = await Api.addFavorite();
         //     if(!json.error) {
         //         setVerify(false);
         //         setAddFavorite('flex');
         //         setRemoveFavorite('none');
-        //         setDisabledBack(true);
-        //         setDisabledLocate(true);
         //     }
         // } else {
         //     let json = await Api.removeFavorite();
@@ -58,28 +65,97 @@ export default function ProductBoard() {
         //         setVerify(true);
         //         setRemoveFavorite('flex');
         //         setAddFavorite('none');
-        //         setDisabledBack(true);
-        //         setDisabledLocate(true);
         //     }
         // }
         wait(3000).then(setMessage);
     };
 
-    // useEffect(() => {
-    //     let isFlag = true;
-    //     Api.verifyFavorite().then((response) => {
-    //         if(isFlag){
-    //             if(response.data != 0 ) {
-    //                 setVerify(false);
-    //             } else {
-    //                 setVerify(true);
-    //             }
-    //         }
-    //     }).catch((error) => {
-    //         // alert('Erro inesperado, contate o adminstrador');
-    //     });
-    //     return () => { isFlag = false };
-    // }, []);
+    useEffect(() => {
+        let isFlag = true;
+        setStars([]);
+
+        // Loop 5 times
+        let tempStars = [];
+		for (var i = 1; i <= 5; i++) {
+			// Set the path to filled stars
+			let IconStart = require('../assets/star-filled.png');
+			// If ratings is lower, set the path to unfilled stars
+			if (!productInfo.rating || i > productInfo.rating) {
+				IconStart = require('../assets/star-unfilled.png');
+			}
+			// Push the Image tag in the stars array
+            tempStars.push(<Image key={i} style={styles.image} source={IconStart}/>);
+		}
+        setStars(tempStars);
+
+        // Colocar em forma de texto o licenseType e a category de acordo com o enum
+        if( productInfo.licenseType != 0)
+        {
+            switch( productInfo.licenseType )
+            {
+                case 1:
+                    setLisence("EULA");
+                    break;
+                case 2:
+                    setLisence("Software Proprietário");
+                    break;
+                case 3:
+                    setLisence("Software Livre");
+                    break;
+                case 4:
+                    setLisence("Software Comercial");
+                    break;
+                case 5:
+                    setLisence("Open Source");
+                    break;
+                case 6:
+                    setLisence("GNU GPL");
+                    break;
+                case 7:
+                    setLisence("Software Gratuito");
+                    break;
+                default:
+                    setLisence("Desconhecida");
+            }
+        }
+
+        if( productInfo.category != 0)
+        {
+            switch( productInfo.category )
+            {
+                case 1:
+                    setCategory("Mobile");
+                    break;
+                case 2:
+                    setCategory("Desktop");
+                    break;
+                case 3:
+                    setCategory("Banco de dados");
+                    break;
+                case 4:
+                    setCategory("Backend");
+                    break;
+                case 5:
+                    setCategory("Design");
+                    break;
+                default:
+                    setCategory("Desconhecida");
+            }
+        }
+
+        // Api.verifyFavorite().then((response) => {
+        //     if(isFlag){
+        //         if(response.data != 0 ) {
+        //             setVerify(false);
+        //         } else {
+        //             setVerify(true);
+        //         }
+        //     }
+        // }).catch((error) => {
+        //     // alert('Erro inesperado, contate o adminstrador');
+        // });
+        return () => { isFlag = false };
+    }, []);
 
     return (
         <View style={styles.background}>
@@ -87,10 +163,11 @@ export default function ProductBoard() {
             style={styles.photoArea} 
             source={{ uri: 'https://icon-library.com/images/mobile-apps-icon-vector/mobile-apps-icon-vector-24.jpg' }}
             >
-               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.navigate('Home') }} disabled={disabledBack}>
-                    <Back width="36" height="36" fill="#FFFFFF"/>
+               <TouchableOpacity style={styles.toBack} onPress={()=>{ navigation.goBack() }}>
+                    <Back width="36" height="36" fill="#000000"/>
                </TouchableOpacity>
             </ImageBackground>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
             <View style={styles.pageBody}>
                 <View style={styles.infoProcut}>
                     <Text style={styles.titleProduct}>{productInfo.name}</Text>
@@ -102,13 +179,26 @@ export default function ProductBoard() {
                         <Text style={styles.typeTitle}>Fornecedor:</Text>
                         <Text style={styles.title}>{productInfo.advertiser}</Text>
                     </View>
+                    <View style={styles.infoBody}>
+                        <Text style={styles.typeTitle}>Licença:</Text>
+                        <Text style={styles.title}>{licenseType}</Text>
+                    </View>
+                    <View style={styles.infoBody}>
+                        <Text style={styles.typeTitle}>Categoria:</Text>
+                        <Text style={styles.title}>{category}</Text>
+                    </View>
                     <View style={styles.infoBodyForDesc}>
                         <Text style={styles.typeTitle}>Descrição:</Text>
                         <Text style={styles.titleDesc}>{productInfo.description}</Text>
                     </View>
-                    <View style={styles.infoBodyForDesc}>
+                    <View style={styles.infoBody}>
                         <Text style={styles.typeTitle}>Preço:</Text>
-                        <Text style={styles.titleDesc}>{productInfo.price}</Text>
+                        <Text style={styles.title}>R$ {productInfo.price}</Text>
+                    </View>
+                    <View style={styles.infoBody}>
+                        <Text style={styles.typeTitle}>Avaliação:</Text>
+                        { starsVector }
+                        <Text style={styles.title}>({productInfo.rating==null?"0":productInfo.rating})</Text>
                     </View>
                 </View>
                 <View style={styles.warningFavorite}>
@@ -121,20 +211,20 @@ export default function ProductBoard() {
                 </View>
                 <View style={styles.viewCarrinho}>
                     {verify ?
-                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
+                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite}>
                             <FavoriteClean width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite} disabled={disabledLocate}>
+                        <TouchableOpacity style={styles.favoriteButton} onPress={setFavorite}>
                             <Favorite width="36" height="36" fill="#000000"/>
                         </TouchableOpacity>
                     }
-                    {/* TODO: move to cart page*/}
-                        <TouchableOpacity style={styles.locateButton} onPress={() => {  }}>
-                            <Text style={styles.textLocate}>Adicionar ao carrinho</Text>
+                        <TouchableOpacity style={styles.addToCart} onPress={() => { addProductToCart() }}>
+                            <Text style={styles.textAddToCart}>Adicionar ao carrinho</Text>
                         </TouchableOpacity>
                 </View>
             </View>
+            </ScrollView>
         </View>
     );
 }
@@ -144,6 +234,10 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#FFFFFF'
+    },
+    image: {
+        width: 25,
+        height: 25
     },
     photoArea: {
         flexDirection: 'row',
@@ -181,7 +275,7 @@ const styles = StyleSheet.create({
     },
     infoBodyForDesc: {
         width: 350,
-        height: 200,
+        height: 100,
         marginTop: 15,
         justifyContent: 'flex-start',
         alignItems: 'flex-start'
@@ -224,7 +318,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 5
     },
-    locateButton: {
+    addToCart: {
         width: 300,
         height: 50,
         backgroundColor: '#17F1A1',
@@ -232,7 +326,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    textLocate: {
+    textAddToCart: {
         fontSize: 22,
         fontWeight: 'bold',
         color: '#000000'

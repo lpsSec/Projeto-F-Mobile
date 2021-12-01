@@ -8,23 +8,24 @@ export default ({data}) => {
 
     const handleSaveItem = async () => {
         navigation.navigate('saveItem', {
-            ID: data.ID,
-            NAME: data.NAME,
-            DESC: data.DESC,
-            STATUS: data.STATUS,
-            AUTHOR: data.AUTHOR,
-            GEN: data.GEN_NOME,
-            IMG_PATH: data.IMG_PATH
+            _id: data._id,
+            name: data.name,
+            description: data.description,
+            price: data.price,
+            category: data.category,
+            advertiser: data.advertiser,
+            licenseType: data.licenseType,
+            rating: data.rating
         });
     };
 
     return (
         <TouchableOpacity style={styles.favoriteItem} onPress={handleSaveItem}>
-            <Image style={styles.itemPhoto} source={{ uri: data.IMG_PATH == null ? 'https://super.abril.com.br/wp-content/uploads/2018/04/bibliotecas.png?quality=70&strip=info&resize=680,453' : data.IMG_PATH }} />
+            <Image style={styles.itemPhoto} source={{  }} />
             <View style={styles.viewArea}>
                 <View style={styles.itemInfo}>
                     <View style={styles.itemText}>
-                        <Text style={styles.title}>{data.NAME}</Text>
+                        <Text style={styles.title}>{data.name}</Text>
                     </View>
                     <View style={styles.itemFavorite}>
                         <View style={styles.favoriteButton}>
