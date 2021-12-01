@@ -5,7 +5,6 @@ import HomeTabBar from '../components/HomeTabBar';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import appHome from './sub-pages/appHome';
 
-import Softbear from '../assets/logo_softbear.svg';
 import Account from '../assets/account.svg';
 import MyCart from '../assets/cart.svg';
 
@@ -17,7 +16,7 @@ export default function Home({state}) {
     return (
         <View style={styles.background}>
             <View style={styles.header}>
-                <Softbear width="36" height="36" style={styles.icon}/>
+                <Image style={styles.icon} source={require('../assets/logo.png')}/>
                 <Text style={styles.title}>Softbear</Text>
                 <TouchableOpacity style={styles.profile} onPress={ () => { navigation.navigate('Cart') }}>
                     <MyCart width="30" height="30" fill="#000000"/>
@@ -55,8 +54,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     icon: {
-        width: 36,
-        height: 36,
+        width: 64,
+        height: 64,
     },
     userPhoto: {
         width: 40,

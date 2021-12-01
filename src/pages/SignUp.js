@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, Animated, S
 import { TextInputMask } from 'react-native-masked-text'
 import Api from '../Api';
 
+import User from '../assets/userLoginPage.svg';
 import Email from '../assets/email.svg';
 import Lock from '../assets/lock.svg';
 import Person from '../assets/person.svg';
@@ -232,7 +233,7 @@ export default function SignUp() {
     return (
         <View style={styles.background}>
             <View style={styles.headerBody}>
-                <Image style={styles.icon} source={require('../assets/user.png')}/>
+            <User width="120" height="120" fill="#000000" />
                 <Text style={styles.title}>Cadastro</Text>
             </View>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
