@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute} from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, ScrollView, Animated, StyleSheet, Alert} from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import Api from '../Api';
@@ -22,15 +21,12 @@ export default function SignUp() {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const [total, setTotal] = useState(0);
-    const [subTotal, setSubTotal] = useState(0);
-    const [cupom, setCumpo] = useState('');
     const [parcelasField, setParcelas] = useState('1');
     const [nameField, setNameField] = useState('');
     const [ccNumber, setCcNumber] = useState('');
     const [cvvField, setCVV] = useState('');
     const [cpfField, setCpfField] = useState('');
-    const [validationFiled, setValidationFiled] = useState('');
+    const [exp_date, setExpDate] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageSucess, setMessageSucess] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
@@ -54,17 +50,17 @@ export default function SignUp() {
     const fieldValidate = async () => {
         clearResult();
 
-        var cur_year = new Date().getFullYear();
+        var cur_year = new Date().getFullYear().toString().substr(0-2);
         var cur_month = new Date().getMonth();
-        var validationyear = validationFiled.split('/').pop();
-        var validationmonth = validationFiled.substr(0-2);
+        var validationyear = exp_date.split('/').pop();
+        var validationmonth = exp_date.split('/').push();
 
-        // alert(cur_month.getMonth);
+        // alert(validationyear);
         if(validationyear < cur_year) {
             lResult.error = 'Há problemas com a forma de pagamento!',
             lResult.success = false;
             return lResult;
-        }else if(validationmonth < cur_month) {
+        }else if(validationyear == cur_year && validationmonth < cur_month) {
             lResult.error = 'Há problemas com a forma de pagamento!',
             lResult.success = false;
             return lResult;
@@ -150,30 +146,35 @@ export default function SignUp() {
     };
 
     const handleCheckout = async () => {
-        if( nameField != '' && cpfField != '' && ccNumber != '' && validationFiled != '' && cvvField != '') {
+        if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
             let result = fieldValidate();
             if((await result).success) {
+                var cupomApplyed = checkoutInfo.cupom!=""?"\nCupom usado: "+checkoutInfo.cupom:"";
+
                 Alert.alert(
                     'Finalizar compra?',
-                    'Os itens do carrinho serão comprado no valor de: R$ ' + total +
-                    cupom!=''?'\n Cupom usado: '+cupom:'',
+                    "Os itens do carrinho serão comprado no valor de: R$ " + checkoutInfo.total + 
+                    ". " + cupomApplyed,
                     [
                       { text: "Comprar", onPress: () => {
-                        // Api.checkPayment().then((response) => {
-                        //     if(response.cpf != null) {
-                        //         setList([]);
-                        //         setTotal(0);
-                        //         setSubTotal(0);
-                        //         setCupom('');
-                        //     }
-                        // }).catch((err) => {
-                        //     // alert('Erro inesperado, contate o adminstrador');
-                        // });
+                        Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
+                            alert("Response: " + response);
+                            
+                            //TODO: what is the successful response??
+                            if(response.cpf != null) {
+                                setMessageSucess('flex');
+                            }
+                        }).catch((err) => {
+                            // alert('Erro inesperado, contate o adminstrador');
+                        });
                       }},
                       { text: "Não", onPress: () =>{}}
                     ], 
                     { cancelable: false }
                   )
+            }
+            else {
+                setValidateEmpty('flex');
             }
         }
     };
@@ -241,13 +242,13 @@ export default function SignUp() {
                         <TextInputMask
                             type={'datetime'}
                             options={{
-                                format: 'MM/YYYY'
+                                format: 'MM/YY'
                             }}
                             placeholder="Data de validade"
                             placeholderTextColor="#000000"
-                            value={validationFiled}
+                            value={exp_date}
                             style={styles.TextMasked}
-                            onChangeText={t=>setValidationFiled(t)}
+                            onChangeText={t=>setExpDate(t)}
                         />
                     </View>
                     <View style={styles.inputArea}>
