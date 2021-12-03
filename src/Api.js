@@ -16,12 +16,8 @@ export default {
         const json = await req.json();
         return json;
     },
-    addCreditCard: async ( name, cpf, number, exp_date, cvv ) => {
+    checkCard: async ( name, cpf, number, exp_date, cvv ) => {
         const token = await AsyncStorage.getItem('token');
-        // number = number.replace(" ", "");
-        // number = number.replace(" ", "");
-        // number = number.replace(" ", "");
-        // alert("Number: " + number);
         const req = await fetch(`${BASE_API}/payment/card`, {
             method: "POST",
             headers: {
@@ -31,18 +27,35 @@ export default {
         });
         
         const json = await req.json();
-        // alert("Payment: " + req.json());
+        alert("Check card: " + req.json());
         return json;
     },
-    checkoutPayment: async ( number ) => {
+    addCreditCard: async ( name, cpf, number, exp_date, cvv ) => {
         const token = await AsyncStorage.getItem('token');
-        const cpf = await AsyncStorage.getItem('cpf');
+        // number = number.replace(" ", "");
+        // number = number.replace(" ", "");
+        // number = number.replace(" ", "");
+        // let info = JSON.stringify({name, cpf, number, exp_date, cvv});
+        const req = await fetch(`${BASE_API}/payment/card`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({name, cpf, number, exp_date, cvv})
+        });
+        
+        const json = await req.json();
+        alert("Payment: " + req.json());
+        return json;
+    },
+    checkoutPayment: async ( cpf, couponName, cardNumber ) => {
+        const token = await AsyncStorage.getItem('token');
         const req = await fetch(`${BASE_API}/payment/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({cpf, number})
+            body: JSON.stringify({cpf, couponName, cardNumber})
         });
         
         const json = await req.json();

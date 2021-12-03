@@ -29,6 +29,7 @@ export default function SignUp() {
     const [exp_date, setExpDate] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageSucess, setMessageSucess] = useState('none');
+    const [messageCardAdded, setMessageCardAdded] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
     const [lResult, setlResult] = useState({
         error: '',
@@ -47,7 +48,7 @@ export default function SignUp() {
         lResult.success = true;
     }
 
-    const fieldValidate = async () => {
+    const fieldValidate = () => {
         clearResult();
 
         var cur_year = new Date().getFullYear().toString().substr(0-2);
@@ -145,10 +146,42 @@ export default function SignUp() {
         setMessageSucess('none');
     };
 
-    const handleCheckout = async () => {
+    const checkCreditCard = async () => {
+
+    };
+
+    const handleAddCreditCard = async () => {
+        let result = fieldValidate();
+
         if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
-            let result = fieldValidate();
-            if((await result).success) {
+            if(result.success) {
+
+                Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
+                    alert("Response: " + response);
+                    
+                    if(response.cpf != null) {
+                        setMessageCardAdded('flex');
+                    }
+                }).catch((err) => {
+                    alert('Erro: ' + err);
+                });
+
+            }
+            else {
+                setValidateEmpty('flex');
+            }
+        }
+        else {
+            result.error = "Preencha os campos!";
+            setValidateEmpty('flex');
+        }
+    };
+
+    const handleCheckout = async () => {
+        let result = fieldValidate();
+        
+        if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
+            if(result.success) {
                 var cupomApplyed = checkoutInfo.cupom!=""?"\nCupom usado: "+checkoutInfo.cupom:"";
 
                 Alert.alert(
@@ -157,15 +190,16 @@ export default function SignUp() {
                     ". " + cupomApplyed,
                     [
                       { text: "Comprar", onPress: () => {
-                        Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
+
+                        Api.checkoutPayment( cpfField, checkoutInfo.cupom, ccNumber ).then((response) => {
                             alert("Response: " + response);
                             
-                            //TODO: what is the successful response??
                             if(response.cpf != null) {
                                 setMessageSucess('flex');
                             }
                         }).catch((err) => {
-                            // alert('Erro inesperado, contate o adminstrador');
+                            alert('Erro: ' + err);
+                            alert('Erro: ' + err);
                         });
                       }},
                       { text: "Não", onPress: () =>{}}
@@ -176,6 +210,10 @@ export default function SignUp() {
             else {
                 setValidateEmpty('flex');
             }
+        }
+        else {
+            result.error = "Preencha os campos!";
+            setValidateEmpty('flex');
         }
     };
 
@@ -209,6 +247,7 @@ export default function SignUp() {
                             placeholderTextColor="#000000"
                             value={nameField}
                             onChangeText={t=>setNameField(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -220,6 +259,7 @@ export default function SignUp() {
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
                             onChangeText={t=>setCpfField(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -235,6 +275,7 @@ export default function SignUp() {
                             value={ccNumber}
                             autoCapitalize='none'
                             onChangeText={t=>setCcNumber(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -249,6 +290,7 @@ export default function SignUp() {
                             value={exp_date}
                             style={styles.TextMasked}
                             onChangeText={t=>setExpDate(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -262,6 +304,7 @@ export default function SignUp() {
                             autoCapitalize='none'
                             onChangeText={t=>setCVV(t)}
                             maxLength={3}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -275,11 +318,15 @@ export default function SignUp() {
                             onChangeText={t=>setParcelas(t)}
                             maxLength={2}
                             keyboardType='numeric'
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.messageValid}>
-                    <Text style={{display: messageSucess, color: '#00FF00', }}>
+                        <Text style={{display: messageSucess, color: '#00FF00', }}>
                         Compra finalizada! Aproveite seus produtos.
+                        </Text>
+                        <Text style={{display: messageCardAdded, color: '#00FF00', }}>
+                        Cartão adicionado com sucesso.
                         </Text>
                         <Text style={{display: messageEmpty, color: '#FF0000', }}>
                         Preencha todos os campos!
@@ -295,9 +342,13 @@ export default function SignUp() {
                         <Text style={styles.footerText}>Total: R$ {checkoutInfo.total}</Text>
                     </View>
 
+                    <TouchableOpacity onPress={handleAddCreditCard} style={styles.finalizarBtn}>
+                        <Text style={styles.finalizarText}>Adicionar cartão</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleCheckout} style={styles.finalizarBtn}>
                         <Text style={styles.finalizarText}>Comprar</Text>
                     </TouchableOpacity>
+
                 </Animated.View>
             </ScrollView>
         </View>

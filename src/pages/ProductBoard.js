@@ -152,7 +152,7 @@ export default function ProductBoard() {
         //         }
         //     }
         // }).catch((error) => {
-        //     // alert('Erro inesperado, contate o adminstrador');
+        //     alert('Erro: ' + err);
         // });
         return () => { isFlag = false };
     }, []);

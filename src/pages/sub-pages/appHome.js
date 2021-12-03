@@ -57,7 +57,7 @@ export default function appHome(){
                     setMessageEmpty('flex');
                 }
             }).catch((err) => {
-                // alert('Erro inesperado, contate o adminstrador');
+                alert('Erro: ' + err);
             });
         }
         
@@ -149,8 +149,7 @@ export default function appHome(){
                     }
                 }
                 }).catch((err) => {
-                    console.log("Erro onRefresh: " + err);
-                    // alert('Erro inesperado, contate o adminstrador');
+                    alert('Erro: ' + err);
                 });
             }
         
