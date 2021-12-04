@@ -14,6 +14,7 @@ import Card from '../assets/card.svg';
 import Parcela from '../assets/parcela.svg';
 
 import ModalSelector from 'react-native-modal-selector'
+// TODO: fix modal style
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -189,7 +190,6 @@ export default function SignUp() {
 
         if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
             if(result.success) {
-
                 Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
                     
                     if(response.cpf != null) {
@@ -227,12 +227,11 @@ export default function SignUp() {
                     [
                       { text: "Comprar", onPress: () => {
 
-                        Api.checkoutPayment( cpfField, checkoutInfo.cupom, ccNumber ).then((response) => {
-                            alert("Response: " + response);
+                        Api.checkoutPayment( cpfField, ccNumber, checkoutInfo.total ).then((response) => {
                             
-                            if(response.cpf != null) {
+                            if(response.message == "Compra realizada com sucesso!" ) {
                                 setMessageSucess('flex');
-                                wait(3000).then(() => setMessageSucess('none'));
+                                wait(4000).then(() => setMessageSucess('none'));
                             }
                         }).catch((err) => {
                             alert('Erro: ' + err);
@@ -365,15 +364,14 @@ export default function SignUp() {
                             onFocus={t=>setMessage()}
                         />
                     </View>
-                    {/* TODO: show selection modal - populate with registred cards from the user*/}
                     <Text style={styles.hasCardText}> Já possui cartões regitrados:
                     {userHasCards?
                     <Text style={{ color: '#00FF00', }}>
-                     Sim.
+                    <Text>{" "}</Text>Sim
                     </Text>
                     :
                     <Text style={{ color: '#FF0000', }}>
-                     Não.
+                    <Text>{" "}</Text>Não
                     </Text>
                     }
                     {userHasCards &&
@@ -549,19 +547,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#FFFF',
         fontWeight: 'bold'
-    },
-    registerButton: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    registerText: {
-        fontSize: 16,
-        color: '#000000'
-    },
-    registerTextBold: {
-        fontSize: 16,
-        color: '#000000',
-        fontWeight: 'bold',
-        marginLeft: 5
     }
 });

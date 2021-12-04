@@ -13,15 +13,9 @@ export default ({data, removeItem}) => {
         let response = await Api.deleteFromCart( _id );
 
         if( response.cpf != null ) {
-            //TODO: improve navigation. Remove item and refresh the cart, instead of navigation.reset()
-            // Strange behavior when using navigation.reset()
-            // *navigation.navigate does not refresh the product in the cart.
             navigation.navigate('Cart',{
                 refresh: true
             });
-            // navigation.reset({
-            //     routes: [{name: 'Cart'}]
-            // });
         }
     };
 

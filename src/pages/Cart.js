@@ -37,22 +37,6 @@ export default function Cart() {
         })
     };
 
-    //TODO: use this method to refresh the products on cart when one is deleted.
-    const refreshProducts = async (flag) => {
-        setList([]);
-
-        Api.getProductsOnCart().then((response) => {
-            if(response.productsInCart != null) {
-                setList(response.productsInCart);
-            }
-            else {
-                setList([]);
-            }
-        }).catch((err) => {
-            alert('Erro: ' + err);
-        });
-    };
-
     const clearCart = async () => {
         Alert.alert(
             'Limpar carrinho?',

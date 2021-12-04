@@ -54,14 +54,14 @@ export default {
         const json = await req.json();
         return json;
     },
-    checkoutPayment: async ( cpf, couponName, cardNumber ) => {
+    checkoutPayment: async ( cpf, cardNumber, total ) => {
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/payment/`, {
+        const req = await fetch(`${BASE_API}/payment/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({cpf, couponName, cardNumber})
+            body: JSON.stringify({cpf, cardNumber, total})
         });
         
         const json = await req.json();
