@@ -202,7 +202,8 @@ export default function Cart() {
                         <RefreshControl 
                         refreshing={refreshing} 
                         onRefresh={onRefresh} 
-                        />}>
+                        />}
+            >
                     {loading && 
                         <ActivityIndicator size="large" color="#000000"/>
                     }

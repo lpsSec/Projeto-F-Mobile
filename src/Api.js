@@ -370,4 +370,35 @@ export default {
         const json = await req.json();
         return json;
     },
+    addToMyShopping: async ( productId ) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const cpf = await AsyncStorage.getItem('cpf');
+    
+            const req = await fetch(`${BASE_API}/user/shopping`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                    // "Authorization": 'Baerer ' + token
+                },
+                body: JSON.stringify({cpf, productId})
+            });
+            const json = await req.json();
+            return json;
+        } catch (error) {
+            alert(error.message);
+        }
+    },
+    getProductsOnMyShopping: async () => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+        const req = await fetch(`${BASE_API}/user/shopping/` + cpf, {
+            // headers: {
+            //     "Authorization": 'Baerer ' + token
+            // }
+        });
+        const json = await req.json();
+        return json;
+    },
 };

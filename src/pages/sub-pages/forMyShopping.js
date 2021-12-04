@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Api from '../../Api';
-import FavoriteItem from '../../components/FavoriteItem';
 import NotFound from '../../assets/nao-encontrado.svg';
+import Produto from '../../components/ProductItem';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -12,23 +12,24 @@ const wait = (timeout) => {
 export default function forMyShopping() {
     const navigation = useNavigation();
 
-    const [listFavorite, setListFavorite] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [list, setList] = useState([]);
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         
-        Api.getFavorites().then((response) => {
-            if(response.data[0] != null) {
-                setListFavorite(response.data);
+        Api.getProductsOnMyShopping().then((response) => {
+            if(response.myShopping != null) {
+                setList(response.myShopping);
                 setMessageEmpty('none');
             }
             else {
-                setListFavorite([]);
+                setList([]);
                 setMessageEmpty('flex');
             }
-        }).catch((error) => {
+        }).catch((err) => {
             // alert('Erro inesperado, contate o adminstrador');
         });
         wait(2000).then(() => setRefreshing(false));
@@ -37,16 +38,16 @@ export default function forMyShopping() {
     useEffect(() => {
         let isFlag = true;
         setMessageEmpty('flex');
-        setListFavorite([]);
+        setList([]);
         const unsubscribe = navigation.addListener('focus', () => {
-            Api.getFavorites().then((response) => {
+            Api.getProductsOnMyShopping().then((response) => {
                 if(isFlag) {
-                    if(response.data[0] != null) {
-                        setListFavorite(response.data);
+                    if(response.myShopping != null) {
+                        setList(response.myShopping);
                         setMessageEmpty('none');
                     }
                     else {
-                        setListFavorite([]);
+                        setList([]);
                         setMessageEmpty('flex');
                     }
                 }
@@ -54,14 +55,14 @@ export default function forMyShopping() {
                 // alert('Erro inesperado, contate o adminstrador');
             });
         });
-        Api.getFavorites().then((response) => {
+        Api.getProductsOnMyShopping().then((response) => {
             if(isFlag) {
-                if(response.data[0] != null) {
-                    setListFavorite(response.data);
+                if(response.myShopping != null) {
+                    setList(response.myShopping);
                     setMessageEmpty('none');
                 }
                 else {
-                    setListFavorite([]);
+                    setList([]);
                     setMessageEmpty('flex');
                 }
             }
@@ -71,7 +72,8 @@ export default function forMyShopping() {
         return () => { isFlag = false, unsubscribe };
     }, [], [navigation]);
     return(
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#FFFFFF' }} horizontal={true}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#FFFFFF' }} 
+        horizontal={true}>
             <View style={styles.pageBody}>
                 <ScrollView 
                     contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor: '#FFFFFF' }} 
@@ -83,11 +85,16 @@ export default function forMyShopping() {
                         />
                     }
                 >
-                    {listFavorite &&
-                        listFavorite.map((item, k) => (
-                            <FavoriteItem key={k} data={item} />
-                        ))
+                    {loading && 
+                        <ActivityIndicator size="large" color="#000000"/>
                     }
+                    <View style={styles.listArea}>
+                        {
+                            list.map((item, k) => (
+                                <Produto key={k} data={item} removeItem={false} />
+                            ))
+                        }
+                    </View>
                     <View style={[styles.messageNotFound, {display: messageEmpty}]}>
                         <NotFound width="60" height="60" fill="#FFFFFF" />
                         <Text style={{color: '#000000', fontWeight: 'bold', fontSize: 16, marginTop: 10}}>
@@ -111,5 +118,8 @@ const styles = StyleSheet.create({
         width: 300,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    listArea: {
+        width: 400,
+    },
 });
