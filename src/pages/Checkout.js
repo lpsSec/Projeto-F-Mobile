@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute} from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, ScrollView, Animated, StyleSheet, Alert} from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import Api from '../Api';
@@ -14,6 +13,9 @@ import Payment from '../assets/payment.svg';
 import Card from '../assets/card.svg';
 import Parcela from '../assets/parcela.svg';
 
+import ModalSelector from 'react-native-modal-selector'
+// TODO: fix modal style
+
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -22,17 +24,20 @@ export default function SignUp() {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const [total, setTotal] = useState(0);
-    const [subTotal, setSubTotal] = useState(0);
-    const [cupom, setCumpo] = useState('');
+    const [flagPopulateCardList, setFlagPopulateCardList] = useState(false);
+    const [modalData, setModalData] = useState([]);
+    const [displayModal, setDisplayModal] = useState(false);
+    const [userCardList, setUserCardList] = useState([]);
+    const [userHasCards, setUserHasCards] = useState(false);
     const [parcelasField, setParcelas] = useState('1');
     const [nameField, setNameField] = useState('');
     const [ccNumber, setCcNumber] = useState('');
     const [cvvField, setCVV] = useState('');
     const [cpfField, setCpfField] = useState('');
-    const [validationFiled, setValidationFiled] = useState('');
+    const [exp_date, setExpDate] = useState('');
     const [messageEmpty, setMessageEmpty] = useState('none');
     const [messageSucess, setMessageSucess] = useState('none');
+    const [messageCardAdded, setMessageCardAdded] = useState('none');
     const [validateEmpty, setValidateEmpty] = useState('none');
     const [lResult, setlResult] = useState({
         error: '',
@@ -51,20 +56,20 @@ export default function SignUp() {
         lResult.success = true;
     }
 
-    const fieldValidate = async () => {
+    const fieldValidate = () => {
         clearResult();
 
-        var cur_year = new Date().getFullYear();
+        var cur_year = new Date().getFullYear().toString().substr(0-2);
         var cur_month = new Date().getMonth();
-        var validationyear = validationFiled.split('/').pop();
-        var validationmonth = validationFiled.substr(0-2);
+        var validationyear = exp_date.split('/').pop();
+        var validationmonth = exp_date.split('/').push();
 
-        // alert(cur_month.getMonth);
+        // alert(validationyear);
         if(validationyear < cur_year) {
             lResult.error = 'Há problemas com a forma de pagamento!',
             lResult.success = false;
             return lResult;
-        }else if(validationmonth < cur_month) {
+        }else if(validationyear == cur_year && validationmonth < cur_month) {
             lResult.error = 'Há problemas com a forma de pagamento!',
             lResult.success = false;
             return lResult;
@@ -147,34 +152,105 @@ export default function SignUp() {
         setValidateEmpty('none');
         setMessageEmpty('none');
         setMessageSucess('none');
+        setMessageCardAdded('none');
+    };
+
+    const enterSelectedCard = async ( ccInfo ) => {
+        setNameField(ccInfo.name);
+        setCpfField(ccInfo.cpf);
+        setCcNumber(ccInfo.number);
+        setExpDate(ccInfo.exp_date);
+        setCVV(ccInfo.cvv);
+    };
+
+    const populateModalData = async () => {
+        setFlagPopulateCardList(false);
+
+        userCardList.map((item, k) => (
+            modalData.push({ key: k, label: item.number, ccInfo: item})
+        ))
+    };
+
+    const checkCreditCard = async () => {
+        
+        Api.getUserCard().then((response) => {
+                    
+            if(response[0].number != null) {
+                setUserHasCards(true);
+                setUserCardList(response);
+                setFlagPopulateCardList(true);
+            }
+        }).catch((err) => {
+            alert('Erro: ' + err);
+        });
+    };
+
+    const handleAddCreditCard = async () => {
+        let result = fieldValidate();
+
+        if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
+            if(result.success) {
+                Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
+                    
+                    if(response.cpf != null) {
+                        setMessageCardAdded('flex');
+                        wait(3000).then(() => setMessageCardAdded('none'));
+                    }
+                }).catch((err) => {
+                    alert('Erro: ' + err);
+                });
+
+            }
+            else {
+                setValidateEmpty('flex');
+                wait(3000).then(() => setValidateEmpty('none'));
+            }
+        }
+        else {
+            result.error = "Preencha os campos!";
+            setValidateEmpty('flex');
+            wait(3000).then(() => setValidateEmpty('none'));
+        }
     };
 
     const handleCheckout = async () => {
-        if( nameField != '' && cpfField != '' && ccNumber != '' && validationFiled != '' && cvvField != '') {
-            let result = fieldValidate();
-            if((await result).success) {
+        let result = fieldValidate();
+        
+        if( nameField != '' && cpfField != '' && ccNumber != '' && exp_date != '' && cvvField != '') {
+            if(result.success) {
+                var cupomApplyed = checkoutInfo.cupom!=""?"\nCupom usado: "+checkoutInfo.cupom:"";
+
                 Alert.alert(
                     'Finalizar compra?',
-                    'Os itens do carrinho serão comprado no valor de: R$ ' + total +
-                    cupom!=''?'\n Cupom usado: '+cupom:'',
+                    "Os itens do carrinho serão comprado no valor de: R$ " + checkoutInfo.total + 
+                    ". " + cupomApplyed,
                     [
                       { text: "Comprar", onPress: () => {
-                        // Api.checkPayment().then((response) => {
-                        //     if(response.cpf != null) {
-                        //         setList([]);
-                        //         setTotal(0);
-                        //         setSubTotal(0);
-                        //         setCupom('');
-                        //     }
-                        // }).catch((err) => {
-                        //     // alert('Erro inesperado, contate o adminstrador');
-                        // });
+
+                        Api.checkoutPayment( cpfField, ccNumber, checkoutInfo.total ).then((response) => {
+                            
+                            if(response.message == "Compra realizada com sucesso!" ) {
+                                setMessageSucess('flex');
+                                wait(4000).then(() => setMessageSucess('none'));
+                            }
+                        }).catch((err) => {
+                            alert('Erro: ' + err);
+                        });
                       }},
                       { text: "Não", onPress: () =>{}}
                     ], 
                     { cancelable: false }
                   )
             }
+            else {
+                setValidateEmpty('flex');
+                wait(3000).then(() => setValidateEmpty('none'));
+            }
+        }
+        else {
+            result.error = "Preencha os campos!";
+            setValidateEmpty('flex');
+            wait(3000).then(() => setValidateEmpty('none'));
         }
     };
 
@@ -185,6 +261,12 @@ export default function SignUp() {
             bounciness: 20,
             useNativeDriver: true
         }).start();
+
+        setModalData([]);
+        setUserCardList([]);
+        setFlagPopulateCardList(false);
+        checkCreditCard();
+
     }, []);
     return (
         <View style={styles.background}>
@@ -208,6 +290,7 @@ export default function SignUp() {
                             placeholderTextColor="#000000"
                             value={nameField}
                             onChangeText={t=>setNameField(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -219,6 +302,7 @@ export default function SignUp() {
                             placeholderTextColor="#000000"
                             style={styles.TextMasked}
                             onChangeText={t=>setCpfField(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -234,6 +318,7 @@ export default function SignUp() {
                             value={ccNumber}
                             autoCapitalize='none'
                             onChangeText={t=>setCcNumber(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -241,13 +326,14 @@ export default function SignUp() {
                         <TextInputMask
                             type={'datetime'}
                             options={{
-                                format: 'MM/YYYY'
+                                format: 'MM/YY'
                             }}
                             placeholder="Data de validade"
                             placeholderTextColor="#000000"
-                            value={validationFiled}
+                            value={exp_date}
                             style={styles.TextMasked}
-                            onChangeText={t=>setValidationFiled(t)}
+                            onChangeText={t=>setExpDate(t)}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -261,6 +347,7 @@ export default function SignUp() {
                             autoCapitalize='none'
                             onChangeText={t=>setCVV(t)}
                             maxLength={3}
+                            onFocus={t=>setMessage()}
                         />
                     </View>
                     <View style={styles.inputArea}>
@@ -274,11 +361,31 @@ export default function SignUp() {
                             onChangeText={t=>setParcelas(t)}
                             maxLength={2}
                             keyboardType='numeric'
+                            onFocus={t=>setMessage()}
                         />
                     </View>
+                    <Text style={styles.hasCardText}> Já possui cartões regitrados:
+                    {userHasCards?
+                    <Text style={{ color: '#00FF00', }}>
+                    <Text>{" "}</Text>Sim
+                    </Text>
+                    :
+                    <Text style={{ color: '#FF0000', }}>
+                    <Text>{" "}</Text>Não
+                    </Text>
+                    }
+                    {userHasCards &&
+                    <TouchableOpacity onPress={()=>{ setDisplayModal(true) }} style={styles.selectCardButton}>
+                        <Text style={styles.selectCardTextBold}>Selecionar</Text>
+                    </TouchableOpacity>
+                    }
+                    </Text>
                     <View style={styles.messageValid}>
-                    <Text style={{display: messageSucess, color: '#00FF00', }}>
+                        <Text style={{display: messageSucess, color: '#00FF00', }}>
                         Compra finalizada! Aproveite seus produtos.
+                        </Text>
+                        <Text style={{display: messageCardAdded, color: '#00FF00', }}>
+                        Cartão adicionado com sucesso.
                         </Text>
                         <Text style={{display: messageEmpty, color: '#FF0000', }}>
                         Preencha todos os campos!
@@ -294,10 +401,28 @@ export default function SignUp() {
                         <Text style={styles.footerText}>Total: R$ {checkoutInfo.total}</Text>
                     </View>
 
+                    <TouchableOpacity onPress={handleAddCreditCard} style={styles.finalizarBtn}>
+                        <Text style={styles.finalizarText}>Adicionar cartão</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleCheckout} style={styles.finalizarBtn}>
                         <Text style={styles.finalizarText}>Comprar</Text>
                     </TouchableOpacity>
+
                 </Animated.View>
+                {flagPopulateCardList &&
+                    populateModalData()
+                }
+                {displayModal &&
+                <ModalSelector
+                cancelButtonAccessible={true}
+                    cancelText="Cancelar"
+                    visible={true}
+                    data={modalData}
+                    initValue=""
+                    onModalClose={()=>{ setDisplayModal(false) }}
+                    onChange={(option)=>enterSelectedCard(option.ccInfo)}
+                    />
+                }
             </ScrollView>
         </View>
     );
@@ -310,6 +435,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 20,
         backgroundColor: '#49B4EF'
+    },
+    selectCardTextBold: {
+        fontSize: 16,
+        color: '#000000',
+        fontWeight: 'bold',
+        textDecorationLine: 'underline'
+    },
+    hasCardText: {
+        fontSize: 16,
+        color: '#000000',
+        marginRight: 110
+    },
+    selectCardButton: {
+        flexDirection: 'row',
+        // justifyContent: 'center',
+        // marginRight: 20
     },
     toBack: {
         width: 36,
@@ -358,7 +499,7 @@ const styles = StyleSheet.create({
     },
     pageBody: {
         width: 400,
-        height: 500,
+        height: 620, //500
         alignItems: 'center',
         justifyContent: 'space-around'
     },
@@ -406,19 +547,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#FFFF',
         fontWeight: 'bold'
-    },
-    registerButton: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    registerText: {
-        fontSize: 16,
-        color: '#000000'
-    },
-    registerTextBold: {
-        fontSize: 16,
-        color: '#000000',
-        fontWeight: 'bold',
-        marginLeft: 5
     }
 });

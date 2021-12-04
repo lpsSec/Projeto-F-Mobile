@@ -37,22 +37,6 @@ export default function Cart() {
         })
     };
 
-    //TODO: use this method to refresh the products on cart when one is deleted.
-    const refreshProducts = async (flag) => {
-        setList([]);
-
-        Api.getProductsOnCart().then((response) => {
-            if(response.productsInCart != null) {
-                setList(response.productsInCart);
-            }
-            else {
-                setList([]);
-            }
-        }).catch((err) => {
-            // alert('Erro inesperado, contate o adminstrador');
-        });
-    };
-
     const clearCart = async () => {
         Alert.alert(
             'Limpar carrinho?',
@@ -67,7 +51,7 @@ export default function Cart() {
                         setCupom('');
                     }
                 }).catch((err) => {
-                    // alert('Erro inesperado, contate o adminstrador');
+                    alert('Erro: ' + err);
                 });
               }},
               { text: "Não", onPress: () =>{}}
@@ -90,7 +74,7 @@ export default function Cart() {
                 }
             }
         }).catch((err) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro: ' + err);
         });
     };
 
@@ -106,7 +90,7 @@ export default function Cart() {
                 setList([]);
             }
         }).catch((err) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro: ' + err);
         });
         Api.calculateCart(cupom).then((response) => {
             if(response != null) {
@@ -119,7 +103,7 @@ export default function Cart() {
                 }
             }
         }).catch((err) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro: ' + err);
         });
 
         wait(2000).then(() => setRefreshing(false));
@@ -155,7 +139,7 @@ export default function Cart() {
                 }
             }
             }).catch((err) => {
-                // alert('Erro inesperado, contate o adminstrador');
+                alert('Erro: ' + err);
             });
             Api.calculateCart(cupom).then((response) => {
                 if(isFlag){
@@ -173,7 +157,7 @@ export default function Cart() {
                 }
             }
             }).catch((err) => {
-                // alert('Erro inesperado, contate o adminstrador');
+                alert('Erro: ' + err);
             });
         });
         return () => { isFlag = false, unsubscribe};

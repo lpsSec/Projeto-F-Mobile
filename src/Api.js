@@ -16,6 +16,57 @@ export default {
         const json = await req.json();
         return json;
     },
+    getUserCard: async () => {
+        const cpf = await AsyncStorage.getItem('cpf');
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/payment/card/user/` + cpf, {
+            headers: {
+                // "Authorization": 'Baerer ' + token
+            }
+        });
+        const json = await req.json();
+        return json;
+    },
+    checkCard: async ( name, number, exp_date, cvv ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+        const req = await fetch(`${BASE_API}/payment/card/check` + cpf, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({name, cpf, number, exp_date, cvv})
+        });
+        
+        const json = await req.json();
+        return json;
+    },
+    addCreditCard: async ( name, cpf, number, exp_date, cvv ) => {
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/payment/card`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({name, cpf, number, exp_date, cvv})
+        });
+        
+        const json = await req.json();
+        return json;
+    },
+    checkoutPayment: async ( cpf, cardNumber, total ) => {
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/payment/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({cpf, cardNumber, total})
+        });
+        
+        const json = await req.json();
+        return json;
+    },
     signIn: async (email, password) => {
         const req = await fetch(`${BASE_API}/session/create`, {
             method: "POST",

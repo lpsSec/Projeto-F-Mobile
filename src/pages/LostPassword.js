@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, KeyboardAvoidingView, Animated } from 'react-native';
 import Api from '../Api';
 
@@ -93,7 +92,6 @@ export default function LostPassword() {
         <KeyboardAvoidingView contentContainerStyle={styles.fixKeyboard} behavior="position" enabled>
         <View style={styles.background}>
             <View style={styles.headerBody}>
-            {/*TODO: fix icon size */}
                 <Lock width="150" height="150" alignItems='center' fill="#000000"/>
                 <Text style={styles.title}>Esqueceu sua senha?</Text>
             </View>

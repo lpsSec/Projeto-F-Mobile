@@ -28,7 +28,7 @@ export default function forInfo() {
         //         setMessageEmpty('flex');
         //     }
         // }).catch((error) => {
-        //     // alert('Erro inesperado, contate o adminstrador');
+        //     alert('Erro: ' + err);
         // });
         // wait(2000).then(() => setRefreshing(false));
     }, []);
@@ -60,7 +60,7 @@ export default function forInfo() {
         //         }
         //     }
         // }).catch((error) => {
-        //     // alert('Erro inesperado, contate o adminstrador');
+        //     alert('Erro: ' + err);
         // });
         return () => { isFlag = false };
     }, []);

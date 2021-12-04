@@ -41,21 +41,25 @@ export default function forInfo() {
                 setNameField(response.name + " " + response.last_name);
             }
         }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro: ' + err);
         });
         wait(2000).then(() => setRefreshing(false));
     }, []);
 
     const signOut = async () => {
-        let json = await Api.signOut();
-        if(json.token == null){
-            await AsyncStorage.setItem('token', '');
+        await AsyncStorage.setItem('token', '');
             navigation.reset({
                 routes: [{name: 'SignIn'}]
             });
-        } else {
-            alert('Não foi possível fazer Logout!');
-        }
+        // let json = await Api.signOut();
+        // if(json.token == null){
+        //     await AsyncStorage.setItem('token', '');
+        //     navigation.reset({
+        //         routes: [{name: 'SignIn'}]
+        //     });
+        // } else {
+        //     alert('Não foi possível fazer Logout!');
+        // }
     };
 
     useEffect(() => {
@@ -74,7 +78,7 @@ export default function forInfo() {
                 }
             }
         }).catch((error) => {
-            // alert('Erro inesperado, contate o adminstrador');
+            alert('Erro: ' + err);
         });
         return () => { isFlag = false };
     }, []);
