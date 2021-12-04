@@ -13,6 +13,8 @@ import Payment from '../assets/payment.svg';
 import Card from '../assets/card.svg';
 import Parcela from '../assets/parcela.svg';
 
+import ModalSelector from 'react-native-modal-selector'
+
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
@@ -21,6 +23,11 @@ export default function SignUp() {
     const navigation = useNavigation();
     const route = useRoute();
 
+    const [flagPopulateCardList, setFlagPopulateCardList] = useState(false);
+    const [modalData, setModalData] = useState([]);
+    const [displayModal, setDisplayModal] = useState(false);
+    const [userCardList, setUserCardList] = useState([]);
+    const [userHasCards, setUserHasCards] = useState(false);
     const [parcelasField, setParcelas] = useState('1');
     const [nameField, setNameField] = useState('');
     const [ccNumber, setCcNumber] = useState('');
@@ -144,10 +151,37 @@ export default function SignUp() {
         setValidateEmpty('none');
         setMessageEmpty('none');
         setMessageSucess('none');
+        setMessageCardAdded('none');
+    };
+
+    const enterSelectedCard = async ( ccInfo ) => {
+        setNameField(ccInfo.name);
+        setCpfField(ccInfo.cpf);
+        setCcNumber(ccInfo.number);
+        setExpDate(ccInfo.exp_date);
+        setCVV(ccInfo.cvv);
+    };
+
+    const populateModalData = async () => {
+        setFlagPopulateCardList(false);
+
+        userCardList.map((item, k) => (
+            modalData.push({ key: k, label: item.number, ccInfo: item})
+        ))
     };
 
     const checkCreditCard = async () => {
-
+        
+        Api.getUserCard().then((response) => {
+                    
+            if(response[0].number != null) {
+                setUserHasCards(true);
+                setUserCardList(response);
+                setFlagPopulateCardList(true);
+            }
+        }).catch((err) => {
+            alert('Erro: ' + err);
+        });
     };
 
     const handleAddCreditCard = async () => {
@@ -157,10 +191,10 @@ export default function SignUp() {
             if(result.success) {
 
                 Api.addCreditCard( nameField, cpfField, ccNumber, exp_date, cvvField ).then((response) => {
-                    alert("Response: " + response);
                     
                     if(response.cpf != null) {
                         setMessageCardAdded('flex');
+                        wait(3000).then(() => setMessageCardAdded('none'));
                     }
                 }).catch((err) => {
                     alert('Erro: ' + err);
@@ -169,11 +203,13 @@ export default function SignUp() {
             }
             else {
                 setValidateEmpty('flex');
+                wait(3000).then(() => setValidateEmpty('none'));
             }
         }
         else {
             result.error = "Preencha os campos!";
             setValidateEmpty('flex');
+            wait(3000).then(() => setValidateEmpty('none'));
         }
     };
 
@@ -196,9 +232,9 @@ export default function SignUp() {
                             
                             if(response.cpf != null) {
                                 setMessageSucess('flex');
+                                wait(3000).then(() => setMessageSucess('none'));
                             }
                         }).catch((err) => {
-                            alert('Erro: ' + err);
                             alert('Erro: ' + err);
                         });
                       }},
@@ -209,11 +245,13 @@ export default function SignUp() {
             }
             else {
                 setValidateEmpty('flex');
+                wait(3000).then(() => setValidateEmpty('none'));
             }
         }
         else {
             result.error = "Preencha os campos!";
             setValidateEmpty('flex');
+            wait(3000).then(() => setValidateEmpty('none'));
         }
     };
 
@@ -224,6 +262,12 @@ export default function SignUp() {
             bounciness: 20,
             useNativeDriver: true
         }).start();
+
+        setModalData([]);
+        setUserCardList([]);
+        setFlagPopulateCardList(false);
+        checkCreditCard();
+
     }, []);
     return (
         <View style={styles.background}>
@@ -321,6 +365,23 @@ export default function SignUp() {
                             onFocus={t=>setMessage()}
                         />
                     </View>
+                    {/* TODO: show selection modal - populate with registred cards from the user*/}
+                    <Text style={styles.hasCardText}> Já possui cartões regitrados:
+                    {userHasCards?
+                    <Text style={{ color: '#00FF00', }}>
+                     Sim.
+                    </Text>
+                    :
+                    <Text style={{ color: '#FF0000', }}>
+                     Não.
+                    </Text>
+                    }
+                    {userHasCards &&
+                    <TouchableOpacity onPress={()=>{ setDisplayModal(true) }} style={styles.selectCardButton}>
+                        <Text style={styles.selectCardTextBold}>Selecionar</Text>
+                    </TouchableOpacity>
+                    }
+                    </Text>
                     <View style={styles.messageValid}>
                         <Text style={{display: messageSucess, color: '#00FF00', }}>
                         Compra finalizada! Aproveite seus produtos.
@@ -350,6 +411,20 @@ export default function SignUp() {
                     </TouchableOpacity>
 
                 </Animated.View>
+                {flagPopulateCardList &&
+                    populateModalData()
+                }
+                {displayModal &&
+                <ModalSelector
+                cancelButtonAccessible={true}
+                    cancelText="Cancelar"
+                    visible={true}
+                    data={modalData}
+                    initValue=""
+                    onModalClose={()=>{ setDisplayModal(false) }}
+                    onChange={(option)=>enterSelectedCard(option.ccInfo)}
+                    />
+                }
             </ScrollView>
         </View>
     );
@@ -362,6 +437,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 20,
         backgroundColor: '#49B4EF'
+    },
+    selectCardTextBold: {
+        fontSize: 16,
+        color: '#000000',
+        fontWeight: 'bold',
+        textDecorationLine: 'underline'
+    },
+    hasCardText: {
+        fontSize: 16,
+        color: '#000000',
+        marginRight: 110
+    },
+    selectCardButton: {
+        flexDirection: 'row',
+        // justifyContent: 'center',
+        // marginRight: 20
     },
     toBack: {
         width: 36,
@@ -410,7 +501,7 @@ const styles = StyleSheet.create({
     },
     pageBody: {
         width: 400,
-        height: 500,
+        height: 620, //500
         alignItems: 'center',
         justifyContent: 'space-around'
     },

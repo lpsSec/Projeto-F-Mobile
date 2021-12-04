@@ -16,9 +16,21 @@ export default {
         const json = await req.json();
         return json;
     },
-    checkCard: async ( name, cpf, number, exp_date, cvv ) => {
+    getUserCard: async () => {
+        const cpf = await AsyncStorage.getItem('cpf');
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/payment/card`, {
+        const req = await fetch(`${BASE_API}/payment/card/user/` + cpf, {
+            headers: {
+                // "Authorization": 'Baerer ' + token
+            }
+        });
+        const json = await req.json();
+        return json;
+    },
+    checkCard: async ( name, number, exp_date, cvv ) => {
+        const token = await AsyncStorage.getItem('token');
+        const cpf = await AsyncStorage.getItem('cpf');
+        const req = await fetch(`${BASE_API}/payment/card/check` + cpf, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -27,15 +39,10 @@ export default {
         });
         
         const json = await req.json();
-        alert("Check card: " + req.json());
         return json;
     },
     addCreditCard: async ( name, cpf, number, exp_date, cvv ) => {
         const token = await AsyncStorage.getItem('token');
-        // number = number.replace(" ", "");
-        // number = number.replace(" ", "");
-        // number = number.replace(" ", "");
-        // let info = JSON.stringify({name, cpf, number, exp_date, cvv});
         const req = await fetch(`${BASE_API}/payment/card`, {
             method: "POST",
             headers: {
@@ -45,7 +52,6 @@ export default {
         });
         
         const json = await req.json();
-        alert("Payment: " + req.json());
         return json;
     },
     checkoutPayment: async ( cpf, couponName, cardNumber ) => {
