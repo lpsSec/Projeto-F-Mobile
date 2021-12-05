@@ -409,6 +409,8 @@ export default {
     },
     createProduct: async (name, description, category, licenseType, price) => {
         // const token = await AsyncStorage.getItem('token');
+        const advertiser = await AsyncStorage.getItem('cpf');
+        console.log(advertiser);
         const req = await fetch(`${BASE_API}/product`, {
             method: 'POST',
             headers: {
@@ -416,7 +418,7 @@ export default {
                 'Content-Type': 'application/json',
                 // "Authorization": 'Baerer ' + token
             },
-            body: JSON.stringify({name, description, category, licenseType, price})
+            body: JSON.stringify({name, description, category, advertiser, licenseType, price})
         });
         const json = await req.json();
         return json;

@@ -28,9 +28,8 @@ export default function Profile() {
                 <Tab.Screen name="forInfo" component={forInfo}/>
                 <Tab.Screen name="forMyProducts" component={forMyProducts}/>
                 <Tab.Screen name="forMyShopping" component={forMyShopping}/>
-                <Tab.Screen name="forFavorites" component={forFavorites}/>
-                {/* <Tab.Screen name="forRegistrationProduct" component={forRegistrationProduct}/> */}
                 {/* <Tab.Screen name="forFavorites" component={forFavorites}/> */}
+                {/* <Tab.Screen name="forRegistrationProduct" component={forRegistrationProduct}/> */}
             </Tab.Navigator>
         </View>
     );

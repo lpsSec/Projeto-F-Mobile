@@ -18,9 +18,9 @@ export default ({ state, navigation }) => {
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forMyShopping')}>
                     <Text style={[styles.textPage, {opacity: state.index===2 ? 1 : 0.5}]}>Minhas Compras</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forFavorites')}>
+                {/* <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forFavorites')}>
                     <Text style={[styles.textPage, {opacity: state.index===3 ? 1 : 0.5}]}>Favoritos</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </ScrollView>
         </View>
     );
