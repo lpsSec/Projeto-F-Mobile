@@ -13,7 +13,7 @@ export default ({ state, navigation }) => {
                     <Text style={[styles.textPage, {opacity: state.index===0 ? 1 : 0.5}]}>Info</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forMyProducts')}>
-                    <Text style={[styles.textPage, {opacity: state.index===1 ? 1 : 0.5}]}>Meus Produtos</Text>
+                    <Text style={[styles.textPage, {opacity: state.index===1 ? 1 : 0.5}]}>Meus Anúncios</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonPage} onPress={()=>goTo('forMyShopping')}>
                     <Text style={[styles.textPage, {opacity: state.index===2 ? 1 : 0.5}]}>Minhas Compras</Text>
