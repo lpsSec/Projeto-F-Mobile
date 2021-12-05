@@ -29,7 +29,7 @@ export default function SignUp() {
     const [displayModal, setDisplayModal] = useState(false);
     const [userCardList, setUserCardList] = useState([]);
     const [userHasCards, setUserHasCards] = useState(false);
-    const [parcelasField, setParcelas] = useState('1');
+    const [parcelasField, setParcelas] = useState('');
     const [nameField, setNameField] = useState('');
     const [ccNumber, setCcNumber] = useState('');
     const [cvvField, setCVV] = useState('');
@@ -82,7 +82,7 @@ export default function SignUp() {
             lResult.success = false;
             return lResult;
         } else if(parcelasField < 1) {
-            lResult.error = 'Você deve realizar o pagamento em pelomenos uma parcela!',
+            lResult.error = 'Você deve realizar o pagamento em pelo menos\n uma parcela!',
             lResult.success = false;
             return lResult;
         } else if(ccNumber.length < 16) {
@@ -175,7 +175,7 @@ export default function SignUp() {
         
         Api.getUserCard().then((response) => {
                     
-            if(response[0].number != null) {
+            if(response[0]?.number != null) {
                 setUserHasCards(true);
                 setUserCardList(response);
                 setFlagPopulateCardList(true);
@@ -194,6 +194,8 @@ export default function SignUp() {
                     
                     if(response.cpf != null) {
                         setMessageCardAdded('flex');
+                        setUserCardList([]);
+                        checkCreditCard();
                         wait(3000).then(() => setMessageCardAdded('none'));
                     }
                 }).catch((err) => {
@@ -390,7 +392,7 @@ export default function SignUp() {
                         <Text style={{display: messageEmpty, color: '#FF0000', }}>
                         Preencha todos os campos!
                         </Text>
-                        <Text style={{display: validateEmpty, color: '#FF0000', }}>
+                        <Text style={{display: validateEmpty, color: '#FF0000', height: 40}}>
                         {lResult.error}
                         </Text>
                     </View>

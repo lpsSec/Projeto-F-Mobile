@@ -177,7 +177,7 @@ export default function ProductBoard() {
                     </View>
                     <View style={styles.infoBody}>
                         <Text style={styles.typeTitle}>Fornecedor:</Text>
-                        <Text style={styles.title}>{productInfo.advertiser}</Text>
+                        <Text style={styles.title}>{productInfo.advertiser?.name}</Text>
                     </View>
                     <View style={styles.infoBody}>
                         <Text style={styles.typeTitle}>Licença:</Text>
