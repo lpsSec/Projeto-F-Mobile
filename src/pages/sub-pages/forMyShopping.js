@@ -120,6 +120,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     listArea: {
-        width: 400,
+        width: 350,
     },
 });
