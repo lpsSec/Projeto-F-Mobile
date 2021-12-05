@@ -23,7 +23,6 @@ export default ({show, setShow})  =>  {
 
     const RegisterProduct = async () => {
         let json = await Api.createProduct(nome, descricao, categoria, licenca, price);
-        console.log(json)
         if(json.name){
             setShow(false);
         } else {

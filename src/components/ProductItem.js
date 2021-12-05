@@ -21,14 +21,14 @@ export default ({data, removeItem}) => {
 
     const handleProduct = async () => {
         navigation.navigate('ProductBoard', {
-            _id: data._id,
-            name: data.name,
-            description: data.description,
-            price: data.price,
-            category: data.category,
-            advertiser: data.advertiser,
-            licenseType: data.licenseType,
-            rating: data.rating
+            _id: data.product._id,
+            name: data.product.name,
+            description: data.product.description,
+            price: data.product.price,
+            category: data.product.category,
+            advertiser: data.product.advertiser,
+            licenseType: data.product.licenseType,
+            rating: data.product.rating
         });
     };
 
@@ -37,9 +37,9 @@ export default ({data, removeItem}) => {
             <Image style={styles.productPhoto} source={{ uri: 'https://png1.12png.com/14/7/21/8ZV1p6UP7y/icon-design-android-electric-blue-azure.jpg'}} />
             <View style={styles.productInfoRow}>
                 <View style={styles.productInfoColumn}>
-                    <Text style={styles.title}>Título: {data.name}</Text>
-                    <Text style={styles.title}>Fornecedor: {data.advertiser}</Text>
-                    <Text style={styles.title}>Preço: {data.price}</Text>
+                    <Text style={styles.title}>Título: {data.product.name}</Text>
+                    <Text style={styles.title}>Fornecedor: {data.advertiser == null?'':data.advertiser.name}</Text>
+                    <Text style={styles.title}>Preço: {data.product.price}</Text>
                 </View>
                 {removeItem &&
                 <TouchableOpacity style={styles.deleteBtn} onPress={() => { handleDeleteProduct(data._id)}}>

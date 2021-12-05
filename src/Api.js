@@ -410,7 +410,6 @@ export default {
     createProduct: async (name, description, category, licenseType, price) => {
         // const token = await AsyncStorage.getItem('token');
         const advertiser = await AsyncStorage.getItem('cpf');
-        console.log(advertiser);
         const req = await fetch(`${BASE_API}/product`, {
             method: 'POST',
             headers: {
