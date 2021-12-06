@@ -437,6 +437,7 @@ export default {
                 body: JSON.stringify({cpf, productId})
             });
             const json = await req.json();
+            console.log(json)
             return json;
         } catch (error) {
             alert(error.message);

@@ -70,8 +70,10 @@ export default ({show, setShow})  =>  {
                                 onValueChange={(itemValue, itemIndex) => setCategoria(itemValue)}
                             >
                                 <Picker.Item value="1" label="Mobile" />
-                                <Picker.Item value="2" label="Web" />
-                                <Picker.Item value="3" label="Híbrido" />
+                                <Picker.Item value="2" label="Desktop" />
+                                <Picker.Item value="3" label="Banco de dados" />
+                                <Picker.Item value="4" label="Backend" />
+                                <Picker.Item value="5" label="Design" />
                             </Picker>
                         </View>
                         <View style={styles.infoBody}>

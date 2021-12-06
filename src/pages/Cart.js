@@ -33,6 +33,7 @@ export default function Cart() {
         navigation.navigate('Checkout',{
             total: total,
             subTotal: subTotal,
+            itens: list,
             cupom, cupom
         })
     };

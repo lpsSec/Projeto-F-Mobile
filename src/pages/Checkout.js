@@ -46,6 +46,7 @@ export default function SignUp() {
     const [checkoutInfo, setCheckoutInfo] = useState({
         total: route.params.total,
         subTotal: route.params.subTotal,
+        itens: route.params.itens,
         cupom: route.params.cupom
     });
 
@@ -230,8 +231,23 @@ export default function SignUp() {
                       { text: "Comprar", onPress: () => {
 
                         Api.checkoutPayment( cpfField, ccNumber, checkoutInfo.total ).then((response) => {
-                            
+                            console.log("chekou")
+                            console.log(response)
                             if(response.message == "Compra realizada com sucesso!" ) {
+                                console.log('entrou')
+                                checkoutInfo.itens.map((item, k) => (
+                                    Api.addToMyShopping(item._id).then((response) => {
+                                        
+                                        if(response != null ) {
+                                            
+                                            // setMessageSucess('flex');
+                                            // wait(4000).then(() => setMessageSucess('none'));
+                                        }
+                                    }).catch((err) => {
+                                        alert('Erro: ' + err);
+                                    })
+                                ));
+                                
                                 setMessageSucess('flex');
                                 wait(4000).then(() => setMessageSucess('none'));
                             }
