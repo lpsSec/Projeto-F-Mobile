@@ -231,17 +231,22 @@ export default function SignUp() {
                       { text: "Comprar", onPress: () => {
 
                         Api.checkoutPayment( cpfField, ccNumber, checkoutInfo.total ).then((response) => {
-                            console.log("chekou")
-                            console.log(response)
                             if(response.message == "Compra realizada com sucesso!" ) {
-                                console.log('entrou')
+                                
                                 checkoutInfo.itens.map((item, k) => (
                                     Api.addToMyShopping(item._id).then((response) => {
                                         
                                         if(response != null ) {
-                                            
-                                            // setMessageSucess('flex');
-                                            // wait(4000).then(() => setMessageSucess('none'));
+                                            console.log("Item shopping: " + item._id);
+                                        }
+                                    }).catch((err) => {
+                                        alert('Erro: ' + err);
+                                    }) &
+                                    
+                                    // Remove from cart
+                                    Api.deleteFromCart( item._id ).then((responseDelete) => {
+                                        if( responseDelete.cpf != null) {
+                                            console.log("Removed from cart: " + item._id );
                                         }
                                     }).catch((err) => {
                                         alert('Erro: ' + err);
@@ -250,6 +255,14 @@ export default function SignUp() {
                                 
                                 setMessageSucess('flex');
                                 wait(4000).then(() => setMessageSucess('none'));
+                            }
+                            else
+                            {
+                                lResult.error = response.message;
+                                lResult.success = false;
+
+                                setValidateEmpty('flex');
+                                wait(4000).then(() => setValidateEmpty('none') & clearResult());
                             }
                         }).catch((err) => {
                             alert('Erro: ' + err);
