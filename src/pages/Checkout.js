@@ -233,26 +233,6 @@ export default function SignUp() {
                         Api.checkoutPayment( cpfField, ccNumber, checkoutInfo.total ).then((response) => {
                             if(response.message == "Compra realizada com sucesso!" ) {
                                 
-                                checkoutInfo.itens.map((item, k) => (
-                                    Api.addToMyShopping(item._id).then((response) => {
-                                        
-                                        if(response != null ) {
-                                            console.log("Item shopping: " + item._id);
-                                        }
-                                    }).catch((err) => {
-                                        alert('Erro: ' + err);
-                                    }) &
-                                    
-                                    // Remove from cart
-                                    Api.deleteFromCart( item._id ).then((responseDelete) => {
-                                        if( responseDelete.cpf != null) {
-                                            console.log("Removed from cart: " + item._id );
-                                        }
-                                    }).catch((err) => {
-                                        alert('Erro: ' + err);
-                                    })
-                                ));
-                                
                                 setMessageSucess('flex');
                                 wait(4000).then(() => setMessageSucess('none'));
                             }
