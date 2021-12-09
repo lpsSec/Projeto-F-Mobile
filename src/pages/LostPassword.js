@@ -67,7 +67,7 @@ export default function LostPassword() {
             if(json.message == "E-mail enviado com sucesso!") {
                 setShowCodeInput(true);
 
-                setMessageSuccess('flex');
+                setDisplaySuccess('flex');
                 wait(4500).then(setMessage);
             } else {
                 setMessageWrongEmail('flex');

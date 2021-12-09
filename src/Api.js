@@ -43,12 +43,13 @@ export default {
     },
     addCreditCard: async ( name, cpf, number, exp_date, cvv ) => {
         const token = await AsyncStorage.getItem('token');
+        const value = 90000;
         const req = await fetch(`${BASE_API}/payment/card`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({name, cpf, number, exp_date, cvv})
+            body: JSON.stringify({name, cpf, number, exp_date, cvv, value})
         });
         
         const json = await req.json();
